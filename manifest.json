@@ -1,0 +1,22 @@
+{
+  "name": "PolyMind · Poly Alerts",
+  "short_name": "PolyMind",
+  "description": "Real-time AI-powered prediction market alerts and analysis",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05101f",
+  "theme_color": "#04070f",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
