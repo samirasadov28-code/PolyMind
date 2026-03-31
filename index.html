@@ -434,6 +434,31 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .land-force{background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:1px;padding:7px 16px;cursor:pointer;text-transform:uppercase;transition:all .2s;width:100%}
 .land-force:hover{border-color:var(--gold);color:var(--gold)}
 .land-footer{color:var(--tx3);font-size:8px;letter-spacing:1px;margin-top:18px}
+/* Landing Pro Buy Button */
+.land-pro-buy{width:100%;padding:13px;margin-top:10px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s;box-shadow:0 4px 18px rgba(245,194,0,.3)}
+.land-pro-buy:hover{filter:brightness(1.15)}
+/* Header PRO button — always visible */
+#hdr-pro-btn{background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:filter .2s;flex-shrink:0}
+#hdr-pro-btn:hover{filter:brightness(1.15)}
+#hdr-pro-btn.is-pro{background:rgba(245,194,0,.12);color:var(--gold);border:1px solid rgba(245,194,0,.3);cursor:default}
+#hdr-pro-btn.is-pro:hover{filter:none}
+/* Mobile landing fixes */
+@media (max-width:640px){
+  #landing-overlay{align-items:flex-start;padding:16px 0 24px}
+  .land-card{padding:24px 18px;width:100%;max-width:100%}
+  .land-title{font-size:22px}
+  .land-sub{font-size:9px;margin-bottom:20px}
+  .land-section{padding:14px 14px}
+  .land-tier-row{font-size:12px;margin-bottom:8px}
+  .land-enter{padding:16px;font-size:13px}
+  .land-pro-buy{padding:14px;font-size:12px}
+  /* Delay bar — stack on mobile */
+  #tier-delay-bar{flex-wrap:wrap;padding:10px 12px;gap:8px}
+  #tier-delay-bar>div{min-width:0;width:100%}
+  #tier-upgrade-btn{width:100%;padding:11px;font-size:11px;margin-top:2px}
+  /* Header PRO btn on mobile */
+  #hdr-pro-btn{padding:6px 10px;font-size:9px}
+}
 
 </style>
 </head>
@@ -467,7 +492,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.4.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.5.0</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -480,17 +505,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <div class="land-section-title" style="margin-top:10px">&#9733; Pro Tier</div>
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Unlimited</strong> live signals — no daily cap</div>
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Zero delay</strong> — every alert in real-time</div>
-      <div class="land-pro-price"><span class="amt">$19</span><span class="per">/month</span></div>
+      <div class="land-pro-price"><span class="amt">$19</span><span class="per">/month &nbsp;·&nbsp; cancel any time</span></div>
+      <button class="land-pro-buy" id="land-pro-buy-btn">&#9733; Buy Pro — $19/month</button>
     </div>
 
-    <button class="land-enter" id="land-enter-btn">&#9654; Enter Dashboard</button>
+    <button class="land-enter" id="land-enter-btn">&#9654; Enter Free Dashboard</button>
     <button class="land-force" id="land-force-btn">&#8635; Force Update</button>
 
-    <div style="margin-top:12px;padding:12px 14px;background:rgba(245,194,0,.07);border:1px solid rgba(245,194,0,.25);text-align:center">
-      <div style="color:var(--gold);font-size:9px;font-weight:700;letter-spacing:1.5px;margin-bottom:3px">&#9733; POLYMIND PRO — $19/month</div>
-      <div style="color:var(--tx3);font-size:9px;line-height:1.5">Unlimited live signals &middot; Zero delay &middot; Priority notifications</div>
-    </div>
-    <div class="land-footer">&copy; 2026 PolyMind. All rights reserved.</div>
+    <div class="land-footer">&copy; 2026 PolyMind. All rights reserved. &nbsp;&#128274;&nbsp; Secure checkout via Stripe</div>
   </div>
 </div>
 
@@ -534,6 +556,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <div id="tier-badge" class="badge" style="cursor:pointer;border-color:rgba(245,194,0,.25);background:rgba(245,194,0,.06)" title="Signal tier status">
       <span style="color:var(--gr)">5/5 live</span>
     </div>
+    <button id="hdr-pro-btn" onclick="showUpgradeModal()">&#9733; PRO</button>
     <div class="badge"><div class="dot pulse" id="live-dot"></div><span id="live-txt" style="color:var(--gr);font-size:10px;letter-spacing:1px">LIVE</span></div>
     <button class="ghost" id="pause-btn">&#9208; PAUSE</button>
   </div>
@@ -690,6 +713,19 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
       <div class="cs"><div class="ct">ACTIVITY</div><div id="act-list"></div></div>
 
+      <!-- PRO UPGRADE CARD — desktop right panel -->
+      <div class="cs" id="rp-pro-card">
+        <div style="background:linear-gradient(135deg,rgba(245,164,0,.08),rgba(232,93,74,.05));border:1px solid rgba(245,194,0,.3);padding:12px 14px;border-left:3px solid var(--gold)">
+          <div style="color:var(--gold);font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px">&#9733; POLYMIND PRO</div>
+          <div style="color:var(--tx2);font-size:10px;line-height:1.6;margin-bottom:10px">Remove the 5-signal daily cap. Get every alert the instant it fires — no delays, no limits.</div>
+          <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px">
+            <span style="color:var(--gold);font-size:22px;font-weight:700">$19</span>
+            <span style="color:var(--tx3);font-size:9px">/month · cancel any time</span>
+          </div>
+          <button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 10px rgba(245,194,0,.2)">&#9733; UPGRADE TO PRO</button>
+        </div>
+      </div>
+
       <div class="cs">
         <div class="ct">DATA SOURCES</div>
         <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)">CONNECTING</span></div><div class="su" id="api-src-mode">Detecting proxy mode...</div></div>
@@ -760,7 +796,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 // On Netlify the netlify.toml redirect proxies /api/polymarket/* → gamma-api server-side (no CORS)
 // Locally / on other hosts we fall through a chain of public CORS proxies
 var GAMMA_DIRECT = 'https://gamma-api.polymarket.com';
-var IS_NETLIFY = window.location.hostname.endsWith('.netlify.app') || window.location.hostname.endsWith('.netlify.com') || (window.location.hostname !== 'localhost' && window.location.hostname !== '' && window.location.protocol === 'https:' && !window.location.hostname.includes('127.'));
+var IS_NETLIFY = window.location.hostname.endsWith('.netlify.app') || window.location.hostname.endsWith('.netlify.com');
 var GAMMA = IS_NETLIFY ? '/api/polymarket' : GAMMA_DIRECT;
 
 var CORS_PROXIES = [
@@ -1042,7 +1078,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.4.0';  // Bump on each release
+var APP_VERSION = '1.5.0';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1116,9 +1152,16 @@ function injectUpgradeCard(){
 function tierUpdateUI(){
   var el=document.getElementById('tier-badge');
   if(!el)return;
+  // Update header PRO button state
+  var hdrPro=document.getElementById('hdr-pro-btn');
+  var rpCard=document.getElementById('rp-pro-card');
   if(TIER.isPro){
     el.innerHTML='<span style="color:var(--gold)">&#9733; PRO</span>';
     el.title='Unlimited live signals';
+    if(hdrPro){hdrPro.textContent='&#9733; PRO';hdrPro.classList.add('is-pro');hdrPro.onclick=null;}
+    if(rpCard) rpCard.style.display='none';
+    var mobPro=document.getElementById('mnt-pro');
+    if(mobPro){mobPro.textContent='★ PRO';mobPro.style.opacity='.5';mobPro.onclick=null;}
   } else {
     var rem=Math.max(0, TIER.FREE_LIVE_LIMIT - TIER.liveCount);
     el.innerHTML='<span style="color:'+(rem>0?'var(--gr)':'var(--or)')+'">'+rem+'/'+TIER.FREE_LIVE_LIMIT+' live</span>';
@@ -2100,6 +2143,13 @@ document.addEventListener('DOMContentLoaded',function(){
     setTimeout(function(){ landOverlay.style.display='none'; },350);
   });
 
+  // Buy Pro from landing page
+  document.getElementById('land-pro-buy-btn').addEventListener('click',function(){
+    if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
+      window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
+    }
+  });
+
   // Force update — unregister SW, clear caches, reload
   document.getElementById('land-force-btn').addEventListener('click',function(){
     this.textContent='Updating...';
@@ -2602,6 +2652,10 @@ document.addEventListener('DOMContentLoaded',function(){
   <button class="mob-tab" id="mnt-config">
     <span class="mob-tab-ic">&#9881;</span>
     <span>CONFIG</span>
+  </button>
+  <button class="mob-tab" id="mnt-pro" onclick="showUpgradeModal()" style="color:var(--gold);flex:1.1">
+    <span class="mob-tab-ic" style="font-size:16px">&#9733;</span>
+    <span style="font-weight:700;letter-spacing:.3px">PRO</span>
   </button>
 </nav>
 
