@@ -1,5 +1,6 @@
 [build]
   publish = "."
+  functions = "netlify/functions"
 
 # Proxy Polymarket Gamma API to avoid CORS issues
 [[redirects]]
@@ -8,6 +9,13 @@
   status = 200
   force = true
   headers = {Accept = "application/json"}
+
+# AI proxy — routes to the serverless function
+[[redirects]]
+  from = "/api/ai"
+  to = "/.netlify/functions/ai-proxy"
+  status = 200
+  force = true
 
 # SPA fallback — serve index.html for any non-file route
 [[redirects]]
