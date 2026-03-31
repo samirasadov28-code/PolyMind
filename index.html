@@ -341,6 +341,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     animation:fadeout 2.5s forwards;
   }
   @keyframes fadeout{0%,60%{opacity:1}100%{opacity:0}}
+@keyframes proBarPulse{0%,100%{box-shadow:inset 0 0 0 rgba(245,164,0,0)}50%{box-shadow:inset 0 -2px 20px rgba(245,164,0,.12)}}
+@keyframes upgradeCardSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
   /* Show CONFIG tab on mobile */
   #tab-cfg{display:block!important}
@@ -465,7 +467,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.2.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.3.0</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -485,6 +487,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <button class="land-enter" id="land-enter-btn">&#9654; Enter Dashboard</button>
     <button class="land-force" id="land-force-btn">&#8635; Force Update</button>
 
+    <div style="margin-top:12px;padding:12px 14px;background:rgba(245,194,0,.07);border:1px solid rgba(245,194,0,.25);text-align:center">
+      <div style="color:var(--gold);font-size:9px;font-weight:700;letter-spacing:1.5px;margin-bottom:3px">&#9733; POLYMIND PRO — $19/month</div>
+      <div style="color:var(--tx3);font-size:9px;line-height:1.5">Unlimited live signals &middot; Zero delay &middot; Priority notifications</div>
+    </div>
     <div class="land-footer">&copy; 2026 PolyMind. All rights reserved.</div>
   </div>
 </div>
@@ -533,10 +539,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <button class="ghost" id="pause-btn">&#9208; PAUSE</button>
   </div>
 </div>
-<div id="tier-delay-bar" style="display:none;background:linear-gradient(90deg,rgba(240,144,58,.12),rgba(245,194,0,.08));border-bottom:1px solid var(--bdr);padding:6px 14px;align-items:center;gap:8px;font-family:'Inter',sans-serif;flex-shrink:0">
-  <span style="color:var(--or);font-size:10px;font-weight:600;letter-spacing:.5px">&#9888; FREE TIER</span>
-  <span style="color:var(--tx2);font-size:10px">Daily live signal limit reached — new alerts delayed 30 min</span>
-  <button id="tier-upgrade-btn" style="margin-left:auto;background:linear-gradient(135deg,var(--gold),#d4a800);color:#0a1220;border:none;padding:5px 14px;cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase">&#9733; UPGRADE TO PRO</button>
+<div id="tier-delay-bar" style="display:none;background:linear-gradient(90deg,rgba(232,93,74,.13),rgba(245,164,0,.1));border-bottom:2px solid rgba(245,164,0,.5);padding:9px 14px;align-items:center;gap:10px;font-family:'Inter',sans-serif;flex-shrink:0;animation:proBarPulse 2.5s ease-in-out infinite">
+  <span style="font-size:16px;animation:blink 1.4s ease-in-out infinite">&#9888;</span>
+  <div style="flex:1;min-width:0">
+    <div style="color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.8px">FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN</div>
+    <div style="color:var(--tx2);font-size:9px;margin-top:1px">You have used all <strong style="color:var(--or)">5 live signals</strong> for today. Upgrade to PRO for unlimited real-time alerts.</div>
+  </div>
+  <button id="tier-upgrade-btn" onclick="showUpgradeModal()" style="flex-shrink:0;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;box-shadow:0 0 14px rgba(245,194,0,.35);transition:filter .2s">&#9733; UPGRADE — $19/mo</button>
 </div>
 <div id="prog"></div>
 
@@ -1034,7 +1043,13 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.2.0';  // Bump on each release
+var APP_VERSION = '1.3.0';  // Bump on each release
+
+// ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
+// 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
+// 2. Create a Payment Link for that product (Products → Payment Links)
+// 3. Paste the link URL below  e.g. 'https://buy.stripe.com/xxxxxxxxxxxx'
+var STRIPE_PAYMENT_LINK = '';   // ← PASTE YOUR STRIPE PAYMENT LINK HERE
 
 // ─── TIER SYSTEM ─────────────────────────────────────────────────────────────
 var TIER={
@@ -1056,8 +1071,46 @@ function tierIsDelayed(){
 }
 function tierConsumeSlot(){
   tierResetIfNewDay();
-  if(!TIER.isPro) TIER.liveCount++;
-  tierUpdateUI();
+  if(!TIER.isPro){
+    var wasUnder = TIER.liveCount < TIER.FREE_LIVE_LIMIT;
+    TIER.liveCount++;
+    tierUpdateUI();
+    // Auto-trigger upgrade modal + inline card the moment the 5th alert fires
+    if(wasUnder && TIER.liveCount >= TIER.FREE_LIVE_LIMIT){
+      setTimeout(function(){
+        showUpgradeModal();
+        injectUpgradeCard();
+      }, 600);
+    }
+  } else {
+    tierUpdateUI();
+  }
+}
+
+function injectUpgradeCard(){
+  if(document.getElementById('upgrade-inline-card')) return;
+  var ap=document.getElementById('ap');
+  if(!ap) return;
+  var card=document.createElement('div');
+  card.id='upgrade-inline-card';
+  card.style.cssText='animation:upgradeCardSlide .4s ease-out';
+  card.innerHTML=
+    '<div style="margin:10px 12px;padding:14px 16px;background:linear-gradient(135deg,rgba(245,164,0,.09),rgba(232,93,74,.06));border:1px solid rgba(245,164,0,.35);border-left:3px solid var(--gold)">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+        +'<span style="color:var(--gold);font-size:13px;animation:blink 1.6s ease-in-out infinite">&#9733;</span>'
+        +'<span style="color:var(--gold);font-size:9px;font-weight:700;letter-spacing:1.5px">FREE LIMIT REACHED</span>'
+        +'<span style="margin-left:auto;color:var(--tx3);font-size:8px">5/5 signals used</span>'
+      +'</div>'
+      +'<div style="color:var(--tx2);font-size:10px;line-height:1.6;margin-bottom:10px">New alerts are now queued with a <strong style="color:var(--or)">30-minute delay</strong>. Upgrade to PRO for unlimited real-time signals — no caps, no waiting.</div>'
+      +'<button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 12px rgba(245,194,0,.25)">&#9733; UPGRADE TO PRO — $19/month</button>'
+    +'</div>';
+  // Insert after the first alert row (or prepend if none)
+  var firstRow = ap.querySelector('.arow');
+  if(firstRow && firstRow.nextSibling){
+    ap.insertBefore(card, firstRow.nextSibling);
+  } else {
+    ap.insertBefore(card, ap.firstChild);
+  }
 }
 function tierUpdateUI(){
   var el=document.getElementById('tier-badge');
@@ -1978,29 +2031,48 @@ function showUpgradeModal(){
   var existing=document.getElementById('upgrade-modal');
   if(existing){existing.remove();return;}
   var m=document.createElement('div');m.id='upgrade-modal';
-  m.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)';
-  m.innerHTML='<div style="background:var(--bg2);border:1px solid var(--bdr2);padding:28px 32px;max-width:420px;width:90%;font-family:Inter,sans-serif">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><span style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9733; POLYMIND PRO</span><button id="close-upgrade" style="background:none;border:none;color:var(--tx3);font-size:18px;cursor:pointer">&times;</button></div>'
-    +'<div style="color:var(--tx);font-size:12px;line-height:1.7;margin-bottom:18px">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="color:var(--gr)">&#10003;</span> Unlimited live signals — no daily cap</div>'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="color:var(--gr)">&#10003;</span> Zero delay — every alert in real-time</div>'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="color:var(--gr)">&#10003;</span> Priority push notifications</div>'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="color:var(--gr)">&#10003;</span> Advanced signal filters &amp; export</div>'
+  m.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
+  m.innerHTML=
+    '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);padding:30px 28px;max-width:430px;width:92%;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+      +'<div><div style="color:var(--gold);font-size:15px;font-weight:700;letter-spacing:.5px">&#9733; POLYMIND PRO</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">UNLIMITED REAL-TIME SIGNALS</div></div>'
+      +'<button id="close-upgrade" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
     +'</div>'
-    +'<div style="background:rgba(245,194,0,.06);border:1px solid rgba(245,194,0,.25);padding:16px;text-align:center;margin-bottom:14px">'
-        +'<div style="color:var(--gold);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">PRO PLAN</div>'
-        +'<div style="color:var(--tx);font-size:28px;font-weight:700">$19</div>'
-        +'<div style="color:var(--tx3);font-size:9px">/month</div>'
+    +'<div style="background:rgba(245,194,0,.06);border:1px solid rgba(245,194,0,.2);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px">'
+      +'<span style="font-size:22px;color:var(--or)">&#9888;</span>'
+      +'<div><div style="color:var(--tx);font-size:11px;font-weight:600">You've used your 5 free live signals today</div>'
+      +'<div style="color:var(--tx3);font-size:9px;margin-top:3px">New alerts are now delayed 30 minutes. Upgrade to keep every edge.</div></div>'
     +'</div>'
-    +'<button id="upgrade-go" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),#d4a800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase">&#9733; UPGRADE NOW</button>'
-    +'<div style="color:var(--tx3);font-size:9px;text-align:center;margin-top:10px">Free tier: '+TIER.FREE_LIVE_LIMIT+' live signals/day, then 30-min delay</div>'
+    +'<div style="color:var(--tx);font-size:11px;line-height:1.8;margin-bottom:18px">'
+      +'<div style="display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="color:var(--gr);font-size:13px">&#10003;</span><span><strong>Unlimited</strong> live signals — no daily cap</span></div>'
+      +'<div style="display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="color:var(--gr);font-size:13px">&#10003;</span><span><strong>Zero delay</strong> — every alert the instant it fires</span></div>'
+      +'<div style="display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid var(--bdr)"><span style="color:var(--gr);font-size:13px">&#10003;</span><span><strong>Priority push</strong> notifications</span></div>'
+      +'<div style="display:flex;align-items:center;gap:9px;padding:5px 0"><span style="color:var(--gr);font-size:13px">&#10003;</span><span><strong>Advanced filters</strong> &amp; export</span></div>'
+    +'</div>'
+    +'<div style="background:var(--bg3);border:1px solid var(--bdr);padding:16px;text-align:center;margin-bottom:16px">'
+      +'<div style="color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:2px">PRO PLAN</div>'
+      +'<div style="display:flex;align-items:baseline;justify-content:center;gap:3px">'
+        +'<span style="color:var(--gold);font-size:32px;font-weight:700;line-height:1">$19</span>'
+        +'<span style="color:var(--tx3);font-size:10px">/month</span>'
+      +'</div>'
+      +'<div style="color:var(--tx3);font-size:9px;margin-top:4px">Cancel any time · Instant activation</div>'
+    +'</div>'
+    +'<button id="upgrade-go" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 20px rgba(245,194,0,.3);transition:filter .2s">&#9733; UPGRADE NOW — $19/month</button>'
+    +'<div id="upgrade-payment-note" style="color:var(--tx3);font-size:9px;text-align:center;margin-top:10px;line-height:1.5">Secure checkout via Stripe &nbsp;&#128274;</div>'
   +'</div>';
   document.body.appendChild(m);
   document.getElementById('close-upgrade').addEventListener('click',function(){m.remove();});
   document.getElementById('upgrade-go').addEventListener('click',function(){
-    // Placeholder — wire to Stripe/payment later
-    alert('Payment integration coming soon! For early access to PRO, contact us.');
-    m.remove();
+    if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
+      window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
+    } else {
+      // No Stripe link configured — show config instructions
+      document.getElementById('upgrade-payment-note').innerHTML=
+        '<span style="color:var(--or)">&#9888; Payment not yet configured.</span><br>'
+        +'Set <code style="color:var(--gold)">STRIPE_PAYMENT_LINK</code> in the source to enable checkout.';
+    }
   });
   m.addEventListener('click',function(e){if(e.target===m)m.remove();});
 }
