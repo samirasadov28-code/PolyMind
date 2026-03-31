@@ -507,7 +507,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.8.2</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.0</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -692,6 +692,32 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
           <div class="tr">
             <span class="trl" data-tip="Time window for tracking the same wallet across markets. A wallet hitting 2+ markets in this window triggers REPEAT WALLET — suggests broad insider knowledge or macro strategy.">Wallet window</span>
             <div class="tri"><input class="tin" id="t-walwin" type="number" value="5" min="1" max="60" step="1"><span class="tru">min</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs" id="usage-stats-section">
+        <div class="ct">YOUR USAGE</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">
+          <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">TODAY LIVE</div>
+            <div id="stat-today-live" style="font-size:16px;font-weight:700;color:var(--gr)">0</div>
+            <div style="color:var(--tx3);font-size:8px">of 5 free</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">TODAY TOTAL</div>
+            <div id="stat-today-total" style="font-size:16px;font-weight:700;color:var(--cyan)">0</div>
+            <div style="color:var(--tx3);font-size:8px">of 30 max</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">ALL-TIME LIVE</div>
+            <div id="stat-alltime-live" style="font-size:16px;font-weight:700;color:var(--gold)">0</div>
+            <div style="color:var(--tx3);font-size:8px">signals seen</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">ALL-TIME TOTAL</div>
+            <div id="stat-alltime-total" style="font-size:16px;font-weight:700;color:var(--pu)">0</div>
+            <div style="color:var(--tx3);font-size:8px">alerts shown</div>
           </div>
         </div>
       </div>
@@ -1094,7 +1120,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.8.2';  // Bump on each release
+var APP_VERSION = '1.9.0';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1110,13 +1136,55 @@ var TIER={
   isPro: false,             // set true when user upgrades
   liveCount: 0,             // live signals delivered today
   totalCount: 0,            // total alerts shown today (live + delayed)
+  allTimeLive: 0,           // cumulative live alerts ever seen (persisted)
+  allTimeTotal: 0,          // cumulative total alerts ever seen (persisted)
   dayKey: new Date().toISOString().slice(0,10), // YYYY-MM-DD
   delayedQueue: []          // alerts waiting to be shown after delay
 };
 
+// ── Persist & restore tier counts across page refreshes ──────────────────────
+var TIER_KEY = 'polymind_tier_v1';
+function tierSave(){
+  try{
+    localStorage.setItem(TIER_KEY, JSON.stringify({
+      dayKey:       TIER.dayKey,
+      liveCount:    TIER.liveCount,
+      totalCount:   TIER.totalCount,
+      allTimeLive:  TIER.allTimeLive,
+      allTimeTotal: TIER.allTimeTotal,
+      isPro:        TIER.isPro
+    }));
+  }catch(e){}
+}
+function tierLoad(){
+  try{
+    var raw = localStorage.getItem(TIER_KEY);
+    if(!raw) return;
+    var d = JSON.parse(raw);
+    var today = new Date().toISOString().slice(0,10);
+    // Restore all-time counters always
+    TIER.allTimeLive  = d.allTimeLive  || 0;
+    TIER.allTimeTotal = d.allTimeTotal || 0;
+    TIER.isPro        = d.isPro        || false;
+    // Restore today's counters only if same day
+    if(d.dayKey === today){
+      TIER.dayKey     = d.dayKey;
+      TIER.liveCount  = d.liveCount  || 0;
+      TIER.totalCount = d.totalCount || 0;
+    }
+  }catch(e){}
+}
+// Load saved state immediately
+tierLoad();
+
 function tierResetIfNewDay(){
   var today=new Date().toISOString().slice(0,10);
-  if(today!==TIER.dayKey){ TIER.dayKey=today; TIER.liveCount=0; TIER.totalCount=0; }
+  if(today!==TIER.dayKey){
+    TIER.dayKey=today;
+    TIER.liveCount=0;
+    TIER.totalCount=0;
+    tierSave();
+  }
 }
 function tierIsDelayed(){
   tierResetIfNewDay();
@@ -1127,6 +1195,8 @@ function tierConsumeSlot(){
   if(!TIER.isPro){
     var wasUnder = TIER.liveCount < TIER.FREE_LIVE_LIMIT;
     TIER.liveCount++;
+    TIER.allTimeLive++;
+    tierSave();
     tierUpdateUI();
     // Auto-trigger upgrade modal + inline card the moment the 5th alert fires
     if(wasUnder && TIER.liveCount >= TIER.FREE_LIVE_LIMIT){
@@ -1182,10 +1252,21 @@ function tierUpdateUI(){
   } else {
     var rem=Math.max(0, TIER.FREE_LIVE_LIMIT - TIER.liveCount);
     el.innerHTML='<span style="color:'+(rem>0?'var(--gr)':'var(--or)')+'">'+rem+'/'+TIER.FREE_LIVE_LIMIT+' live</span>';
-    el.title=rem>0?rem+' live signals remaining today':'Live limit reached — signals delayed 30 min. Upgrade to PRO for unlimited live alerts.';
+    el.title=rem>0?rem+' live signals remaining today ('+TIER.allTimeLive+' all-time)':'Live limit reached — signals delayed 30 min. Upgrade to PRO for unlimited live alerts. All-time signals seen: '+TIER.allTimeLive;
   }
   var bar=document.getElementById('tier-delay-bar');
   if(bar) bar.style.display=tierIsDelayed()?'flex':'none';
+  // Update stats panel
+  var sl=document.getElementById('stat-today-live');
+  var st=document.getElementById('stat-today-total');
+  var al=document.getElementById('stat-alltime-live');
+  var at2=document.getElementById('stat-alltime-total');
+  if(sl) sl.textContent=TIER.liveCount;
+  if(st) st.textContent=TIER.totalCount;
+  if(al) al.textContent=TIER.allTimeLive;
+  if(at2) at2.textContent=TIER.allTimeTotal;
+  if(sl) sl.style.color=TIER.liveCount>=TIER.FREE_LIVE_LIMIT?'var(--or)':'var(--gr)';
+  if(st) st.style.color=TIER.totalCount>=TIER.FREE_DAILY_MAX?'var(--or)':'var(--cyan)';
 }
 function tierFlushDelayed(){
   var now=Date.now();
@@ -1198,7 +1279,7 @@ function tierFlushDelayed(){
   ready.forEach(function(a){
     if(!TIER.isPro && TIER.totalCount >= TIER.FREE_DAILY_MAX) return;
     a.delayed=true;
-    if(!TIER.isPro) TIER.totalCount++;
+    if(!TIER.isPro){ TIER.totalCount++; TIER.allTimeTotal++; tierSave(); }
     S.alerts.unshift(a);
     if(S.alerts.length>100)S.alerts.pop();
     fireNotification(a);
