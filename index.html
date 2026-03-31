@@ -461,6 +461,21 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 }
 
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4L7DZGEDZW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-4L7DZGEDZW', {
+    page_title: 'PolyMind Alerts',
+    send_page_view: true
+  });
+  // Safe wrapper — events never crash the app if GA blocks or fails to load
+  function track(eventName, params){
+    try{ gtag('event', eventName, Object.assign({app_version: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '?'}, params||{})); }catch(e){}
+  }
+</script>
 </head>
 <body>
 
@@ -492,7 +507,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.7.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.8.1</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -1079,7 +1094,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.7.0';  // Bump on each release
+var APP_VERSION = '1.8.1';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1115,6 +1130,7 @@ function tierConsumeSlot(){
     tierUpdateUI();
     // Auto-trigger upgrade modal + inline card the moment the 5th alert fires
     if(wasUnder && TIER.liveCount >= TIER.FREE_LIVE_LIMIT){
+      track('free_limit_reached', {limit: TIER.FREE_LIVE_LIMIT});
       setTimeout(function(){
         showUpgradeModal();
         injectUpgradeCard();
@@ -1346,6 +1362,7 @@ async function loadAll(){
       all=all.concat(filtered);
       setBar(Math.min(92,5+Math.round((page+1)*PAGE_LMT/MAX_MKT*87)));
       document.getElementById('mkt-count').textContent=all.length+' markets loaded';
+      if(!window._firstLoadTracked){window._firstLoadTracked=true;track('data_loaded',{market_count:all.length});}
       if(page===0){processMarkets(all);setPolySt(true,all.length,true);}
       if(arr.length<PAGE_LMT) break; // last partial page
       page++;await dly(220);
@@ -1626,6 +1643,7 @@ function addA(a){
     tierResetIfNewDay();
     // Hard cap: free users see at most FREE_DAILY_MAX alerts per day total
     if(TIER.totalCount >= TIER.FREE_DAILY_MAX){
+      if(TIER.totalCount === TIER.FREE_DAILY_MAX) track('daily_cap_reached', {cap: TIER.FREE_DAILY_MAX});
       return; // silently drop — cap reached
     }
     if(tierIsDelayed()){
@@ -1919,6 +1937,7 @@ var SYS='You are a senior cross-asset trading strategist. You use prediction mar
 
 async function analyze(a,aiDiv){
   if(!aiDiv)aiDiv=document.getElementById('center-ai');
+  track('alert_analyzed', {alert_type: a.t, severity: getSev(a).tier, provider: (S.userProv||'groq')});
   aiDiv.innerHTML='<div class="ldg" style="padding:20px"><div class="ldg-ic">&#9672;</div><div style="color:var(--tx2);font-size:10px;letter-spacing:2px;margin-top:6px">ANALYZING...</div><div style="color:var(--tx3);font-size:9px;margin-top:4px">'+( prov==='groq'?'Groq AI (default)':PROV[prov].al )+'</div></div>';
   // Groq is default (key lives server-side in Netlify env var)
   // If user supplied Claude or Gemini key, use that provider instead
@@ -2078,6 +2097,7 @@ function toggleLive(){
 function showUpgradeModal(){
   var existing=document.getElementById('upgrade-modal');
   if(existing){existing.remove();return;}
+  track('upgrade_modal_opened', {signals_used: TIER.liveCount, limit: TIER.FREE_LIVE_LIMIT});
   var m=document.createElement('div');m.id='upgrade-modal';
   m.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
   m.innerHTML=
@@ -2112,6 +2132,7 @@ function showUpgradeModal(){
   document.body.appendChild(m);
   document.getElementById('close-upgrade').addEventListener('click',function(){m.remove();});
   document.getElementById('upgrade-go').addEventListener('click',function(){
+    track('upgrade_clicked', {source: 'upgrade_modal', price: 19});
     if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
       window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
     } else {
@@ -2129,9 +2150,11 @@ document.addEventListener('DOMContentLoaded',function(){
   var landOverlay=document.getElementById('landing-overlay');
   var landVerNum=document.getElementById('land-ver-num');
   if(landVerNum) landVerNum.textContent=APP_VERSION;
+  track('landing_viewed');
 
   // Enter dashboard — dismiss landing
   document.getElementById('land-enter-btn').addEventListener('click',function(){
+    track('dashboard_entered', {tier: 'free'});
     landOverlay.style.opacity='0';
     landOverlay.style.transition='opacity .35s ease';
     setTimeout(function(){ landOverlay.style.display='none'; },350);
@@ -2139,6 +2162,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Buy Pro from landing page
   document.getElementById('land-pro-buy-btn').addEventListener('click',function(){
+    track('upgrade_clicked', {source: 'landing_page', price: 19});
     if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
       window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
     }
