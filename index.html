@@ -492,7 +492,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.5.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.5.1</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -1078,7 +1078,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.5.0';  // Bump on each release
+var APP_VERSION = '1.5.1';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1311,7 +1311,7 @@ async function fetchJ(path){
     if(d && typeof d.contents === 'string') return JSON.parse(d.contents);
     return d;
   } catch(e) {
-    if(IS_NETLIFY) throw e; // on Netlify the proxy should always work — don't mask with fallback
+    if(IS_NETLIFY) throw e; // on Netlify the proxy should always work — don\'t mask with fallback
   }
 
   // 2. Off-Netlify: try each CORS proxy in sequence
@@ -2096,7 +2096,7 @@ function showUpgradeModal(){
     +'</div>'
     +'<div style="background:rgba(245,194,0,.06);border:1px solid rgba(245,194,0,.2);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px">'
       +'<span style="font-size:22px;color:var(--or)">&#9888;</span>'
-      +'<div><div style="color:var(--tx);font-size:11px;font-weight:600">You've used your 5 free live signals today</div>'
+      +'<div><div style="color:var(--tx);font-size:11px;font-weight:600">You\'ve used your 5 free live signals today</div>'
       +'<div style="color:var(--tx3);font-size:9px;margin-top:3px">New alerts are now delayed 30 minutes. Upgrade to keep every edge.</div></div>'
     +'</div>'
     +'<div style="color:var(--tx);font-size:11px;line-height:1.8;margin-bottom:18px">'
@@ -2184,7 +2184,7 @@ document.addEventListener('DOMContentLoaded',function(){
   if(notifAllow) notifAllow.addEventListener('click', requestNotifPermission);
   if(notifDeny)  notifDeny.addEventListener('click', hideBanner);
 
-  // Register service worker (don't block banner on SW success/failure)
+  // Register service worker (don\'t block banner on SW success/failure)
   initNotifications().then(function(){
     if(localStorage.getItem('sentinel-notif')==='1' && Notification.permission==='granted'){
       NOTIF.granted=true; NOTIF.enabled=true;
