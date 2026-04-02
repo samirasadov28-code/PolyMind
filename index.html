@@ -507,7 +507,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.1</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -520,8 +520,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <div class="land-section-title" style="margin-top:10px">&#9733; Pro Tier</div>
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Unlimited</strong> live signals — no daily cap</div>
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Zero delay</strong> — every alert in real-time</div>
-      <div class="land-pro-price"><span class="amt">$19</span><span class="per">/month &nbsp;·&nbsp; cancel any time</span></div>
-      <button class="land-pro-buy" id="land-pro-buy-btn">&#9733; Buy Pro — $19/month</button>
+      <div class="land-pro-price"><span class="amt">$3.99</span><span class="per">/month &nbsp;·&nbsp; cancel any time</span></div>
+      <button class="land-pro-buy" id="land-pro-buy-btn">&#9733; Buy Pro — $3.99/month</button>
     </div>
 
     <button class="land-enter" id="land-enter-btn">&#9654; Enter Free Dashboard</button>
@@ -583,7 +583,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <div style="color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.8px">FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN</div>
     <div style="color:var(--tx2);font-size:9px;margin-top:1px">You have used all <strong style="color:var(--or)">5 live signals</strong> for today. Upgrade to PRO for unlimited real-time alerts.</div>
   </div>
-  <button id="tier-upgrade-btn" onclick="showUpgradeModal()" style="flex-shrink:0;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;box-shadow:0 0 14px rgba(245,194,0,.35);transition:filter .2s">&#9733; UPGRADE — $19/mo</button>
+  <button id="tier-upgrade-btn" onclick="showUpgradeModal()" style="flex-shrink:0;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;box-shadow:0 0 14px rgba(245,194,0,.35);transition:filter .2s">&#9733; UPGRADE — $3.99/mo</button>
 </div>
 <div id="prog"></div>
 
@@ -761,7 +761,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
           <div style="color:var(--gold);font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px">&#9733; POLYMIND PRO</div>
           <div style="color:var(--tx2);font-size:10px;line-height:1.6;margin-bottom:10px">Remove the 5-signal daily cap. Get every alert the instant it fires — no delays, no limits.</div>
           <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px">
-            <span style="color:var(--gold);font-size:22px;font-weight:700">$19</span>
+            <span style="color:var(--gold);font-size:22px;font-weight:700">$3.99</span>
             <span style="color:var(--tx3);font-size:9px">/month · cancel any time</span>
           </div>
           <button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 10px rgba(245,194,0,.2)">&#9733; UPGRADE TO PRO</button>
@@ -1120,7 +1120,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.0';  // Bump on each release
+var APP_VERSION = '1.9.1';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1226,7 +1226,7 @@ function injectUpgradeCard(){
         +'<span style="margin-left:auto;color:var(--tx3);font-size:8px">5/5 signals used</span>'
       +'</div>'
       +'<div style="color:var(--tx2);font-size:10px;line-height:1.6;margin-bottom:10px">New alerts are now queued with a <strong style="color:var(--or)">30-minute delay</strong>. Upgrade to PRO for unlimited real-time signals — no caps, no waiting.</div>'
-      +'<button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 12px rgba(245,194,0,.25)">&#9733; UPGRADE TO PRO — $19/month</button>'
+      +'<button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 12px rgba(245,194,0,.25)">&#9733; UPGRADE TO PRO — $3.99/month</button>'
     +'</div>';
   // Insert after the first alert row (or prepend if none)
   var firstRow = ap.querySelector('.arow');
@@ -2207,18 +2207,18 @@ function showUpgradeModal(){
     +'<div style="background:var(--bg3);border:1px solid var(--bdr);padding:16px;text-align:center;margin-bottom:16px">'
       +'<div style="color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:2px">PRO PLAN</div>'
       +'<div style="display:flex;align-items:baseline;justify-content:center;gap:3px">'
-        +'<span style="color:var(--gold);font-size:32px;font-weight:700;line-height:1">$19</span>'
+        +'<span style="color:var(--gold);font-size:32px;font-weight:700;line-height:1">$3.99</span>'
         +'<span style="color:var(--tx3);font-size:10px">/month</span>'
       +'</div>'
       +'<div style="color:var(--tx3);font-size:9px;margin-top:4px">Cancel any time · Instant activation</div>'
     +'</div>'
-    +'<button id="upgrade-go" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 20px rgba(245,194,0,.3);transition:filter .2s">&#9733; UPGRADE NOW — $19/month</button>'
+    +'<button id="upgrade-go" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 20px rgba(245,194,0,.3);transition:filter .2s">&#9733; UPGRADE NOW — $3.99/month</button>'
     +'<div id="upgrade-payment-note" style="color:var(--tx3);font-size:9px;text-align:center;margin-top:10px;line-height:1.5">Secure checkout via Stripe &nbsp;&#128274;</div>'
   +'</div>';
   document.body.appendChild(m);
   document.getElementById('close-upgrade').addEventListener('click',function(){m.remove();});
   document.getElementById('upgrade-go').addEventListener('click',function(){
-    track('upgrade_clicked', {source: 'upgrade_modal', price: 19});
+    track('upgrade_clicked', {source: 'upgrade_modal', price: 3.99});
     if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
       window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
     } else {
@@ -2248,7 +2248,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Buy Pro from landing page
   document.getElementById('land-pro-buy-btn').addEventListener('click',function(){
-    track('upgrade_clicked', {source: 'landing_page', price: 19});
+    track('upgrade_clicked', {source: 'landing_page', price: 3.99});
     if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
       window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
     }
