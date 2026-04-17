@@ -448,8 +448,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 /* Header PRO button — always visible */
 #hdr-pro-btn{background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:filter .2s;flex-shrink:0}
 #hdr-pro-btn:hover{filter:brightness(1.15)}
-#hdr-pro-btn.is-pro{background:rgba(245,194,0,.12);color:var(--gold);border:1px solid rgba(245,194,0,.3);cursor:default}
-#hdr-pro-btn.is-pro:hover{filter:none}
+#hdr-pro-btn.is-pro{background:rgba(245,194,0,.12);color:var(--gold);border:1px solid rgba(245,194,0,.3);cursor:pointer}
+#hdr-pro-btn.is-pro:hover{filter:none;background:rgba(245,194,0,.2);border-color:rgba(245,194,0,.5)}
 /* Mobile landing fixes */
 @media (max-width:640px){
   #landing-overlay{align-items:flex-start;padding:16px 0 24px}
@@ -515,7 +515,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.6</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.7</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -1138,7 +1138,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.6';  // Bump on each release
+var APP_VERSION = '1.9.7';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1152,6 +1152,7 @@ var TIER={
   FREE_DAILY_MAX: 30,       // hard cap on total alerts per day (free tier)
   DELAY_MS: 30*60*1000,     // 30-minute delay after live limit reached
   isPro: false,             // set true when user upgrades
+  proCode: '',              // activation code used (stored for cancellation lookup)
   liveCount: 0,             // live signals delivered today
   totalCount: 0,            // total alerts shown today (live + delayed)
   allTimeLive: 0,           // cumulative live alerts ever seen (persisted)
@@ -1170,7 +1171,8 @@ function tierSave(){
       totalCount:   TIER.totalCount,
       allTimeLive:  TIER.allTimeLive,
       allTimeTotal: TIER.allTimeTotal,
-      isPro:        TIER.isPro
+      isPro:        TIER.isPro,
+      proCode:      TIER.proCode
     }));
   }catch(e){}
 }
@@ -1184,6 +1186,7 @@ function tierLoad(){
     TIER.allTimeLive  = d.allTimeLive  || 0;
     TIER.allTimeTotal = d.allTimeTotal || 0;
     TIER.isPro        = d.isPro        || false;
+    TIER.proCode      = d.proCode      || '';
     // Restore today's counters only if same day
     if(d.dayKey === today){
       TIER.dayKey     = d.dayKey;
@@ -1262,8 +1265,9 @@ function tierUpdateUI(){
   var rpCard=document.getElementById('rp-pro-card');
   if(TIER.isPro){
     el.innerHTML='<span style="color:var(--gold)">&#9733; PRO</span>';
-    el.title='Unlimited live signals';
-    if(hdrPro){hdrPro.textContent='&#9733; PRO';hdrPro.classList.add('is-pro');hdrPro.onclick=null;}
+    el.title='Manage Pro subscription';
+    el.onclick=showManageProModal;
+    if(hdrPro){hdrPro.innerHTML='&#9733; PRO';hdrPro.classList.add('is-pro');hdrPro.title='Manage Pro subscription';hdrPro.onclick=showManageProModal;}
     if(rpCard) rpCard.style.display='none';
     var mobPro=document.getElementById('mnt-pro');
     if(mobPro){mobPro.textContent='★ PRO';mobPro.style.opacity='.5';mobPro.onclick=null;}
@@ -2298,6 +2302,76 @@ function showStripeReturnTimeout(){
     +'<button onclick="this.parentElement.remove()" style="margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--bdr2);color:var(--tx2);padding:5px 12px;font-size:10px;font-family:Inter,sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Dismiss</button>';
 }
 
+// ─── MANAGE PRO (cancel subscription) ────────────────────────────────────────
+function showManageProModal(){
+  var existing=document.getElementById('manage-pro-modal');
+  if(existing){existing.remove();return;}
+  track('manage_pro_opened', {has_code: !!TIER.proCode});
+  var codeHtml = TIER.proCode
+    ? '<div style="font-family:\'JetBrains Mono\',monospace;color:var(--gold);font-size:13px;letter-spacing:1px;word-break:break-all">'+TIER.proCode+'</div>'
+    : '<div style="color:var(--tx3);font-size:10px">No code stored on this device — you\'ll be asked for it to cancel.</div>';
+  var m=document.createElement('div');m.id='manage-pro-modal';
+  m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
+  m.innerHTML=
+    '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);padding:28px 26px;max-width:420px;width:92%;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9733; POLYMIND PRO</div>'
+      +'<div style="color:var(--gr);font-size:9px;letter-spacing:1.5px;margin-top:2px">&#10003; SUBSCRIPTION ACTIVE</div></div>'
+      +'<button id="close-manage" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
+    +'</div>'
+    +'<div style="background:var(--bg3);border:1px solid var(--bdr);padding:12px 14px;margin-bottom:14px">'
+      +'<div style="color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">YOUR ACTIVATION CODE</div>'
+      +codeHtml
+    +'</div>'
+    +'<div style="background:rgba(232,93,74,.06);border:1px solid rgba(232,93,74,.25);padding:12px 14px;margin-bottom:16px">'
+      +'<div style="color:var(--or);font-size:10px;font-weight:600;letter-spacing:.5px;margin-bottom:4px">&#9888; BEFORE YOU CANCEL</div>'
+      +'<div style="color:var(--tx2);font-size:10px;line-height:1.55">'
+        +'Cancelling stops <strong>future billing</strong>. Pro access continues until the end of your current billing period, then auto-downgrades to Free. '
+        +'<span style="color:var(--tx3)">No refund for the current period.</span>'
+      +'</div>'
+    +'</div>'
+    +'<button id="manage-cancel-btn" style="width:100%;padding:13px;background:transparent;color:var(--or);border:1px solid rgba(232,93,74,.4);font-family:Inter,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:all .2s;margin-bottom:8px">Cancel Subscription</button>'
+    +'<div id="manage-msg" style="min-height:14px;font-size:10px;text-align:center;color:var(--tx3)"></div>'
+  +'</div>';
+  document.body.appendChild(m);
+  function close(){m.remove();}
+  document.getElementById('close-manage').addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  document.getElementById('manage-cancel-btn').addEventListener('click',function(){
+    initiateCancellation(this, document.getElementById('manage-msg'));
+  });
+}
+function initiateCancellation(btn, msgEl){
+  var code=TIER.proCode;
+  if(!code){
+    code=prompt('Enter your Pro activation code to cancel billing:');
+    if(!code)return;
+    code=code.trim().toUpperCase();
+  }
+  btn.disabled=true;btn.textContent='Opening Stripe...';
+  msgEl.style.color='var(--tx3)';msgEl.textContent='';
+  track('cancel_initiated');
+  fetch('/api/cancel-subscription',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({code:code})
+  }).then(function(r){return r.json().then(function(j){return {status:r.status,body:j};});})
+    .then(function(res){
+      if(res.status===200 && res.body && res.body.url){
+        window.location.href=res.body.url;
+      } else {
+        var err=(res.body && res.body.error) || 'Could not open billing portal.';
+        msgEl.style.color='var(--or)';msgEl.textContent=err;
+        btn.disabled=false;btn.textContent='Cancel Subscription';
+        track('cancel_failed', {reason: err});
+      }
+    }).catch(function(){
+      msgEl.style.color='var(--or)';msgEl.textContent='Network error. Try again.';
+      btn.disabled=false;btn.textContent='Cancel Subscription';
+    });
+}
+
 // ─── PRO CODE REDEMPTION ─────────────────────────────────────────────────────
 function showRedeemModal(source){
   var existing=document.getElementById('redeem-modal');
@@ -2356,6 +2430,7 @@ function activatePro(code){
   }).then(function(r){return r.json();}).then(function(res){
     if(res && res.valid){
       TIER.isPro=true;
+      TIER.proCode=String(code||'').trim().toUpperCase();
       tierSave();
     }
     return res||{valid:false,error:'Empty response'};

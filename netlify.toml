@@ -38,6 +38,13 @@
   status = 200
   force = true
 
+# Cancel / manage subscription — creates a Stripe Billing Portal session
+[[redirects]]
+  from = "/api/cancel-subscription"
+  to = "/.netlify/functions/cancel-subscription"
+  status = 200
+  force = true
+
 # SPA fallback — serve index.html for any non-file route
 [[redirects]]
   from = "/*"

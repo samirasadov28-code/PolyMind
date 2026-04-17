@@ -12,9 +12,14 @@
 //      https://<your-site>.netlify.app/?session_id={CHECKOUT_SESSION_ID}
 //
 // Storage: Netlify Blobs, store "pro-codes"
-//   code:{CODE}        → { active, sessionId, email, customerId, createdAt }
-//   session:{SESSION}  → { code }
+//   code:{CODE}          → { active, sessionId, email, customerId, createdAt, ... }
+//   session:{SESSION}    → { code }
+//   customer:{CUSTOMER}  → { codes: [ ... ] }   (reverse index for cancellation)
 // Idempotent: a second webhook for the same session returns the existing code.
+//
+// Handled events:
+//   checkout.session.completed   → issue a new code for the customer
+//   customer.subscription.deleted → flip active:false on all codes for that customer
 
 const crypto = require('crypto');
 const { getStore } = require('@netlify/blobs');
@@ -77,49 +82,84 @@ exports.handler = async function (event) {
   try { payload = JSON.parse(raw); }
   catch (e) { return { statusCode: 400, body: 'Invalid JSON' }; }
 
-  if (payload.type !== 'checkout.session.completed') {
-    return { statusCode: 200, body: 'Ignored' };
-  }
-
-  const session = payload.data && payload.data.object;
-  if (!session || !session.id) {
-    return { statusCode: 400, body: 'Missing session' };
-  }
-
   const store = getStore('pro-codes');
 
-  // Idempotency — if we already issued a code for this session, return it.
-  const existing = await store.get(`session:${session.id}`, { type: 'json' });
-  if (existing && existing.code) {
-    return { statusCode: 200, body: JSON.stringify({ code: existing.code, reused: true }) };
+  if (payload.type === 'checkout.session.completed') {
+    const session = payload.data && payload.data.object;
+    if (!session || !session.id) {
+      return { statusCode: 400, body: 'Missing session' };
+    }
+
+    // Idempotency — if we already issued a code for this session, return it.
+    const existing = await store.get(`session:${session.id}`, { type: 'json' });
+    if (existing && existing.code) {
+      return { statusCode: 200, body: JSON.stringify({ code: existing.code, reused: true }) };
+    }
+
+    // Generate a collision-free code (retry on rare collision)
+    let code;
+    for (let i = 0; i < 5; i++) {
+      code = generateCode();
+      const clash = await store.get(`code:${code}`, { type: 'json' });
+      if (!clash) break;
+      code = null;
+    }
+    if (!code) {
+      return { statusCode: 500, body: 'Code generation failed' };
+    }
+
+    const entry = {
+      active: true,
+      sessionId: session.id,
+      email: (session.customer_details && session.customer_details.email) || session.customer_email || null,
+      customerId: session.customer || null,
+      createdAt: new Date().toISOString(),
+    };
+
+    await store.setJSON(`code:${code}`, entry);
+    await store.setJSON(`session:${session.id}`, { code });
+
+    // Reverse index: customer → codes (for future cancellation webhook)
+    if (entry.customerId) {
+      const custKey = `customer:${entry.customerId}`;
+      const custEntry = (await store.get(custKey, { type: 'json' })) || { codes: [] };
+      if (!custEntry.codes.includes(code)) custEntry.codes.push(code);
+      await store.setJSON(custKey, custEntry);
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, issued: true }),
+    };
   }
 
-  // Generate a collision-free code (retry on rare collision)
-  let code;
-  for (let i = 0; i < 5; i++) {
-    code = generateCode();
-    const clash = await store.get(`code:${code}`, { type: 'json' });
-    if (!clash) break;
-    code = null;
+  if (payload.type === 'customer.subscription.deleted') {
+    const sub = payload.data && payload.data.object;
+    const customerId = sub && sub.customer;
+    if (!customerId) {
+      return { statusCode: 400, body: 'Missing customer' };
+    }
+    const custKey = `customer:${customerId}`;
+    const custEntry = await store.get(custKey, { type: 'json' });
+    if (!custEntry || !custEntry.codes || !custEntry.codes.length) {
+      return { statusCode: 200, body: 'No codes for customer' };
+    }
+    const now = new Date().toISOString();
+    for (const c of custEntry.codes) {
+      const codeEntry = await store.get(`code:${c}`, { type: 'json' });
+      if (codeEntry && codeEntry.active) {
+        codeEntry.active = false;
+        codeEntry.deactivatedAt = now;
+        await store.setJSON(`code:${c}`, codeEntry);
+      }
+    }
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deactivated: custEntry.codes.length }),
+    };
   }
-  if (!code) {
-    return { statusCode: 500, body: 'Code generation failed' };
-  }
 
-  const entry = {
-    active: true,
-    sessionId: session.id,
-    email: (session.customer_details && session.customer_details.email) || session.customer_email || null,
-    customerId: session.customer || null,
-    createdAt: new Date().toISOString(),
-  };
-
-  await store.setJSON(`code:${code}`, entry);
-  await store.setJSON(`session:${session.id}`, { code });
-
-  return {
-    statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code, issued: true }),
-  };
+  return { statusCode: 200, body: 'Ignored' };
 };
