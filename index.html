@@ -515,7 +515,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.4</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.5</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -530,6 +530,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Zero delay</strong> — every alert in real-time</div>
       <div class="land-pro-price"><span class="amt">$3.99</span><span class="per">/month &nbsp;·&nbsp; cancel any time</span></div>
       <button class="land-pro-buy" id="land-pro-buy-btn">&#9733; Buy Pro — $3.99/month</button>
+      <div style="text-align:center;margin-top:8px"><a href="#" id="land-redeem-link" style="color:var(--tx3);font-size:10px;text-decoration:none;letter-spacing:.5px">Already paid? <span style="color:var(--gold);text-decoration:underline">Redeem activation code</span></a></div>
     </div>
 
     <button class="land-enter" id="land-enter-btn">&#9654; Enter Free Dashboard</button>
@@ -1137,7 +1138,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.4';  // Bump on each release
+var APP_VERSION = '1.9.5';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -2231,6 +2232,10 @@ function showUpgradeModal(){
     +'</div>'
     +'<button id="upgrade-go" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;box-shadow:0 4px 20px rgba(245,194,0,.3);transition:filter .2s">&#9733; UPGRADE NOW — $3.99/month</button>'
     +'<div id="upgrade-payment-note" style="color:var(--tx3);font-size:9px;text-align:center;margin-top:10px;line-height:1.5">Secure checkout via Stripe &nbsp;&#128274;</div>'
+    +'<div style="border-top:1px solid var(--bdr);margin:14px -28px 0;padding:12px 28px 0;text-align:center">'
+      +'<div style="color:var(--tx3);font-size:9px;margin-bottom:6px">Already paid? Redeem your activation code</div>'
+      +'<button id="upgrade-redeem" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx2);font-family:Inter,sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;padding:8px 16px;cursor:pointer;text-transform:uppercase;transition:all .2s">&#128273; Redeem Pro Code</button>'
+    +'</div>'
   +'</div>';
   document.body.appendChild(m);
   document.getElementById('close-upgrade').addEventListener('click',function(){m.remove();});
@@ -2245,8 +2250,78 @@ function showUpgradeModal(){
         +'Set <code style="color:var(--gold)">STRIPE_PAYMENT_LINK</code> in the source to enable checkout.';
     }
   });
+  document.getElementById('upgrade-redeem').addEventListener('click',function(){
+    m.remove();
+    showRedeemModal('upgrade_modal');
+  });
   m.addEventListener('click',function(e){if(e.target===m)m.remove();});
 }
+
+// ─── PRO CODE REDEMPTION ─────────────────────────────────────────────────────
+function showRedeemModal(source){
+  var existing=document.getElementById('redeem-modal');
+  if(existing){existing.remove();return;}
+  track('redeem_modal_opened', {source: source||'unknown'});
+  var m=document.createElement('div');m.id='redeem-modal';
+  m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
+  m.innerHTML=
+    '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);padding:28px 26px;max-width:400px;width:92%;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#128273; REDEEM PRO CODE</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">ENTER YOUR ACTIVATION CODE</div></div>'
+      +'<button id="close-redeem" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
+    +'</div>'
+    +'<div style="color:var(--tx2);font-size:11px;line-height:1.5;margin-bottom:14px">Paste the code you received after payment. Pro unlocks instantly on this device.</div>'
+    +'<input id="redeem-code" type="text" autocomplete="off" spellcheck="false" placeholder="PM-XXXX-XXXX-XXXX" style="width:100%;padding:13px 14px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:\'JetBrains Mono\',monospace;font-size:13px;letter-spacing:1px;text-transform:uppercase;outline:none;margin-bottom:10px;box-sizing:border-box">'
+    +'<div id="redeem-msg" style="min-height:16px;font-size:10px;margin-bottom:10px"></div>'
+    +'<button id="redeem-go" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s">Activate Pro</button>'
+  +'</div>';
+  document.body.appendChild(m);
+  var input=document.getElementById('redeem-code');
+  var msg=document.getElementById('redeem-msg');
+  var btn=document.getElementById('redeem-go');
+  setTimeout(function(){input.focus();},50);
+  function closeModal(){m.remove();}
+  document.getElementById('close-redeem').addEventListener('click',closeModal);
+  m.addEventListener('click',function(e){if(e.target===m)closeModal();});
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')btn.click();});
+  btn.addEventListener('click',function(){
+    var code=input.value.trim();
+    if(!code){msg.style.color='var(--or)';msg.textContent='Enter your code to continue.';return;}
+    btn.disabled=true;btn.textContent='Verifying...';msg.style.color='var(--tx3)';msg.textContent='';
+    activatePro(code).then(function(res){
+      if(res.valid){
+        track('pro_activated', {source: source||'unknown'});
+        msg.style.color='var(--gr)';msg.textContent='\u2713 Pro activated — unlimited real-time alerts unlocked.';
+        btn.textContent='\u2713 Activated';
+        setTimeout(function(){closeModal();tierUpdateUI();},1200);
+      } else {
+        track('pro_activation_failed', {source: source||'unknown', reason: res.error||'unknown'});
+        msg.style.color='var(--or)';msg.textContent=res.error||'Invalid code. Check and try again.';
+        btn.disabled=false;btn.textContent='Activate Pro';
+      }
+    }).catch(function(err){
+      msg.style.color='var(--or)';msg.textContent='Network error. Try again in a moment.';
+      btn.disabled=false;btn.textContent='Activate Pro';
+    });
+  });
+}
+function activatePro(code){
+  return fetch('/api/activate',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({code:code})
+  }).then(function(r){return r.json();}).then(function(res){
+    if(res && res.valid){
+      TIER.isPro=true;
+      tierSave();
+    }
+    return res||{valid:false,error:'Empty response'};
+  });
+}
+// Exposed for manual unlock from DevTools if ever needed
+window.polymindUnlockPro=function(){TIER.isPro=true;tierSave();tierUpdateUI();return 'Pro unlocked on this device.';};
 
 document.addEventListener('DOMContentLoaded',function(){
   // ── LANDING PAGE ──────────────────────────────────────────────────────────
@@ -2269,6 +2344,13 @@ document.addEventListener('DOMContentLoaded',function(){
     if(STRIPE_PAYMENT_LINK && STRIPE_PAYMENT_LINK.startsWith('http')){
       window.open(STRIPE_PAYMENT_LINK,'_blank','noopener');
     }
+  });
+
+  // Redeem code from landing page
+  var landRedeem=document.getElementById('land-redeem-link');
+  if(landRedeem) landRedeem.addEventListener('click',function(e){
+    e.preventDefault();
+    showRedeemModal('landing_page');
   });
 
   // ModeLoop smart link — track outbound click

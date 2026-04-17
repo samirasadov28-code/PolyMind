@@ -17,6 +17,13 @@
   status = 200
   force = true
 
+# Pro activation — validates redemption codes
+[[redirects]]
+  from = "/api/activate"
+  to = "/.netlify/functions/activate"
+  status = 200
+  force = true
+
 # SPA fallback — serve index.html for any non-file route
 [[redirects]]
   from = "/*"
