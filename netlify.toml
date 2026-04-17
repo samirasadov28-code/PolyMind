@@ -24,6 +24,20 @@
   status = 200
   force = true
 
+# Stripe webhook — issues codes on checkout.session.completed
+[[redirects]]
+  from = "/api/stripe-webhook"
+  to = "/.netlify/functions/stripe-webhook"
+  status = 200
+  force = true
+
+# Fetch activation code issued for a Stripe session (success-page redirect)
+[[redirects]]
+  from = "/api/activation-code"
+  to = "/.netlify/functions/activation-code"
+  status = 200
+  force = true
+
 # SPA fallback — serve index.html for any non-file route
 [[redirects]]
   from = "/*"

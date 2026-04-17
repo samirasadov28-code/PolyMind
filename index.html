@@ -515,7 +515,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.5</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.6</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -1138,7 +1138,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.5';  // Bump on each release
+var APP_VERSION = '1.9.6';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -2257,6 +2257,47 @@ function showUpgradeModal(){
   m.addEventListener('click',function(e){if(e.target===m)m.remove();});
 }
 
+// ─── STRIPE RETURN BANNER (shown when redirected from Stripe with session_id) ─
+function ensureStripeBanner(){
+  var b=document.getElementById('stripe-return-banner');
+  if(b) return b;
+  b=document.createElement('div');
+  b.id='stripe-return-banner';
+  b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:10002;background:linear-gradient(90deg,rgba(245,194,0,.1),rgba(245,194,0,.22),rgba(245,194,0,.1));border-bottom:2px solid var(--gold);padding:14px 18px;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 24px rgba(0,0,0,.5)';
+  document.body.appendChild(b);
+  return b;
+}
+function showStripeReturnBanner(){
+  var b=ensureStripeBanner();
+  b.innerHTML='<span style="font-size:16px;color:var(--gold)">&#9203;</span>'
+    +'<span style="color:var(--tx);font-size:12px;font-weight:600">Payment received — activating Pro<span id="srb-dots">...</span></span>';
+  var i=0, dots=['.','..','...'];
+  var el=document.getElementById('srb-dots');
+  b._iv=setInterval(function(){ if(!el||!el.isConnected){clearInterval(b._iv);return;} el.textContent=dots[i++%dots.length]; },400);
+}
+function showStripeReturnSuccess(code){
+  var b=ensureStripeBanner();
+  if(b._iv) clearInterval(b._iv);
+  b.style.borderBottomColor='var(--gr)';
+  b.innerHTML='<span style="font-size:16px;color:var(--gr)">&#10003;</span>'
+    +'<span style="color:var(--tx);font-size:12px;font-weight:600">Pro activated &middot; <span style="color:var(--tx3);font-weight:400">Code: <code style="color:var(--gold);font-family:\'JetBrains Mono\',monospace">'+code+'</code> &middot; save it for other devices</span></span>'
+    +'<button onclick="this.parentElement.remove()" style="margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--bdr2);color:var(--tx2);padding:5px 12px;font-size:10px;font-family:Inter,sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Dismiss</button>';
+}
+function showStripeReturnManual(code){
+  var b=ensureStripeBanner();
+  if(b._iv) clearInterval(b._iv);
+  b.innerHTML='<span style="font-size:16px;color:var(--or)">&#9888;</span>'
+    +'<span style="color:var(--tx);font-size:12px">Your code: <code style="color:var(--gold);font-family:\'JetBrains Mono\',monospace">'+code+'</code> &middot; couldn\'t auto-activate — paste it via Redeem</span>';
+}
+function showStripeReturnTimeout(){
+  var b=ensureStripeBanner();
+  if(b._iv) clearInterval(b._iv);
+  b.style.borderBottomColor='var(--or)';
+  b.innerHTML='<span style="font-size:16px;color:var(--or)">&#9888;</span>'
+    +'<span style="color:var(--tx);font-size:12px">Payment confirmed but code not ready yet. Check email or try Redeem in a minute.</span>'
+    +'<button onclick="this.parentElement.remove()" style="margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--bdr2);color:var(--tx2);padding:5px 12px;font-size:10px;font-family:Inter,sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Dismiss</button>';
+}
+
 // ─── PRO CODE REDEMPTION ─────────────────────────────────────────────────────
 function showRedeemModal(source){
   var existing=document.getElementById('redeem-modal');
@@ -2352,6 +2393,45 @@ document.addEventListener('DOMContentLoaded',function(){
     e.preventDefault();
     showRedeemModal('landing_page');
   });
+
+  // Stripe return — auto-activate when Stripe redirects back with ?session_id=cs_xxx
+  (function(){
+    var params=new URLSearchParams(window.location.search);
+    var sid=params.get('session_id');
+    if(!sid || !/^cs_/.test(sid)) return;
+    track('stripe_return', {session_id_prefix: sid.slice(0,10)});
+    showStripeReturnBanner();
+    // Clean the URL so refresh doesn't re-trigger
+    try{ window.history.replaceState({}, '', window.location.pathname); }catch(e){}
+    // Poll for the code — webhook may arrive a moment after redirect
+    var tries=0, maxTries=10;
+    (function pollCode(){
+      tries++;
+      fetch('/api/activation-code?session_id='+encodeURIComponent(sid))
+        .then(function(r){ return r.json().then(function(j){return {status:r.status,body:j};}); })
+        .then(function(res){
+          if(res.status===200 && res.body && res.body.code){
+            // Auto-activate
+            activatePro(res.body.code).then(function(r2){
+              if(r2 && r2.valid){
+                track('pro_activated', {source: 'stripe_return'});
+                showStripeReturnSuccess(res.body.code);
+                tierUpdateUI();
+              } else {
+                showStripeReturnManual(res.body.code);
+              }
+            }).catch(function(){ showStripeReturnManual(res.body.code); });
+          } else if(tries<maxTries){
+            setTimeout(pollCode, 1500);
+          } else {
+            showStripeReturnTimeout();
+          }
+        }).catch(function(){
+          if(tries<maxTries) setTimeout(pollCode, 2000);
+          else showStripeReturnTimeout();
+        });
+    })();
+  })();
 
   // ModeLoop smart link — track outbound click
   var mlLink=document.getElementById('land-modeloop-link');
