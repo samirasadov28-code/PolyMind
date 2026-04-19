@@ -442,6 +442,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .land-modeloop .ml-sub{font-size:9px;color:var(--tx3);margin-top:2px;line-height:1.3}
 .land-modeloop .ml-arrow{color:var(--tx3);font-size:14px;flex-shrink:0;transition:color .2s,transform .2s}
 .land-modeloop:hover .ml-arrow{color:var(--gold);transform:translateX(2px)}
+/* FEEDBACK FAB — floating button on the dashboard */
+#fb-fab{position:fixed;right:16px;bottom:16px;z-index:9998;width:44px;height:44px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr2);color:var(--tx2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45);transition:border-color .2s,color .2s,transform .15s,background .2s}
+#fb-fab:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3);transform:translateY(-1px)}
+@media (max-width:640px){#fb-fab{right:12px;bottom:12px;width:40px;height:40px;font-size:16px}}
 /* Landing Pro Buy Button */
 .land-pro-buy{width:100%;padding:13px;margin-top:10px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s;box-shadow:0 4px 18px rgba(245,194,0,.3)}
 .land-pro-buy:hover{filter:brightness(1.15)}
@@ -515,7 +519,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.7</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.8</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -545,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <span class="ml-arrow">&#8599;</span>
     </a>
 
-    <div class="land-footer">&copy; 2026 PolyMind. All rights reserved. &nbsp;&#128274;&nbsp; Secure checkout via Stripe</div>
+    <div class="land-footer">&copy; 2026 PolyMind &middot; <a href="#" id="land-feedback-link" style="color:var(--tx3);text-decoration:underline;text-decoration-color:var(--bdr2)">Send feedback</a> &middot; &#128274; Secure checkout via Stripe</div>
   </div>
 </div>
 
@@ -1138,7 +1142,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.7';  // Bump on each release
+var APP_VERSION = '1.9.8';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -2302,6 +2306,82 @@ function showStripeReturnTimeout(){
     +'<button onclick="this.parentElement.remove()" style="margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--bdr2);color:var(--tx2);padding:5px 12px;font-size:10px;font-family:Inter,sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Dismiss</button>';
 }
 
+// ─── FEEDBACK ────────────────────────────────────────────────────────────────
+function showFeedbackModal(source){
+  var existing=document.getElementById('feedback-modal');
+  if(existing){existing.remove();return;}
+  track('feedback_opened', {source: source||'unknown'});
+  var m=document.createElement('div');m.id='feedback-modal';
+  m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
+  m.innerHTML=
+    '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);padding:26px 24px;max-width:440px;width:92%;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9993; SEND FEEDBACK</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">BUGS &middot; IDEAS &middot; QUESTIONS</div></div>'
+      +'<button id="close-fb" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
+    +'</div>'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">CATEGORY</label>'
+    +'<select id="fb-category" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:11px;outline:none;margin-bottom:12px;box-sizing:border-box">'
+      +'<option value="bug">Bug report</option>'
+      +'<option value="feature">Feature idea</option>'
+      +'<option value="alerts">Issue with alerts</option>'
+      +'<option value="billing">Billing / subscription</option>'
+      +'<option value="general" selected>General feedback</option>'
+    +'</select>'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">MESSAGE</label>'
+    +'<textarea id="fb-message" rows="5" placeholder="What happened, what you expected, or what you\'d love to see..." style="width:100%;padding:11px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:12px;outline:none;margin-bottom:12px;box-sizing:border-box;resize:vertical;line-height:1.5"></textarea>'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">EMAIL <span style="text-transform:none;letter-spacing:0;color:var(--tx3)">(optional — only if you\'d like a reply)</span></label>'
+    +'<input id="fb-email" type="email" autocomplete="email" placeholder="you@example.com" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:11px;outline:none;margin-bottom:12px;box-sizing:border-box">'
+    +'<div id="fb-msg" style="min-height:16px;font-size:10px;margin-bottom:10px"></div>'
+    +'<button id="fb-send" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s">Send</button>'
+  +'</div>';
+  document.body.appendChild(m);
+  function close(){m.remove();}
+  document.getElementById('close-fb').addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  var ta=document.getElementById('fb-message');
+  setTimeout(function(){ta.focus();},50);
+  document.getElementById('fb-send').addEventListener('click',function(){
+    var btn=this;
+    var msgEl=document.getElementById('fb-msg');
+    var message=(ta.value||'').trim();
+    if(message.length<5){
+      msgEl.style.color='var(--or)';msgEl.textContent='Please write a bit more so we can help.';return;
+    }
+    btn.disabled=true;btn.textContent='Sending...';msgEl.style.color='var(--tx3)';msgEl.textContent='';
+    fetch('/api/feedback',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        message:message,
+        email:(document.getElementById('fb-email').value||'').trim(),
+        category:document.getElementById('fb-category').value,
+        meta:{
+          version: (typeof APP_VERSION!=='undefined'?APP_VERSION:'?'),
+          tier: (TIER && TIER.isPro) ? 'pro' : 'free',
+          url: window.location.href
+        }
+      })
+    }).then(function(r){return r.json().then(function(j){return {status:r.status,body:j};});})
+      .then(function(res){
+        if(res.status===200 && res.body && res.body.ok){
+          track('feedback_sent', {category: document.getElementById('fb-category').value});
+          msgEl.style.color='var(--gr)';msgEl.textContent='\u2713 Thanks — we got it.';
+          btn.textContent='\u2713 Sent';
+          setTimeout(close, 1200);
+        } else {
+          var err=(res.body && res.body.error) || 'Could not send. Try again.';
+          msgEl.style.color='var(--or)';msgEl.textContent=err;
+          btn.disabled=false;btn.textContent='Send';
+        }
+      }).catch(function(){
+        msgEl.style.color='var(--or)';msgEl.textContent='Network error. Try again.';
+        btn.disabled=false;btn.textContent='Send';
+      });
+  });
+}
+
 // ─── MANAGE PRO (cancel subscription) ────────────────────────────────────────
 function showManageProModal(){
   var existing=document.getElementById('manage-pro-modal');
@@ -2468,6 +2548,17 @@ document.addEventListener('DOMContentLoaded',function(){
     e.preventDefault();
     showRedeemModal('landing_page');
   });
+
+  // Feedback — landing footer link
+  var landFb=document.getElementById('land-feedback-link');
+  if(landFb) landFb.addEventListener('click',function(e){
+    e.preventDefault();
+    showFeedbackModal('landing_footer');
+  });
+
+  // Feedback — floating dashboard button
+  var fbFab=document.getElementById('fb-fab');
+  if(fbFab) fbFab.addEventListener('click',function(){showFeedbackModal('fab');});
 
   // Stripe return — auto-activate when Stripe redirects back with ?session_id=cs_xxx
   (function(){
@@ -3064,6 +3155,8 @@ document.addEventListener('DOMContentLoaded',function(){
     <!-- Config content cloned from desktop panel at runtime -->
   </div>
 </div>
+
+<button id="fb-fab" type="button" title="Send feedback" aria-label="Send feedback">&#9993;</button>
 
 </body>
 </html>

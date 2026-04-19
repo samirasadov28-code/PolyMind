@@ -45,6 +45,13 @@
   status = 200
   force = true
 
+# Feedback submissions — stored in blobs, optionally forwarded to a webhook
+[[redirects]]
+  from = "/api/feedback"
+  to = "/.netlify/functions/feedback"
+  status = 200
+  force = true
+
 # SPA fallback — serve index.html for any non-file route
 [[redirects]]
   from = "/*"
