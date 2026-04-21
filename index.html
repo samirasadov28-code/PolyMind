@@ -56,9 +56,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .arow-del{display:flex;align-items:center;justify-content:center;width:24px;flex-shrink:0;cursor:pointer;color:var(--tx3);font-size:11px;border-left:1px solid #0d1e2e;transition:all .2s;user-select:none;opacity:0}
 .arow:hover .arow-del{opacity:1}
 .arow-del:hover{color:var(--red);background:rgba(232,93,74,.12)}
-.clr-all{margin-left:auto;margin-right:8px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;cursor:pointer;transition:all .2s;white-space:nowrap;display:none}
+.clr-all{margin-right:8px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;cursor:pointer;transition:all .2s;white-space:nowrap;display:none}
 .clr-all.has-alerts{display:block}
 .clr-all:hover{border-color:var(--red);color:var(--red);background:rgba(232,93,74,.08)}
+.hist-btn{margin-left:auto;margin-right:6px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.hist-btn:hover{border-color:var(--gold);color:var(--gold)}
 .ahd{display:flex;align-items:center;gap:5px;margin-bottom:3px}
 .aty{font-size:9px;letter-spacing:1px;font-weight:700}.atm{color:var(--tx3);font-size:9px;margin-left:auto;padding-right:4px}
 .amk{color:#7a9cb8;font-size:10px;line-height:1.4}
@@ -67,7 +69,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .mn{background:rgba(180,210,240,.08);color:var(--tx2)}.mh{background:rgba(255,208,96,.15);color:var(--yw)}.me{background:rgba(255,59,107,.2);color:var(--red);animation:blink .9s ease-in-out infinite}
 /* MARKETS */
 .mrow{padding:9px 12px;border-bottom:1px solid #08141e}
-.mq{color:#7a9cb8;font-size:10px;line-height:1.3;margin-bottom:4px}
+.mq-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
+.mq{color:#7a9cb8;font-size:10px;line-height:1.3;flex:1}
+.mstar{font-size:13px;line-height:1;cursor:pointer;user-select:none;padding:0 2px;transition:color .15s;flex-shrink:0}
+.mstar:hover{color:var(--gold) !important}
+.wl-chip{margin-right:6px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.wl-chip:hover{border-color:var(--gold);color:var(--gold)}
+.wl-chip.on{border-color:var(--gold);color:var(--gold);background:rgba(255,208,96,.08)}
 .mbr2{display:flex;align-items:center;gap:7px}
 .mbar{flex:1;height:3px;background:var(--bdr2);border-radius:2px;overflow:hidden}
 .mfill{height:100%;border-radius:2px;transition:width .8s ease}
@@ -519,7 +527,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.9</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.10.0</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -616,6 +624,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <div class="tab on" id="tab-a">ALERTS</div>
       <div class="tab" id="tab-m">MARKETS</div>
       <div class="tab" id="tab-cfg" style="display:none">CONFIG</div>
+      <button class="hist-btn" id="hist-btn" title="Browse past alerts (7-day history)">&#9201; HISTORY</button>
+      <button class="wl-chip" id="wl-chip" title="Show alerts only from markets on your watchlist">&#9734; WATCHLIST</button>
       <button class="clr-all" id="clear-all-btn" title="Remove all alerts">&#10005; CLEAR ALL</button>
     </div>
     <div class="filter-bar" id="filter-bar">
@@ -1135,14 +1145,14 @@ var S={
   markets:[],alerts:[],prevP:{},prevVol:{},hist:{},cd:{},seen:{},
   selId:null,live:true,tradeDone:false,pTrade:null,pMkt:'',
   idx:1,sim:false,prov:'groq',userProv:null,userKey:'',
-  filterType:null,filterTier:null,
+  filterType:null,filterTier:null,filterWatchlist:false,
   infoAlertId:null
 };
 var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.9';  // Bump on each release
+var APP_VERSION = '1.10.0';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1308,6 +1318,7 @@ function tierFlushDelayed(){
     if(!TIER.isPro){ TIER.totalCount++; TIER.allTimeTotal++; tierSave(); }
     S.alerts.unshift(a);
     if(S.alerts.length>100)S.alerts.pop();
+    archiveAlert(a);
     fireNotification(a);
   });
   if(ready.length){ updCounts(); renderAlerts(); }
@@ -1736,6 +1747,67 @@ function fireNotification(a) {
   }
 }
 
+// ─── ALERT ARCHIVE (7-day rolling history) ─────────────────────────────────
+var ALERT_ARCHIVE_PREFIX='polymind_alerts_';
+var ALERT_ARCHIVE_MAX_DAYS=7;
+var ALERT_ARCHIVE_MAX_PER_DAY=300;
+function archiveAlert(a){
+  try{
+    var key=ALERT_ARCHIVE_PREFIX+new Date().toISOString().slice(0,10);
+    var arr=JSON.parse(localStorage.getItem(key)||'[]');
+    var slim={id:a.id,t:a.t,ts:a.ts||Date.now(),mkt:a.mkt,mid:a.mid,amt:a.amt,pr:a.pr,prevPr:a.prevPr,side:a.side,delayed:!!a.delayed,sev:(getSev(a)||{}).tier||'NORMAL'};
+    arr.unshift(slim);
+    if(arr.length>ALERT_ARCHIVE_MAX_PER_DAY) arr.length=ALERT_ARCHIVE_MAX_PER_DAY;
+    localStorage.setItem(key,JSON.stringify(arr));
+  }catch(e){}
+}
+function pruneAlertArchive(){
+  try{
+    var cutoff=new Date();cutoff.setDate(cutoff.getDate()-ALERT_ARCHIVE_MAX_DAYS);
+    var remove=[];
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(!k || k.indexOf(ALERT_ARCHIVE_PREFIX)!==0) continue;
+      var d=k.slice(ALERT_ARCHIVE_PREFIX.length);
+      if(new Date(d+'T00:00:00') < cutoff) remove.push(k);
+    }
+    remove.forEach(function(k){localStorage.removeItem(k);});
+  }catch(e){}
+}
+function listAlertArchive(){
+  var days=[];
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(!k || k.indexOf(ALERT_ARCHIVE_PREFIX)!==0) continue;
+      var d=k.slice(ALERT_ARCHIVE_PREFIX.length);
+      var arr=JSON.parse(localStorage.getItem(k)||'[]');
+      days.push({date:d,alerts:arr});
+    }
+  }catch(e){}
+  days.sort(function(a,b){return b.date.localeCompare(a.date);});
+  return days;
+}
+try{ pruneAlertArchive(); }catch(e){}
+
+// ─── MARKET WATCHLIST ──────────────────────────────────────────────────────
+var WATCHLIST_KEY='polymind_watchlist_v1';
+function getWatchlist(){
+  try{ return new Set(JSON.parse(localStorage.getItem(WATCHLIST_KEY)||'[]')); }
+  catch(e){ return new Set(); }
+}
+function saveWatchlist(set){
+  try{ localStorage.setItem(WATCHLIST_KEY, JSON.stringify(Array.from(set))); }catch(e){}
+}
+function inWatchlist(id){ return getWatchlist().has(String(id)); }
+function toggleWatchlist(id){
+  var s=getWatchlist(); id=String(id);
+  if(s.has(id)) s.delete(id); else s.add(id);
+  saveWatchlist(s);
+  track('watchlist_toggled',{count: s.size});
+  return s.has(id);
+}
+
 function addA(a){
   if(a.mid&&!a.mdata){
     var _m=S.markets.find(function(x){return x.id===a.mid;});
@@ -1765,6 +1837,7 @@ function addA(a){
   if(!TIER.isPro) TIER.totalCount++;
   S.alerts.unshift(a);
   if(S.alerts.length>100)S.alerts.pop();
+  archiveAlert(a);
   updCounts();
   fireNotification(a);
 }
@@ -1883,7 +1956,9 @@ function alertDetail(a){
 }
 
 function getFilteredAlerts(){
+  var wl=S.filterWatchlist?getWatchlist():null;
   return S.alerts.filter(function(a){
+    if(wl && !wl.has(String(a.mid))) return false;
     if(S.filterType)return a.t===S.filterType;
     if(S.filterTier){var sv=getSev(a);return sv.tier===S.filterTier;}
     return true;
@@ -1894,7 +1969,7 @@ function renderAlerts(){
   var p=document.getElementById('ap');if(!p)return;
   var list=getFilteredAlerts();
   if(!list.length){
-    var msg=S.filterType?'No '+AD[S.filterType].lb+' alerts':S.filterTier?'No '+S.filterTier+' tier alerts':'Waiting for signals...';
+    var msg=S.filterWatchlist?'No alerts from your watched markets yet':S.filterType?'No '+AD[S.filterType].lb+' alerts':S.filterTier?'No '+S.filterTier+' tier alerts':'Waiting for signals...';
     p.innerHTML='<div style="padding:24px 16px;color:var(--tx3);font-size:10px;text-align:center">'+msg+'</div>';
     return;
   }
@@ -1918,9 +1993,14 @@ function renderAlerts(){
 function renderMarkets(){
   var p=document.getElementById('mp');if(!p)return;
   if(!S.markets.length){p.innerHTML='<div style="padding:20px;color:var(--tx3);text-align:center">Loading...</div>';return;}
+  var wl=getWatchlist();
   p.innerHTML=S.markets.map(function(m){
     var col=m.yes>.5?'var(--gr)':'var(--or)';
-    return '<div class="mrow"><div class="mq">'+(m.q.length>58?m.q.slice(0,58)+'&hellip;':m.q)+'</div>'
+    var watched=wl.has(String(m.id));
+    var starColor=watched?'var(--gold)':'var(--tx3)';
+    return '<div class="mrow" data-mid="'+m.id+'">'
+      +'<div class="mq-row"><div class="mq">'+(m.q.length>54?m.q.slice(0,54)+'&hellip;':m.q)+'</div>'
+      +'<span class="mstar" data-star="'+m.id+'" title="'+(watched?'Unwatch':'Watch this market')+'" style="color:'+starColor+'">'+(watched?'&#9733;':'&#9734;')+'</span></div>'
       +'<div class="mbr2"><div class="mbar"><div class="mfill" style="width:'+Math.round(m.yes*100)+'%;background:var(--ac)"></div></div>'
       +'<span class="mpr" style="color:'+col+'">'+Math.round(m.yes*100)+'%</span></div>'
       +'<div class="mm"><span>'+fmt(m.vol)+'</span><span>'+m.cat+'</span>'+(m.endDate?'<span style="color:var(--red);font-size:8px">'+fmtEnd(m.endDate)+'</span>':'')+'</div></div>';
@@ -2378,6 +2458,58 @@ function startOnboarding(){
     if(tip.parentNode)tip.remove();
   }
   setTimeout(render, 450);
+}
+
+// ─── ALERT HISTORY MODAL ─────────────────────────────────────────────────────
+function showHistoryModal(){
+  var existing=document.getElementById('history-modal');
+  if(existing){existing.remove();return;}
+  track('history_opened');
+  var days=listAlertArchive();
+  var m=document.createElement('div');m.id='history-modal';
+  m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
+  var body='';
+  if(!days.length){
+    body='<div style="padding:40px 16px;color:var(--tx3);font-size:11px;text-align:center;line-height:1.6">No archived alerts yet.<br><span style="font-size:10px">Alerts you see will be stored here for up to 7 days.</span></div>';
+  } else {
+    var typeLabel=function(t){return (AD[t]&&AD[t].lb)||t;};
+    body=days.map(function(day){
+      var dateLabel=new Date(day.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+      var rows=day.alerts.map(function(a){
+        var d=AD[a.t]||AD.SPIKE;
+        var tm=new Date(a.ts||Date.now()).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+        var sevColor=a.sev==='EXTREME'?'var(--red)':a.sev==='HIGH'?'var(--yw)':'var(--tx3)';
+        var mkt=a.mkt?String(a.mkt):'(unknown market)';
+        if(mkt.length>68) mkt=mkt.slice(0,68)+'…';
+        return '<div style="padding:8px 12px;border-bottom:1px solid #0d1e2e;display:flex;align-items:center;gap:8px;font-size:10px">'
+          +'<span style="color:'+d.c+';font-size:11px;min-width:14px">'+d.ic+'</span>'
+          +'<span style="color:'+d.c+';font-size:8px;letter-spacing:1px;font-weight:700;min-width:58px">'+typeLabel(a.t)+'</span>'
+          +'<span style="flex:1;color:var(--tx2);line-height:1.3">'+esc(mkt)+'</span>'
+          +'<span style="color:'+sevColor+';font-size:8px;letter-spacing:.5px;font-weight:700">'+(a.sev||'')+'</span>'
+          +'<span style="color:var(--tx3);font-size:9px;min-width:46px;text-align:right">'+tm+'</span>'
+          +'</div>';
+      }).join('');
+      return '<div style="margin-bottom:14px">'
+        +'<div style="padding:6px 12px;background:rgba(245,194,0,.06);color:var(--gold);font-size:9px;letter-spacing:1.2px;font-weight:700;border-bottom:1px solid rgba(245,194,0,.2)">'
+        +dateLabel+' &middot; '+day.alerts.length+' alert'+(day.alerts.length===1?'':'s')+'</div>'
+        +(rows||'<div style="padding:10px 12px;color:var(--tx3);font-size:10px">No alerts this day.</div>')
+        +'</div>';
+    }).join('');
+  }
+  m.innerHTML=
+    '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);max-width:640px;width:92%;max-height:82vh;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);display:flex;flex-direction:column;position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--bdr2);flex-shrink:0">'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9201; ALERT HISTORY</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">LAST 7 DAYS &middot; STORED ON THIS DEVICE</div></div>'
+      +'<button id="close-hist" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
+    +'</div>'
+    +'<div style="overflow-y:auto;flex:1;padding:14px 4px">'+body+'</div>'
+    +'</div>';
+  document.body.appendChild(m);
+  function close(){m.remove();}
+  document.getElementById('close-hist').addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
 }
 
 // ─── FEEDBACK ────────────────────────────────────────────────────────────────
@@ -2847,6 +2979,32 @@ document.addEventListener('DOMContentLoaded',function(){
     if(center) center.innerHTML='<div class="empty"><div style="font-size:22px;color:var(--tx3);opacity:.4">◈</div><div style="color:var(--tx3);font-size:10px;margin-top:4px">Select an alert to analyse</div></div>';
     setFilter(null,null); updCounts(); renderAlerts();
   });
+
+  // Market watchlist — star click toggles, updates chip state
+  document.getElementById('mp').addEventListener('click',function(e){
+    var star=e.target.closest('[data-star]');
+    if(!star) return;
+    e.stopPropagation();
+    var mid=star.getAttribute('data-star');
+    toggleWatchlist(mid);
+    renderMarkets();
+  });
+
+  // Watchlist filter chip
+  var wlChip=document.getElementById('wl-chip');
+  function syncWlChip(){
+    wlChip.classList.toggle('on', S.filterWatchlist);
+    wlChip.innerHTML = (S.filterWatchlist?'&#9733;':'&#9734;')+' WATCHLIST';
+  }
+  wlChip.addEventListener('click',function(){
+    S.filterWatchlist = !S.filterWatchlist;
+    syncWlChip();
+    track('watchlist_filter_toggled',{on:S.filterWatchlist});
+    renderAlerts();
+  });
+
+  // History button — open archive modal
+  document.getElementById('hist-btn').addEventListener('click',showHistoryModal);
 
   // Info modal
   document.getElementById('info-close').addEventListener('click',closeInfo);
