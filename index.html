@@ -56,6 +56,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .arow-del{display:flex;align-items:center;justify-content:center;width:24px;flex-shrink:0;cursor:pointer;color:var(--tx3);font-size:11px;border-left:1px solid #0d1e2e;transition:all .2s;user-select:none;opacity:0}
 .arow:hover .arow-del{opacity:1}
 .arow-del:hover{color:var(--red);background:rgba(232,93,74,.12)}
+.arow-share{display:flex;align-items:center;justify-content:center;width:24px;flex-shrink:0;cursor:pointer;color:var(--tx3);font-size:11px;border-left:1px solid #0d1e2e;transition:all .2s;user-select:none;opacity:0;font-weight:700;font-family:Inter,sans-serif}
+.arow:hover .arow-share{opacity:1}
+.arow-share:hover{color:var(--gold);background:rgba(245,194,0,.1)}
 .clr-all{margin-right:8px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;cursor:pointer;transition:all .2s;white-space:nowrap;display:none}
 .clr-all.has-alerts{display:block}
 .clr-all:hover{border-color:var(--red);color:var(--red);background:rgba(232,93,74,.08)}
@@ -198,6 +201,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   .arow-main{padding-right:6px}
   .arow-info{width:44px;font-size:20px}
   .arow-del{opacity:1!important;width:36px;font-size:15px}
+  .arow-share{opacity:1!important;width:36px;font-size:14px}
   .ahd{margin-bottom:5px;gap:6px}
   .aty{font-size:11px;letter-spacing:.5px}
   .atm{font-size:10px}
@@ -523,30 +527,30 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </svg>
       <div>
         <div class="land-title">Poly<span>Mind</span></div>
-        <div class="land-sub">Real-Time Poly Alerts</div>
+        <div class="land-sub" data-i18n="land_sub">Real-Time Poly Alerts</div>
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.10.1</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.11.0</strong></div>
 
     <div class="land-section">
-      <div class="land-section-title">Free Tier</div>
+      <div class="land-section-title" data-i18n="land_free">Free Tier</div>
       <div class="land-tier-row"><span class="ic land-tier-free">&#10003;</span> <strong>5 live signals</strong>&nbsp;per day — real-time delivery</div>
       <div class="land-tier-row"><span class="ic" style="color:var(--or)">&#9202;</span> After limit: alerts delivered with <strong>30-min delay</strong></div>
       <div class="land-tier-row"><span class="ic" style="color:var(--red)">&#9632;</span> Max <strong>30 alerts</strong> visible per day</div>
       <div class="land-tier-row"><span class="ic land-tier-free">&#10003;</span> Multi-AI analysis (Groq, Claude, Gemini)</div>
       <div class="land-tier-row"><span class="ic land-tier-free">&#10003;</span> 12 signal types &amp; market tracking</div>
       <div class="land-divider"></div>
-      <div class="land-section-title" style="margin-top:10px">&#9733; Pro Tier</div>
+      <div class="land-section-title" style="margin-top:10px" data-i18n="land_pro" data-i18n-prefix="★ ">★ Pro Tier</div>
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Unlimited</strong> live signals — no daily cap</div>
       <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Zero delay</strong> — every alert in real-time</div>
       <div class="land-pro-price"><span class="amt">$3.99</span><span class="per">/month &nbsp;·&nbsp; cancel any time</span></div>
-      <button class="land-pro-buy" id="land-pro-buy-btn">&#9733; Buy Pro — $3.99/month</button>
-      <div style="text-align:center;margin-top:8px"><a href="#" id="land-redeem-link" style="color:var(--tx3);font-size:10px;text-decoration:none;letter-spacing:.5px">Already paid? <span style="color:var(--gold);text-decoration:underline">Redeem activation code</span></a></div>
+      <button class="land-pro-buy" id="land-pro-buy-btn" data-i18n="land_buypro" data-i18n-prefix="★ ">★ Buy Pro — $3.99/month</button>
+      <div style="text-align:center;margin-top:8px"><a href="#" id="land-redeem-link" style="color:var(--tx3);font-size:10px;text-decoration:none;letter-spacing:.5px"><span data-i18n="land_already">Already paid?</span> <span style="color:var(--gold);text-decoration:underline" data-i18n="land_redeem">Redeem activation code</span></a></div>
     </div>
 
-    <button class="land-enter" id="land-enter-btn">&#9654; Enter Free Dashboard</button>
-    <button class="land-force" id="land-force-btn">&#8635; Force Update</button>
+    <button class="land-enter" id="land-enter-btn" data-i18n="land_enter" data-i18n-prefix="▶ ">▶ Enter Free Dashboard</button>
+    <button class="land-force" id="land-force-btn" data-i18n="land_force" data-i18n-prefix="⟲ ">⟲ Force Update</button>
 
     <a class="land-modeloop" id="land-modeloop-link" href="http://modeloop.net/Other-Products" target="_blank" rel="noopener noreferrer">
       <span class="ml-body">
@@ -602,9 +606,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <div id="tier-badge" class="badge" style="cursor:pointer;border-color:rgba(245,194,0,.25);background:rgba(245,194,0,.06)" title="Signal tier status">
       <span style="color:var(--gr)">5/5 live</span>
     </div>
-    <button id="hdr-pro-btn" onclick="showUpgradeModal()">&#9733; PRO</button>
-    <div class="badge"><div class="dot pulse" id="live-dot"></div><span id="live-txt" style="color:var(--gr);font-size:10px;letter-spacing:1px">LIVE</span></div>
-    <button class="ghost" id="pause-btn">&#9208; PAUSE</button>
+    <button id="hdr-pro-btn" onclick="showUpgradeModal()"><span data-i18n="btn_pro" data-i18n-prefix="★ ">★ PRO</span></button>
+    <div class="badge"><div class="dot pulse" id="live-dot"></div><span id="live-txt" style="color:var(--gr);font-size:10px;letter-spacing:1px" data-i18n="btn_live">LIVE</span></div>
+    <button class="ghost" id="snd-btn" title="EXTREME alert sound" style="padding:4px 8px;font-size:14px" aria-pressed="true">&#128266;</button>
+    <button class="ghost" id="lang-btn" title="Language" style="padding:4px 10px;font-size:10px;letter-spacing:.5px">&#127760; <span id="lang-btn-lbl">EN</span></button>
+    <button class="ghost" id="pause-btn"><span data-i18n="btn_pause" data-i18n-prefix="⏸ ">⏸ PAUSE</span></button>
   </div>
 </div>
 <div id="tier-delay-bar" style="display:none;background:linear-gradient(90deg,rgba(232,93,74,.13),rgba(245,164,0,.1));border-bottom:2px solid rgba(245,164,0,.5);padding:9px 14px;align-items:center;gap:10px;font-family:'Inter',sans-serif;flex-shrink:0;animation:proBarPulse 2.5s ease-in-out infinite">
@@ -621,16 +627,16 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   <!-- LEFT -->
   <div class="panel br">
     <div class="tabs">
-      <div class="tab on" id="tab-a">ALERTS</div>
-      <div class="tab" id="tab-m">MARKETS</div>
-      <div class="tab" id="tab-cfg" style="display:none">CONFIG</div>
-      <button class="hist-btn" id="hist-btn" title="Browse past alerts (7-day history)">&#9201; HISTORY</button>
-      <button class="wl-chip" id="wl-chip" title="Show alerts only from markets on your watchlist">&#9734; WATCHLIST</button>
-      <button class="clr-all" id="clear-all-btn" title="Remove all alerts">&#10005; CLEAR ALL</button>
+      <div class="tab on" id="tab-a" data-i18n="tab_alerts">ALERTS</div>
+      <div class="tab" id="tab-m" data-i18n="tab_markets">MARKETS</div>
+      <div class="tab" id="tab-cfg" style="display:none" data-i18n="tab_config">CONFIG</div>
+      <button class="hist-btn" id="hist-btn" title="Browse past alerts (7-day history)" data-i18n="btn_history" data-i18n-prefix="⏱ ">⏱ HISTORY</button>
+      <button class="wl-chip" id="wl-chip" title="Show alerts only from markets on your watchlist" data-i18n="btn_watchlist" data-i18n-prefix="☆ ">☆ WATCHLIST</button>
+      <button class="clr-all" id="clear-all-btn" title="Remove all alerts" data-i18n="btn_clear" data-i18n-prefix="× ">× CLEAR ALL</button>
     </div>
     <div class="filter-bar" id="filter-bar">
-      <span id="filter-label">Filtered</span>
-      <span class="fclear" id="filter-clear">&#10005; CLEAR</span>
+      <span id="filter-label" data-i18n="filter_label">Filtered</span>
+      <span class="fclear" id="filter-clear" data-i18n="filter_clear" data-i18n-prefix="× ">× CLEAR</span>
     </div>
     <div class="pb" id="ap"></div>
     <div class="pb" id="mp" style="display:none"></div>
@@ -780,8 +786,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
           <div class="cr2" data-ftype="THIN"><span class="ic" style="color:var(--violet)">&#9632;</span><span class="cl">Thin Mkt</span><b id="c-thin" style="color:var(--violet)">0</b></div>
           <div class="cr2" data-ftype="WALLET"><span class="ic" style="color:var(--teal)">&#9673;</span><span class="cl">Rpt Wallet</span><b id="c-wallet" style="color:var(--teal)">0</b></div>
           <!-- Tier rows — also clickable filters -->
-          <div class="cr2" data-ftier="HIGH" style="border-color:rgba(255,208,96,.1)"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl">HIGH tier</span><b id="c-high" style="color:var(--yw)">0</b></div>
-          <div class="cr2" data-ftier="EXTREME" style="border-color:rgba(255,59,107,.1)"><span class="ic" style="color:var(--red)">&#9651;</span><span class="cl">EXTREME</span><b id="c-ext" style="color:var(--red)">0</b></div>
+          <div class="cr2" data-ftier="HIGH" style="border-color:rgba(255,208,96,.1)"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="tier_high">HIGH tier</span><b id="c-high" style="color:var(--yw)">0</b></div>
+          <div class="cr2" data-ftier="EXTREME" style="border-color:rgba(255,59,107,.1)"><span class="ic" style="color:var(--red)">&#9651;</span><span class="cl" data-i18n="tier_extreme">EXTREME</span><b id="c-ext" style="color:var(--red)">0</b></div>
         </div>
       </div>
 
@@ -1152,7 +1158,154 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.10.1';  // Bump on each release
+var APP_VERSION = '1.11.0';  // Bump on each release
+
+// ─── I18N ────────────────────────────────────────────────────────────────────
+// Supported languages (Russian intentionally shown without a flag).
+var LANGS=[
+  {code:'en',flag:'🇬🇧',name:'English'},
+  {code:'uk',flag:'🇺🇦',name:'Українська'},
+  {code:'fr',flag:'🇫🇷',name:'Français'},
+  {code:'es',flag:'🇪🇸',name:'Español'},
+  {code:'de',flag:'🇩🇪',name:'Deutsch'},
+  {code:'pt',flag:'🇵🇹',name:'Português'},
+  {code:'it',flag:'🇮🇹',name:'Italiano'},
+  {code:'nl',flag:'🇳🇱',name:'Nederlands'},
+  {code:'tr',flag:'🇹🇷',name:'Türkçe'},
+  {code:'zh',flag:'🇨🇳',name:'中文'},
+  {code:'ar',flag:'🇸🇦',name:'العربية',rtl:true},
+  {code:'hi',flag:'🇮🇳',name:'हिन्दी'},
+  {code:'ru',flag:'',   name:'Русский'}
+];
+var I18N={
+  en:{land_sub:'Real-Time Poly Alerts',land_free:'Free Tier',land_pro:'Pro Tier',land_enter:'Enter Free Dashboard',land_buypro:'Buy Pro — $3.99/month',land_redeem:'Redeem activation code',land_already:'Already paid?',land_force:'Force Update',
+      tab_alerts:'ALERTS',tab_markets:'MARKETS',tab_config:'CONFIG',btn_history:'HISTORY',btn_watchlist:'WATCHLIST',btn_clear:'CLEAR ALL',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
+      filter_label:'Filtered',filter_clear:'CLEAR',empty_waiting:'Waiting for signals...',empty_select:'Select an alert to analyse',
+      tier_high:'HIGH tier',tier_extreme:'EXTREME',lang_title:'Language',lang_desc:'Choose your language'},
+  uk:{land_sub:'Сповіщення Poly у реальному часі',land_free:'Безкоштовний',land_pro:'Тариф Pro',land_enter:'Відкрити панель',land_buypro:'Купити Pro — $3.99/міс',land_redeem:'Активувати код',land_already:'Уже сплатили?',land_force:'Оновити',
+      tab_alerts:'СПОВІЩЕННЯ',tab_markets:'РИНКИ',tab_config:'НАЛАШТ.',btn_history:'ІСТОРІЯ',btn_watchlist:'ОБРАНЕ',btn_clear:'ОЧИСТИТИ',btn_pause:'ПАУЗА',btn_live:'НАЖИВО',btn_pro:'PRO',
+      filter_label:'Фільтр',filter_clear:'СКИНУТИ',empty_waiting:'Очікування сигналів...',empty_select:'Виберіть сповіщення для аналізу',
+      tier_high:'Рівень ВИСОКИЙ',tier_extreme:'ЕКСТРЕМАЛЬНИЙ',lang_title:'Мова',lang_desc:'Виберіть мову'},
+  fr:{land_sub:'Alertes Poly en temps réel',land_free:'Offre gratuite',land_pro:'Offre Pro',land_enter:'Ouvrir le tableau',land_buypro:'Acheter Pro — 3,99$/mois',land_redeem:"Utiliser un code d'activation",land_already:'Déjà payé ?',land_force:'Forcer la mise à jour',
+      tab_alerts:'ALERTES',tab_markets:'MARCHÉS',tab_config:'CONFIG',btn_history:'HISTORIQUE',btn_watchlist:'FAVORIS',btn_clear:'TOUT EFFACER',btn_pause:'PAUSE',btn_live:'EN DIRECT',btn_pro:'PRO',
+      filter_label:'Filtré',filter_clear:'EFFACER',empty_waiting:'En attente de signaux...',empty_select:'Sélectionnez une alerte à analyser',
+      tier_high:'Niveau ÉLEVÉ',tier_extreme:'EXTRÊME',lang_title:'Langue',lang_desc:'Choisissez votre langue'},
+  es:{land_sub:'Alertas Poly en tiempo real',land_free:'Plan gratuito',land_pro:'Plan Pro',land_enter:'Abrir panel gratuito',land_buypro:'Comprar Pro — $3.99/mes',land_redeem:'Canjear código de activación',land_already:'¿Ya pagaste?',land_force:'Actualizar',
+      tab_alerts:'ALERTAS',tab_markets:'MERCADOS',tab_config:'CONFIG.',btn_history:'HISTORIAL',btn_watchlist:'FAVORITOS',btn_clear:'BORRAR TODO',btn_pause:'PAUSA',btn_live:'EN VIVO',btn_pro:'PRO',
+      filter_label:'Filtrado',filter_clear:'QUITAR',empty_waiting:'Esperando señales...',empty_select:'Selecciona una alerta para analizar',
+      tier_high:'Nivel ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Elige tu idioma'},
+  de:{land_sub:'Poly-Warnungen in Echtzeit',land_free:'Kostenlos',land_pro:'Pro-Tarif',land_enter:'Kostenloses Dashboard',land_buypro:'Pro kaufen — 3,99$/Monat',land_redeem:'Aktivierungscode einlösen',land_already:'Schon bezahlt?',land_force:'Aktualisieren',
+      tab_alerts:'ALARME',tab_markets:'MÄRKTE',tab_config:'EINST.',btn_history:'VERLAUF',btn_watchlist:'MERKLISTE',btn_clear:'ALLES LÖSCHEN',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
+      filter_label:'Gefiltert',filter_clear:'LÖSCHEN',empty_waiting:'Warte auf Signale...',empty_select:'Wähle einen Alarm zur Analyse',
+      tier_high:'HOHE Stufe',tier_extreme:'EXTREM',lang_title:'Sprache',lang_desc:'Sprache wählen'},
+  pt:{land_sub:'Alertas Poly em tempo real',land_free:'Plano gratuito',land_pro:'Plano Pro',land_enter:'Abrir painel grátis',land_buypro:'Comprar Pro — $3,99/mês',land_redeem:'Resgatar código de ativação',land_already:'Já pagou?',land_force:'Atualizar',
+      tab_alerts:'ALERTAS',tab_markets:'MERCADOS',tab_config:'CONFIG',btn_history:'HISTÓRICO',btn_watchlist:'FAVORITOS',btn_clear:'LIMPAR TUDO',btn_pause:'PAUSAR',btn_live:'AO VIVO',btn_pro:'PRO',
+      filter_label:'Filtrado',filter_clear:'LIMPAR',empty_waiting:'Aguardando sinais...',empty_select:'Selecione um alerta para analisar',
+      tier_high:'Nível ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Escolha o idioma'},
+  it:{land_sub:'Avvisi Poly in tempo reale',land_free:'Piano gratuito',land_pro:'Piano Pro',land_enter:'Apri la dashboard',land_buypro:'Acquista Pro — $3,99/mese',land_redeem:'Usa codice di attivazione',land_already:'Già pagato?',land_force:'Aggiorna',
+      tab_alerts:'AVVISI',tab_markets:'MERCATI',tab_config:'IMPOST.',btn_history:'CRONOLOGIA',btn_watchlist:'PREFERITI',btn_clear:'CANCELLA TUTTO',btn_pause:'PAUSA',btn_live:'DIRETTA',btn_pro:'PRO',
+      filter_label:'Filtrato',filter_clear:'PULISCI',empty_waiting:'In attesa di segnali...',empty_select:'Seleziona un avviso da analizzare',
+      tier_high:'Livello ALTO',tier_extreme:'ESTREMO',lang_title:'Lingua',lang_desc:'Scegli la lingua'},
+  nl:{land_sub:'Poly-waarschuwingen in realtime',land_free:'Gratis',land_pro:'Pro-abonnement',land_enter:'Open gratis dashboard',land_buypro:'Koop Pro — $3,99/maand',land_redeem:'Activeringscode inwisselen',land_already:'Al betaald?',land_force:'Bijwerken',
+      tab_alerts:'MELDINGEN',tab_markets:'MARKTEN',tab_config:'INSTEL',btn_history:'GESCHIED.',btn_watchlist:'FAVORIETEN',btn_clear:'ALLES WISSEN',btn_pause:'PAUZE',btn_live:'LIVE',btn_pro:'PRO',
+      filter_label:'Gefilterd',filter_clear:'WISSEN',empty_waiting:'Wachten op signalen...',empty_select:'Selecteer een melding om te analyseren',
+      tier_high:'HOOG niveau',tier_extreme:'EXTREEM',lang_title:'Taal',lang_desc:'Kies uw taal'},
+  tr:{land_sub:'Gerçek zamanlı Poly uyarıları',land_free:'Ücretsiz',land_pro:'Pro Plan',land_enter:'Ücretsiz panele gir',land_buypro:'Pro Satın Al — 3,99$/ay',land_redeem:'Etkinleştirme kodunu kullan',land_already:'Zaten ödedin mi?',land_force:'Güncelle',
+      tab_alerts:'UYARILAR',tab_markets:'PİYASALAR',tab_config:'AYARLAR',btn_history:'GEÇMİŞ',btn_watchlist:'İZLEME',btn_clear:'TÜMÜNÜ SİL',btn_pause:'DURAKLAT',btn_live:'CANLI',btn_pro:'PRO',
+      filter_label:'Filtrelendi',filter_clear:'TEMİZLE',empty_waiting:'Sinyaller bekleniyor...',empty_select:'Analiz için bir uyarı seçin',
+      tier_high:'YÜKSEK seviye',tier_extreme:'AŞIRI',lang_title:'Dil',lang_desc:'Dilinizi seçin'},
+  zh:{land_sub:'实时 Poly 提醒',land_free:'免费版',land_pro:'Pro 版',land_enter:'进入免费控制台',land_buypro:'购买 Pro — $3.99/月',land_redeem:'兑换激活码',land_already:'已付款？',land_force:'更新',
+      tab_alerts:'提醒',tab_markets:'市场',tab_config:'设置',btn_history:'历史',btn_watchlist:'关注',btn_clear:'全部清除',btn_pause:'暂停',btn_live:'实时',btn_pro:'PRO',
+      filter_label:'已筛选',filter_clear:'清除',empty_waiting:'等待信号...',empty_select:'选择提醒进行分析',
+      tier_high:'高级别',tier_extreme:'极端',lang_title:'语言',lang_desc:'选择语言'},
+  ar:{land_sub:'تنبيهات Poly في الوقت الفعلي',land_free:'المستوى المجاني',land_pro:'اشتراك Pro',land_enter:'فتح لوحة المجانية',land_buypro:'شراء Pro — 3.99$ شهريًا',land_redeem:'استخدام رمز التفعيل',land_already:'هل دفعت بالفعل؟',land_force:'تحديث',
+      tab_alerts:'تنبيهات',tab_markets:'الأسواق',tab_config:'الإعدادات',btn_history:'السجل',btn_watchlist:'المفضلة',btn_clear:'مسح الكل',btn_pause:'إيقاف',btn_live:'مباشر',btn_pro:'PRO',
+      filter_label:'تمت التصفية',filter_clear:'مسح',empty_waiting:'بانتظار الإشارات...',empty_select:'اختر تنبيهًا للتحليل',
+      tier_high:'مستوى مرتفع',tier_extreme:'متطرف',lang_title:'اللغة',lang_desc:'اختر لغتك'},
+  hi:{land_sub:'रीयल-टाइम Poly अलर्ट',land_free:'निःशुल्क',land_pro:'प्रो प्लान',land_enter:'निःशुल्क डैशबोर्ड',land_buypro:'प्रो खरीदें — $3.99/माह',land_redeem:'सक्रियण कोड भुनाएँ',land_already:'पहले से भुगतान किया?',land_force:'अपडेट',
+      tab_alerts:'अलर्ट',tab_markets:'मार्केट्स',tab_config:'कॉन्फ़िग',btn_history:'इतिहास',btn_watchlist:'वॉचलिस्ट',btn_clear:'सब मिटाएँ',btn_pause:'रोकें',btn_live:'लाइव',btn_pro:'PRO',
+      filter_label:'फ़िल्टर',filter_clear:'मिटाएँ',empty_waiting:'सिग्नल का इंतज़ार...',empty_select:'विश्लेषण के लिए अलर्ट चुनें',
+      tier_high:'उच्च स्तर',tier_extreme:'अत्यधिक',lang_title:'भाषा',lang_desc:'अपनी भाषा चुनें'},
+  ru:{land_sub:'Poly-оповещения в реальном времени',land_free:'Бесплатно',land_pro:'Тариф Pro',land_enter:'Открыть панель',land_buypro:'Купить Pro — $3.99/мес',land_redeem:'Активировать код',land_already:'Уже оплатили?',land_force:'Обновить',
+      tab_alerts:'ОПОВЕЩЕНИЯ',tab_markets:'РЫНКИ',tab_config:'НАСТР.',btn_history:'ИСТОРИЯ',btn_watchlist:'ИЗБРАННОЕ',btn_clear:'ОЧИСТИТЬ',btn_pause:'ПАУЗА',btn_live:'В ЭФИРЕ',btn_pro:'PRO',
+      filter_label:'Фильтр',filter_clear:'СБРОС',empty_waiting:'Ожидание сигналов...',empty_select:'Выберите оповещение для анализа',
+      tier_high:'Уровень ВЫСОКИЙ',tier_extreme:'ЭКСТРЕМАЛЬНО',lang_title:'Язык',lang_desc:'Выберите язык'}
+};
+var LANG_KEY='polymind_lang_v1';
+var LANG=(function(){
+  try{
+    var saved=localStorage.getItem(LANG_KEY);
+    if(saved && I18N[saved]) return saved;
+  }catch(e){}
+  var nav=(navigator.language||'en').slice(0,2).toLowerCase();
+  return I18N[nav] ? nav : 'en';
+})();
+function t(key){
+  var row=I18N[LANG]||I18N.en;
+  return (row && row[key]) || (I18N.en[key]) || key;
+}
+function applyI18n(){
+  try{
+    document.documentElement.lang = LANG;
+    var meta=LANGS.find(function(l){return l.code===LANG;});
+    document.documentElement.dir = (meta && meta.rtl) ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key=el.getAttribute('data-i18n');
+      var prefix=el.getAttribute('data-i18n-prefix')||'';
+      var suffix=el.getAttribute('data-i18n-suffix')||'';
+      el.textContent = prefix + t(key) + suffix;
+    });
+    var btn=document.getElementById('lang-btn-lbl');
+    if(btn) btn.textContent = LANG.toUpperCase();
+  }catch(e){}
+}
+function setLanguage(code){
+  if(!I18N[code]) code='en';
+  LANG=code;
+  try{ localStorage.setItem(LANG_KEY, code); }catch(e){}
+  track('language_changed',{lang:code});
+  applyI18n();
+  // Re-render dynamic UI bits that hold translated strings
+  try{ if(typeof renderAlerts==='function') renderAlerts(); }catch(e){}
+  try{ if(typeof renderMarkets==='function') renderMarkets(); }catch(e){}
+}
+function showLangModal(){
+  var existing=document.getElementById('lang-modal');
+  if(existing){existing.remove();return;}
+  track('lang_modal_opened');
+  var m=document.createElement('div');m.id='lang-modal';
+  m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
+  var cards=LANGS.map(function(L){
+    var active=L.code===LANG;
+    var flagHtml = L.flag ? '<span style="font-size:20px;line-height:1">'+L.flag+'</span>' : '<span style="font-size:13px;color:var(--tx3);letter-spacing:1px;width:22px;text-align:center">'+L.code.toUpperCase()+'</span>';
+    return '<button class="lang-card" data-lang="'+L.code+'" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:'+(active?'rgba(245,194,0,.1)':'var(--bg3)')+';border:1px solid '+(active?'var(--gold)':'var(--bdr2)')+';color:var(--tx);font-family:Inter,sans-serif;font-size:11px;cursor:pointer;transition:all .15s;text-align:left;width:100%">'
+      +flagHtml
+      +'<span style="flex:1;font-weight:'+(active?'700':'500')+';color:'+(active?'var(--gold)':'var(--tx2)')+'">'+L.name+'</span>'
+      +(active?'<span style="color:var(--gold);font-size:10px">&#10003;</span>':'')
+      +'</button>';
+  }).join('');
+  m.innerHTML=
+    '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);padding:22px 22px;max-width:420px;width:92%;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);position:relative;max-height:84vh;overflow-y:auto">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#127760; '+t('lang_title')+'</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">'+t('lang_desc').toUpperCase()+'</div></div>'
+      +'<button id="close-lang" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+cards+'</div>'
+    +'</div>';
+  document.body.appendChild(m);
+  function close(){m.remove();}
+  document.getElementById('close-lang').addEventListener('click',close);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  m.querySelectorAll('[data-lang]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var code=btn.getAttribute('data-lang');
+      setLanguage(code);
+      close();
+    });
+  });
+}
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1724,8 +1877,43 @@ function showNotifStatus(msg) {
   setTimeout(function(){ el.style.display='none'; }, 2600);
 }
 
+// ─── EXTREME ALERT SOUND ─────────────────────────────────────────────────────
+var SOUND_KEY='polymind_sound_v1';
+var SOUND_ON = (function(){ try{ return localStorage.getItem(SOUND_KEY)!=='0'; }catch(e){ return true; } })();
+var _audioCtx=null;
+function setSound(on){
+  SOUND_ON=!!on;
+  try{ localStorage.setItem(SOUND_KEY, on?'1':'0'); }catch(e){}
+  track('sound_toggled',{on:SOUND_ON});
+}
+function firePing(){
+  if(!SOUND_ON) return;
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return;
+    if(!_audioCtx) _audioCtx=new AC();
+    var ctx=_audioCtx;
+    if(ctx.state==='suspended' && ctx.resume) ctx.resume();
+    var now=ctx.currentTime;
+    [[880,0],[1320,0.08]].forEach(function(p){
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine'; o.frequency.value=p[0];
+      g.gain.setValueAtTime(0, now+p[1]);
+      g.gain.linearRampToValueAtTime(0.18, now+p[1]+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, now+p[1]+0.22);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(now+p[1]); o.stop(now+p[1]+0.24);
+    });
+  }catch(e){}
+}
+
 function fireNotification(a) {
   if (S.sim) return;                                           // never in simulation
+  // Audio ping for EXTREME-severity alerts (opt-in, desktop + mobile)
+  try{
+    var sev=getSev(a);
+    if(sev && sev.tier==='EXTREME') firePing();
+  }catch(e){}
   if (!NOTIF.granted || !NOTIF.enabled) return;
   if (!window.matchMedia('(max-width:640px)').matches) return; // mobile only
   var now = Date.now();
@@ -1745,6 +1933,27 @@ function fireNotification(a) {
   } else {
     try { new Notification(title, { body:bodyTxt, tag:'sentinel-'+a.t }); } catch(e){}
   }
+}
+
+// ─── SHARE ALERT ON X ──────────────────────────────────────────────────────
+function shareAlertOnX(a){
+  try{
+    var d=AD[a.t]||AD.SPIKE;
+    var sv=getSev(a)||{tier:'NORMAL'};
+    var prefix=sv.tier==='EXTREME'?'🚨 EXTREME signal':sv.tier==='HIGH'?'⚠️ High signal':'📊 Alert';
+    var detail=alertDetail(a).replace(/<[^>]+>/g,'').trim();
+    var mkt=(a.mkt||'').length>90?a.mkt.slice(0,90)+'…':a.mkt;
+    var parts=[
+      prefix+' — '+d.lb+' on Polymarket',
+      '"'+mkt+'"',
+      detail,
+      'via PolyMind · '+window.location.origin
+    ];
+    var text=parts.filter(Boolean).join('\n\n');
+    var url='https://x.com/intent/tweet?text='+encodeURIComponent(text);
+    window.open(url,'_blank','noopener');
+    track('alert_shared',{type:a.t, tier:sv.tier});
+  }catch(e){}
 }
 
 // ─── ALERT ARCHIVE (7-day rolling history) ─────────────────────────────────
@@ -1969,7 +2178,7 @@ function renderAlerts(){
   var p=document.getElementById('ap');if(!p)return;
   var list=getFilteredAlerts();
   if(!list.length){
-    var msg=S.filterWatchlist?'No alerts from your watched markets yet':S.filterType?'No '+AD[S.filterType].lb+' alerts':S.filterTier?'No '+S.filterTier+' tier alerts':'Waiting for signals...';
+    var msg=S.filterWatchlist?'No alerts from your watched markets yet':S.filterType?'No '+AD[S.filterType].lb+' alerts':S.filterTier?'No '+S.filterTier+' tier alerts':t('empty_waiting');
     p.innerHTML='<div style="padding:24px 16px;color:var(--tx3);font-size:10px;text-align:center">'+msg+'</div>';
     return;
   }
@@ -1985,6 +2194,7 @@ function renderAlerts(){
         +'<div class="adt">'+alertDetail(a)+'</div>'
       +'</div>'
       +'<div class="arow-info" title="Explain this alert" data-info="'+a.t+'" data-aid="'+a.id+'">&#9432;</div>'
+      +'<div class="arow-share" title="Share on X" data-share="'+a.id+'">&#120143;</div>'
       +'<div class="arow-del" title="Dismiss alert" data-del="'+a.id+'">&#10005;</div>'
       +'</div>';
   }).join('');
@@ -2406,6 +2616,8 @@ function startOnboarding(){
   }
   var steps=[
     {sel:'#ap', title:'Live signals stream in here', body:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.'},
+    {sel:'#hist-btn', title:'7-day history', body:'Every alert is archived on this device for 7 days. Click HISTORY to browse past signals by day.'},
+    {sel:'#wl-chip', title:'Watchlist filter', body:'Star any market on the MARKETS tab to add it to your watchlist, then toggle this chip to see only alerts from those markets.'},
     {sel:'#center-ai', title:'AI analysis appears here', body:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.'},
     {sel:'.rp', title:'Tune thresholds here', body:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.'}
   ];
@@ -2748,6 +2960,8 @@ function activatePro(code, email){
 window.polymindUnlockPro=function(){TIER.isPro=true;tierSave();tierUpdateUI();return 'Pro unlocked on this device.';};
 
 document.addEventListener('DOMContentLoaded',function(){
+  // ── I18N: translate static strings on load ───────────────────────────────
+  try{ applyI18n(); }catch(e){}
   // ── LANDING PAGE ──────────────────────────────────────────────────────────
   var landOverlay=document.getElementById('landing-overlay');
   var landVerNum=document.getElementById('land-ver-num');
@@ -2927,6 +3141,29 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Nav buttons
   document.getElementById('pause-btn').addEventListener('click',toggleLive);
+
+  // EXTREME alert sound toggle
+  (function(){
+    var sb=document.getElementById('snd-btn');
+    if(!sb) return;
+    function sync(){
+      sb.innerHTML = SOUND_ON ? '&#128266;' : '&#128263;';
+      sb.setAttribute('aria-pressed', String(!!SOUND_ON));
+      sb.title = (SOUND_ON?'Sound on':'Sound off')+' — EXTREME alerts';
+    }
+    sync();
+    sb.addEventListener('click',function(){
+      setSound(!SOUND_ON); sync();
+      if(SOUND_ON) firePing();
+    });
+  })();
+
+  // Language selector
+  (function(){
+    var lb=document.getElementById('lang-btn');
+    if(!lb) return;
+    lb.addEventListener('click',showLangModal);
+  })();
   document.getElementById('tab-a').addEventListener('click',function(){
     if(IS_MOBILE){ setMobTab('alerts'); return; }
     document.getElementById('tab-a').classList.add('on');
@@ -2959,6 +3196,14 @@ document.addEventListener('DOMContentLoaded',function(){
         if(_mDiv)_mDiv.innerHTML='';if(_aDiv)_aDiv.innerHTML='<div class="empty"><div style="font-size:22px;color:var(--tx3);opacity:.4">◈</div><div style="color:var(--tx3);font-size:10px;margin-top:4px">Select an alert to analyse</div></div>';
       }
       updCounts();renderAlerts();
+      return;
+    }
+    var shareBtn=e.target.closest('[data-share]');
+    if(shareBtn){
+      e.stopPropagation();
+      var sid=shareBtn.getAttribute('data-share');
+      var sa=S.alerts.find(function(x){return x.id===sid;});
+      if(sa) shareAlertOnX(sa);
       return;
     }
     var infoBtn=e.target.closest('[data-info]');
