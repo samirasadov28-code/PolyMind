@@ -527,7 +527,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.10.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.10.1</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -1152,7 +1152,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.10.0';  // Bump on each release
+var APP_VERSION = '1.10.1';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -2594,7 +2594,9 @@ function showManageProModal(){
   if(existing){existing.remove();return;}
   track('manage_pro_opened', {has_code: !!TIER.proCode});
   var codeHtml = TIER.proCode
-    ? '<div style="font-family:\'JetBrains Mono\',monospace;color:var(--gold);font-size:13px;letter-spacing:1px;word-break:break-all">'+TIER.proCode+'</div>'
+    ? '<div style="display:flex;align-items:center;gap:8px"><div style="font-family:\'JetBrains Mono\',monospace;color:var(--gold);font-size:13px;letter-spacing:1px;word-break:break-all;flex:1">'+TIER.proCode+'</div>'
+      +'<button id="copy-code-btn" title="Copy code" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx3);padding:4px 9px;font-family:Inter,sans-serif;font-size:8px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s">COPY</button></div>'
+      +'<div style="color:var(--tx3);font-size:9px;margin-top:6px;line-height:1.4">Save this code somewhere safe — you\'ll need it to activate Pro on other devices or after clearing your browser.</div>'
     : '<div style="color:var(--tx3);font-size:10px">No code stored on this device — you\'ll be asked for it to cancel.</div>';
   var m=document.createElement('div');m.id='manage-pro-modal';
   m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
@@ -2624,6 +2626,20 @@ function showManageProModal(){
   function close(){m.remove();}
   document.getElementById('close-manage').addEventListener('click',close);
   m.addEventListener('click',function(e){if(e.target===m)close();});
+  var copyBtn=document.getElementById('copy-code-btn');
+  if(copyBtn) copyBtn.addEventListener('click',function(){
+    var code=TIER.proCode||'';
+    var done=function(){
+      copyBtn.textContent='COPIED';copyBtn.style.color='var(--gr)';copyBtn.style.borderColor='var(--gr)';
+      setTimeout(function(){copyBtn.textContent='COPY';copyBtn.style.color='';copyBtn.style.borderColor='';},1400);
+      track('pro_code_copied');
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code).then(done, function(){ prompt('Copy your code:', code); });
+    } else {
+      prompt('Copy your code:', code);
+    }
+  });
   document.getElementById('manage-cancel-btn').addEventListener('click',function(){
     initiateCancellation(this, document.getElementById('manage-msg'));
   });
@@ -2675,6 +2691,8 @@ function showRedeemModal(source){
     +'</div>'
     +'<div style="color:var(--tx2);font-size:11px;line-height:1.5;margin-bottom:14px">Paste the code you received after payment. Pro unlocks instantly on this device.</div>'
     +'<input id="redeem-code" type="text" autocomplete="off" spellcheck="false" placeholder="PM-XXXX-XXXX-XXXX" style="width:100%;padding:13px 14px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:\'JetBrains Mono\',monospace;font-size:13px;letter-spacing:1px;text-transform:uppercase;outline:none;margin-bottom:10px;box-sizing:border-box">'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">EMAIL <span style="text-transform:none;letter-spacing:0">(optional — for code recovery)</span></label>'
+    +'<input id="redeem-email" type="email" autocomplete="email" placeholder="you@example.com" style="width:100%;padding:11px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:11px;outline:none;margin-bottom:10px;box-sizing:border-box">'
     +'<div id="redeem-msg" style="min-height:16px;font-size:10px;margin-bottom:10px"></div>'
     +'<button id="redeem-go" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s">Activate Pro</button>'
   +'</div>';
@@ -2689,11 +2707,13 @@ function showRedeemModal(source){
   input.addEventListener('keydown',function(e){if(e.key==='Enter')btn.click();});
   btn.addEventListener('click',function(){
     var code=input.value.trim();
+    var emailEl=document.getElementById('redeem-email');
+    var email=emailEl?(emailEl.value||'').trim():'';
     if(!code){msg.style.color='var(--or)';msg.textContent='Enter your code to continue.';return;}
     btn.disabled=true;btn.textContent='Verifying...';msg.style.color='var(--tx3)';msg.textContent='';
-    activatePro(code).then(function(res){
+    activatePro(code, email).then(function(res){
       if(res.valid){
-        track('pro_activated', {source: source||'unknown'});
+        track('pro_activated', {source: source||'unknown', has_email: !!email});
         msg.style.color='var(--gr)';msg.textContent='\u2713 Pro activated — unlimited real-time alerts unlocked.';
         btn.textContent='\u2713 Activated';
         setTimeout(function(){closeModal();tierUpdateUI();},1200);
@@ -2708,11 +2728,13 @@ function showRedeemModal(source){
     });
   });
 }
-function activatePro(code){
+function activatePro(code, email){
+  var payload={code:code};
+  if(email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) payload.email=email;
   return fetch('/api/activate',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({code:code})
+    body:JSON.stringify(payload)
   }).then(function(r){return r.json();}).then(function(res){
     if(res && res.valid){
       TIER.isPro=true;

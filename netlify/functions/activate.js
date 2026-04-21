@@ -32,11 +32,23 @@ exports.handler = async function (event) {
     return { statusCode: 400, headers, body: JSON.stringify({ valid: false, error: 'Code required' }) };
   }
 
+  const rawEmail = String(body.email || '').trim().toLowerCase().slice(0, 200);
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail);
+
   // 1. Blob-issued code (Stripe webhook)
   try {
     const store = getStore('pro-codes');
     const entry = await store.get(`code:${code}`, { type: 'json' });
     if (entry && entry.active) {
+      // Persist a recovery email if the caller supplied one and none is stored.
+      // Never overwrite an existing email — prevents takeover of an orphan code.
+      if (emailOk && !entry.email) {
+        try {
+          entry.email = rawEmail;
+          entry.emailAddedAt = new Date().toISOString();
+          await store.setJSON(`code:${code}`, entry);
+        } catch (e) { /* non-fatal */ }
+      }
       return { statusCode: 200, headers, body: JSON.stringify({ valid: true, source: 'blob' }) };
     }
     if (entry && entry.active === false) {
