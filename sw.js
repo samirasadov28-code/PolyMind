@@ -9,6 +9,23 @@ self.addEventListener('activate', function(e) {
   e.waitUntil(self.clients.claim());
 });
 
+// Bridge from page context — the page posts { type:'NOTIFY', ... } and the SW
+// shows the OS-level notification via self.registration.
+self.addEventListener('message', function(e) {
+  var data = e.data || {};
+  if (data.type !== 'NOTIFY') return;
+  var title = data.title || 'PolyMind Alert';
+  var options = {
+    body: data.body || 'New signal detected',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: data.tag || 'polymind-alert',
+    renotify: true,
+    data: { alertId: data.alertId || null },
+  };
+  try { self.registration.showNotification(title, options); } catch (err) {}
+});
+
 // Handle notification clicks — focus or open the app
 self.addEventListener('notificationclick', function(e) {
   e.notification.close();

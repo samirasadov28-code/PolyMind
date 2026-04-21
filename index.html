@@ -519,7 +519,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.8</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.9.9</strong></div>
 
     <div class="land-section">
       <div class="land-section-title">Free Tier</div>
@@ -1142,7 +1142,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.9.8';  // Bump on each release
+var APP_VERSION = '1.9.9';  // Bump on each release
 
 // ─── STRIPE PAYMENT CONFIG ───────────────────────────────────────────────────
 // 1. Create a Subscription product in your Stripe Dashboard (dashboard.stripe.com)
@@ -1970,6 +1970,15 @@ function closeInfo(){document.getElementById('info-modal').style.display='none';
 
 
 
+function buildShareUrl(a, marketUrl){
+  var lbl = (AD[a.t] && AD[a.t].lb) ? AD[a.t].lb : 'Signal';
+  var sev = getSev(a);
+  var sevTag = sev.tier && sev.tier !== 'NORMAL' ? ' · '+sev.tier : '';
+  var mkt = (a.mkt || '').length > 140 ? a.mkt.slice(0, 137)+'…' : (a.mkt || '');
+  var text = '['+lbl+sevTag+'] '+mkt+' — flagged by PolyMind';
+  var link = marketUrl || 'https://polymind.site';
+  return 'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(link);
+}
 function renderMarketCard(a){
   var md=a.mdata||{};
   var q=md.q||a.mkt||'';
@@ -2008,6 +2017,7 @@ function renderMarketCard(a){
         +(endStr?'<span class="mkt-end">⏱ '+esc(endStr)+'</span>':'')
         +(vol?'<span style="font-size:9px;font-weight:700;color:var(--tx2)">'+fmt(vol)+' vol</span>':'')
         +(url?'<a class="mkt-link" href="'+esc(url)+'" target="_blank" rel="noopener">↗ Polymarket</a>':'')
+        +'<a class="mkt-link" href="'+esc(buildShareUrl(a,url))+'" target="_blank" rel="noopener" onclick="track(\'alert_shared\',{alert_type:\''+a.t+'\'})">↗ Share on X</a>'
       +'</div>'
     +'</div>'
     +(desc?'<div class="mkt-desc" id="mkt-desc-body">'+esc(desc)+'<span class="mkt-desc-more" id="mkt-desc-toggle">▼ show more</span></div>':'')
@@ -2306,6 +2316,70 @@ function showStripeReturnTimeout(){
     +'<button onclick="this.parentElement.remove()" style="margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--bdr2);color:var(--tx2);padding:5px 12px;font-size:10px;font-family:Inter,sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Dismiss</button>';
 }
 
+// ─── ONBOARDING TOUR (first dashboard visit, desktop only) ───────────────────
+function startOnboarding(){
+  if(localStorage.getItem('polymind_onboarded'))return;
+  // Mobile layout differs — coachmarks don't fit cleanly, skip with flag.
+  if(window.matchMedia('(max-width:768px)').matches){
+    localStorage.setItem('polymind_onboarded','1');
+    return;
+  }
+  var steps=[
+    {sel:'#ap', title:'Live signals stream in here', body:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.'},
+    {sel:'#center-ai', title:'AI analysis appears here', body:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.'},
+    {sel:'.rp', title:'Tune thresholds here', body:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.'}
+  ];
+  var i=0;
+  var box=document.createElement('div');
+  box.id='onboard-hi';
+  box.style.cssText='position:fixed;pointer-events:none;border:2px solid var(--gold);box-shadow:0 0 0 9999px rgba(0,0,0,.65),0 0 24px rgba(245,194,0,.5);transition:all .3s ease;z-index:10004';
+  var tip=document.createElement('div');
+  tip.id='onboard-tip';
+  tip.style.cssText='position:fixed;z-index:10005;background:var(--bg2);border:1px solid var(--gold);padding:16px 18px;width:320px;font-family:Inter,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.6)';
+  document.body.appendChild(box);
+  document.body.appendChild(tip);
+  track('onboarding_started');
+  function render(){
+    var s=steps[i];
+    var t=document.querySelector(s.sel);
+    if(!t || t.offsetWidth===0 || t.offsetHeight===0){
+      i++;
+      if(i>=steps.length){done();return;}
+      render();return;
+    }
+    var r=t.getBoundingClientRect();
+    box.style.left=Math.max(0,r.left-4)+'px';
+    box.style.top=Math.max(0,r.top-4)+'px';
+    box.style.width=(r.width+8)+'px';
+    box.style.height=(r.height+8)+'px';
+    var tipW=320, tipH=170;
+    var left=Math.max(12, Math.min(window.innerWidth-tipW-12, r.left+r.width/2-tipW/2));
+    var top = (r.bottom+tipH+20 < window.innerHeight) ? r.bottom+12 : Math.max(12, r.top-tipH-12);
+    tip.style.left=left+'px';
+    tip.style.top=top+'px';
+    tip.innerHTML=
+      '<div style="color:var(--gold);font-size:9px;letter-spacing:1.5px;margin-bottom:4px">STEP '+(i+1)+' OF '+steps.length+'</div>'
+      +'<div style="color:var(--tx);font-size:13px;font-weight:600;margin-bottom:6px">'+s.title+'</div>'
+      +'<div style="color:var(--tx2);font-size:11px;line-height:1.55;margin-bottom:12px">'+s.body+'</div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'
+        +'<button id="onboard-skip" style="background:transparent;border:none;color:var(--tx3);font-family:Inter,sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Skip tour</button>'
+        +'<button id="onboard-next" style="background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:7px 16px;font-family:Inter,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase">'+(i<steps.length-1?'Next':'Got it')+'</button>'
+      +'</div>';
+    document.getElementById('onboard-skip').onclick=function(){ track('onboarding_skipped',{step:i}); done(); };
+    document.getElementById('onboard-next').onclick=function(){
+      i++;
+      if(i>=steps.length){track('onboarding_completed');done();return;}
+      render();
+    };
+  }
+  function done(){
+    localStorage.setItem('polymind_onboarded','1');
+    if(box.parentNode)box.remove();
+    if(tip.parentNode)tip.remove();
+  }
+  setTimeout(render, 450);
+}
+
 // ─── FEEDBACK ────────────────────────────────────────────────────────────────
 function showFeedbackModal(source){
   var existing=document.getElementById('feedback-modal');
@@ -2526,12 +2600,33 @@ document.addEventListener('DOMContentLoaded',function(){
   if(landVerNum) landVerNum.textContent=APP_VERSION;
   track('landing_viewed');
 
+  // Pro re-validation — if we hold an activation code, ping the server once
+  // per load. If the code is revoked (e.g. subscription cancelled and past
+  // period end), downgrade silently so a stale device can't keep Pro access.
+  if(TIER.isPro && TIER.proCode){
+    (function revalidate(){
+      fetch('/api/activate',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({code: TIER.proCode})
+      }).then(function(r){return r.json();}).then(function(res){
+        if(res && res.valid===false && /revoked/i.test(res.error||'')){
+          track('pro_revoked_on_load');
+          TIER.isPro=false;
+          TIER.proCode='';
+          tierSave();
+          tierUpdateUI();
+        }
+      }).catch(function(){ /* ignore network errors — keep current state */ });
+    })();
+  }
+
   // Enter dashboard — dismiss landing
   document.getElementById('land-enter-btn').addEventListener('click',function(){
     track('dashboard_entered', {tier: 'free'});
     landOverlay.style.opacity='0';
     landOverlay.style.transition='opacity .35s ease';
-    setTimeout(function(){ landOverlay.style.display='none'; },350);
+    setTimeout(function(){ landOverlay.style.display='none'; startOnboarding(); },350);
   });
 
   // Buy Pro from landing page
