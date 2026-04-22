@@ -45,6 +45,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .tab.on{color:var(--gold);border-bottom-color:var(--gold)}.tab:hover:not(.on){color:var(--tx)}
 /* ALERT ROWS */
 .arow{padding:8px 0 8px 12px;border-bottom:1px solid #08141e;border-left:3px solid transparent;transition:background .15s;animation:fs .3s ease-out;display:flex;align-items:stretch}
+.arow.seeded{opacity:.68}
+.arow.seeded:hover{opacity:.95}
+@keyframes seedIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fs{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .arow:hover{background:rgba(245,194,0,.04)}.arow.sel{background:rgba(245,194,0,.08);border-left-color:var(--gold)!important}
 .tier-high{background:rgba(255,208,96,.04)}
@@ -531,7 +534,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.11.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.11.1</strong></div>
 
     <div class="land-section">
       <div class="land-section-title" data-i18n="land_free">Free Tier</div>
@@ -1158,7 +1161,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.11.0';  // Bump on each release
+var APP_VERSION = '1.11.1';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1999,6 +2002,58 @@ function listAlertArchive(){
 }
 try{ pruneAlertArchive(); }catch(e){}
 
+// ─── SEED RECENT ALERTS ────────────────────────────────────────────────────
+// On dashboard enter, hydrate S.alerts with the most recent archived alerts
+// from the last 30 minutes so the user sees activity immediately instead of
+// staring at "waiting for signals…" for the first poll cycle.
+var SEED_WINDOW_MS = 30 * 60 * 1000;
+var SEED_MAX = 10;
+var _seedBannerTimer = null;
+function seedRecentAlerts(){
+  try{
+    var cutoff = Date.now() - SEED_WINDOW_MS;
+    var days = listAlertArchive();
+    var all = [];
+    days.forEach(function(d){ d.alerts.forEach(function(a){ all.push(a); }); });
+    var recent = all.filter(function(a){ return (a.ts||0) >= cutoff; })
+                    .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
+                    .slice(0, SEED_MAX);
+    if(!recent.length) return 0;
+    recent.forEach(function(slim){
+      // Skip if already live (by id) — prevents double-add after re-enter
+      if(S.alerts.some(function(x){ return x.id===slim.id; })) return;
+      S.alerts.push({
+        id: slim.id || ('seed-'+Math.random().toString(36).slice(2,8)),
+        t: slim.t, ts: slim.ts || Date.now(),
+        mkt: slim.mkt, mid: slim.mid,
+        amt: slim.amt, pr: slim.pr, prevPr: slim.prevPr, side: slim.side,
+        delayed: !!slim.delayed, seeded: true
+      });
+    });
+    if(S.alerts.length>100) S.alerts.length=100;
+    updCounts(); renderAlerts();
+    showSeedBanner(recent.length);
+    track('seeded_recent_alerts',{count:recent.length});
+    return recent.length;
+  }catch(e){ return 0; }
+}
+function showSeedBanner(count){
+  var existing = document.getElementById('seed-banner');
+  if(existing) existing.remove();
+  var b = document.createElement('div');
+  b.id = 'seed-banner';
+  b.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(122,156,184,.08);border-bottom:1px solid rgba(122,156,184,.2);font-family:Inter,sans-serif;font-size:10px;color:var(--tx2);animation:seedIn .3s ease-out';
+  b.innerHTML =
+    '<span style="color:var(--gold);font-size:12px">&#9432;</span>'
+    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent alert'+(count===1?'':'s')+' from the last 30 minutes &middot; <span style="color:var(--tx3)">new live signals will appear above as markets move</span></span>'
+    +'<button id="seed-banner-close" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase">Dismiss</button>';
+  var host = document.getElementById('filter-bar');
+  if(host && host.parentNode) host.parentNode.insertBefore(b, host);
+  var close = function(){ if(b.parentNode) b.remove(); if(_seedBannerTimer) clearTimeout(_seedBannerTimer); };
+  document.getElementById('seed-banner-close').addEventListener('click', close);
+  _seedBannerTimer = setTimeout(close, 30000);
+}
+
 // ─── MARKET WATCHLIST ──────────────────────────────────────────────────────
 var WATCHLIST_KEY='polymind_watchlist_v1';
 function getWatchlist(){
@@ -2187,9 +2242,10 @@ function renderAlerts(){
     var bc=sel?d.c:sv.tier==='EXTREME'?'var(--red)':sv.tier==='HIGH'?'var(--yw)':'transparent';
     var badge=sv.mult>=1.2?'<span class="mbd '+sv.bc+'">'+sv.mult.toFixed(1)+'&times;'+(sv.tier!=='NORMAL'?' '+sv.tier:'')+'</span>':'';
     var delayBadge=a.delayed?'<span style="display:inline-flex;align-items:center;padding:1px 5px;font-size:7px;letter-spacing:.5px;font-weight:700;background:rgba(240,144,58,.15);color:var(--or);margin-left:4px;vertical-align:middle">30m DELAYED</span>':'';
-    return '<div class="arow'+(sel?' sel':'')+' '+sv.cls+'" style="border-left-color:'+bc+'" data-id="'+a.id+'">'
+    var seedBadge=a.seeded?'<span style="display:inline-flex;align-items:center;padding:1px 5px;font-size:7px;letter-spacing:.5px;font-weight:700;background:rgba(122,156,184,.15);color:var(--tx3);margin-left:4px;vertical-align:middle">PAST</span>':'';
+    return '<div class="arow'+(sel?' sel':'')+(a.seeded?' seeded':'')+' '+sv.cls+'" style="border-left-color:'+bc+'" data-id="'+a.id+'">'
       +'<div class="arow-main" data-select="'+a.id+'">'
-        +'<div class="ahd"><span style="color:'+d.c+';font-size:12px">'+d.ic+'</span><span class="aty" style="color:'+d.c+'">'+d.lb+'</span>'+badge+delayBadge+'<span class="atm">'+ago(a.ts)+'</span></div>'
+        +'<div class="ahd"><span style="color:'+d.c+';font-size:12px">'+d.ic+'</span><span class="aty" style="color:'+d.c+'">'+d.lb+'</span>'+badge+delayBadge+seedBadge+'<span class="atm">'+ago(a.ts)+'</span></div>'
         +'<div class="amk">'+(a.mkt.length>50?a.mkt.slice(0,50)+'&hellip;':a.mkt)+'</div>'
         +'<div class="adt">'+alertDetail(a)+'</div>'
       +'</div>'
@@ -2989,12 +3045,16 @@ document.addEventListener('DOMContentLoaded',function(){
     })();
   }
 
-  // Enter dashboard — dismiss landing
+  // Enter dashboard — dismiss landing and seed recent alerts from archive
   document.getElementById('land-enter-btn').addEventListener('click',function(){
     track('dashboard_entered', {tier: 'free'});
     landOverlay.style.opacity='0';
     landOverlay.style.transition='opacity .35s ease';
-    setTimeout(function(){ landOverlay.style.display='none'; startOnboarding(); },350);
+    setTimeout(function(){
+      landOverlay.style.display='none';
+      try{ seedRecentAlerts(); }catch(e){}
+      startOnboarding();
+    },350);
   });
 
   // Buy Pro from landing page
