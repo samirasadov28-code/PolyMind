@@ -10,6 +10,14 @@
   force = true
   headers = {Accept = "application/json"}
 
+# Proxy Polymarket Data API (trades, positions) — for seeding recent alerts
+[[redirects]]
+  from = "/api/polymarket-data/*"
+  to = "https://data-api.polymarket.com/:splat"
+  status = 200
+  force = true
+  headers = {Accept = "application/json"}
+
 # AI proxy — routes to the serverless function
 [[redirects]]
   from = "/api/ai"

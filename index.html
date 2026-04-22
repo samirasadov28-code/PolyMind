@@ -534,7 +534,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.11.1</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.11.2</strong></div>
 
     <div class="land-section">
       <div class="land-section-title" data-i18n="land_free">Free Tier</div>
@@ -1161,7 +1161,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.11.1';  // Bump on each release
+var APP_VERSION = '1.11.2';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2003,55 +2003,141 @@ function listAlertArchive(){
 try{ pruneAlertArchive(); }catch(e){}
 
 // ─── SEED RECENT ALERTS ────────────────────────────────────────────────────
-// On dashboard enter, hydrate S.alerts with the most recent archived alerts
-// from the last 30 minutes so the user sees activity immediately instead of
-// staring at "waiting for signals…" for the first poll cycle.
+// On dashboard enter, hydrate S.alerts with recent large trades pulled from
+// Polymarket's public data API, so the user sees real recent activity
+// instead of staring at "waiting for signals…" for the first poll cycle.
+// Falls back to the local 7-day archive if the Polymarket API is unreachable.
 var SEED_WINDOW_MS = 30 * 60 * 1000;
 var SEED_MAX = 10;
+var SEED_MIN_TRADE_USD = 500; // only consider trades of $500+ for seeding
 var _seedBannerTimer = null;
-function seedRecentAlerts(){
+
+// Polymarket data-api base — proxied on Netlify to avoid CORS.
+var POLY_DATA = (typeof IS_NETLIFY!=='undefined' && IS_NETLIFY)
+  ? '/api/polymarket-data'
+  : 'https://data-api.polymarket.com';
+
+async function fetchRecentPolymarketAlerts(){
   try{
-    var cutoff = Date.now() - SEED_WINDOW_MS;
-    var days = listAlertArchive();
-    var all = [];
-    days.forEach(function(d){ d.alerts.forEach(function(a){ all.push(a); }); });
-    var recent = all.filter(function(a){ return (a.ts||0) >= cutoff; })
-                    .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
-                    .slice(0, SEED_MAX);
-    if(!recent.length) return 0;
-    recent.forEach(function(slim){
-      // Skip if already live (by id) — prevents double-add after re-enter
-      if(S.alerts.some(function(x){ return x.id===slim.id; })) return;
-      S.alerts.push({
-        id: slim.id || ('seed-'+Math.random().toString(36).slice(2,8)),
-        t: slim.t, ts: slim.ts || Date.now(),
-        mkt: slim.mkt, mid: slim.mid,
-        amt: slim.amt, pr: slim.pr, prevPr: slim.prevPr, side: slim.side,
-        delayed: !!slim.delayed, seeded: true
-      });
+    var cutoffSec = Math.floor((Date.now() - SEED_WINDOW_MS) / 1000);
+    // Pull the most recent large takers; limit high enough that we still find
+    // ~10 after filtering to the 30-minute window.
+    var url = POLY_DATA + '/trades?takerOnly=true&filterType=CASH&filterAmount='
+      + SEED_MIN_TRADE_USD + '&limit=60';
+    var r = await fetch(url, {headers:{Accept:'application/json'}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var trades = await r.json();
+    if(!Array.isArray(trades)) return [];
+    var recent = trades
+      .filter(function(tr){ return Number(tr.timestamp) >= cutoffSec; })
+      .sort(function(a,b){ return Number(b.timestamp)-Number(a.timestamp); })
+      .slice(0, SEED_MAX);
+    return recent.map(function(tr, i){
+      var size = Number(tr.size)||0;
+      var price = Number(tr.price)||0;
+      var amt = Math.round(size * price);
+      var side = tr.outcome || (tr.outcomeIndex===0?'Yes':'No');
+      var hash = (tr.transactionHash||'').slice(2,10) || Math.random().toString(36).slice(2,10);
+      return {
+        id: 'pm-'+hash+'-'+i,
+        t: 'WHALE',
+        ts: Number(tr.timestamp) * 1000,
+        mkt: tr.title || tr.eventSlug || tr.slug || 'Polymarket market',
+        mid: tr.conditionId || tr.market || null,
+        amt: amt,
+        pr: price,
+        side: side,
+        seeded: true
+      };
+    }).filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD; });
+  }catch(e){
+    console.warn('[seed] Polymarket trade fetch failed:', e.message);
+    return [];
+  }
+}
+
+function _seedFromArchive(){
+  var cutoff = Date.now() - SEED_WINDOW_MS;
+  var days = listAlertArchive();
+  var all = [];
+  days.forEach(function(d){ d.alerts.forEach(function(a){ all.push(a); }); });
+  return all.filter(function(a){ return (a.ts||0) >= cutoff; })
+            .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
+            .slice(0, SEED_MAX)
+            .map(function(slim){
+              return {
+                id: slim.id || ('seed-'+Math.random().toString(36).slice(2,8)),
+                t: slim.t, ts: slim.ts || Date.now(),
+                mkt: slim.mkt, mid: slim.mid,
+                amt: slim.amt, pr: slim.pr, prevPr: slim.prevPr, side: slim.side,
+                delayed: !!slim.delayed, seeded: true
+              };
+            });
+}
+
+async function seedRecentAlerts(){
+  try{
+    // Show a waiting-state banner while the trade fetch is in flight so the
+    // user immediately sees that something is loading, not an empty panel.
+    showSeedBannerLoading();
+    var recent = await fetchRecentPolymarketAlerts();
+    var source = 'polymarket';
+    if(!recent.length){
+      recent = _seedFromArchive();
+      source = 'archive';
+    }
+    if(!recent.length){
+      hideSeedBanner();
+      return 0;
+    }
+    recent.forEach(function(a){
+      if(S.alerts.some(function(x){ return x.id===a.id; })) return;
+      S.alerts.push(a);
     });
+    // Keep seeded rows chronologically at the top of the "past" stream by
+    // sorting by timestamp desc, but live alerts will still prepend above.
+    S.alerts.sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
     if(S.alerts.length>100) S.alerts.length=100;
     updCounts(); renderAlerts();
-    showSeedBanner(recent.length);
-    track('seeded_recent_alerts',{count:recent.length});
+    showSeedBanner(recent.length, source);
+    track('seeded_recent_alerts', {count: recent.length, source: source});
     return recent.length;
-  }catch(e){ return 0; }
+  }catch(e){
+    hideSeedBanner();
+    return 0;
+  }
 }
-function showSeedBanner(count){
+function _ensureSeedBanner(){
   var existing = document.getElementById('seed-banner');
-  if(existing) existing.remove();
+  if(existing) return existing;
   var b = document.createElement('div');
   b.id = 'seed-banner';
   b.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(122,156,184,.08);border-bottom:1px solid rgba(122,156,184,.2);font-family:Inter,sans-serif;font-size:10px;color:var(--tx2);animation:seedIn .3s ease-out';
-  b.innerHTML =
-    '<span style="color:var(--gold);font-size:12px">&#9432;</span>'
-    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent alert'+(count===1?'':'s')+' from the last 30 minutes &middot; <span style="color:var(--tx3)">new live signals will appear above as markets move</span></span>'
-    +'<button id="seed-banner-close" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase">Dismiss</button>';
   var host = document.getElementById('filter-bar');
   if(host && host.parentNode) host.parentNode.insertBefore(b, host);
-  var close = function(){ if(b.parentNode) b.remove(); if(_seedBannerTimer) clearTimeout(_seedBannerTimer); };
-  document.getElementById('seed-banner-close').addEventListener('click', close);
-  _seedBannerTimer = setTimeout(close, 30000);
+  return b;
+}
+function hideSeedBanner(){
+  var b = document.getElementById('seed-banner');
+  if(b) b.remove();
+  if(_seedBannerTimer){ clearTimeout(_seedBannerTimer); _seedBannerTimer = null; }
+}
+function showSeedBannerLoading(){
+  var b = _ensureSeedBanner();
+  b.innerHTML =
+    '<span style="color:var(--gold);font-size:12px">&#9201;</span>'
+    +'<span style="flex:1;line-height:1.4;color:var(--tx3)">Loading recent Polymarket trades from the last 30 minutes&hellip;</span>';
+}
+function showSeedBanner(count, source){
+  var b = _ensureSeedBanner();
+  var srcLabel = source==='polymarket' ? 'from Polymarket' : 'from your local archive';
+  b.innerHTML =
+    '<span style="color:var(--gold);font-size:12px">&#9432;</span>'
+    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent trade'+(count===1?'':'s')+' '+srcLabel+' &middot; last 30 minutes &middot; <span style="color:var(--tx3)">new live signals will appear above</span></span>'
+    +'<button id="seed-banner-close" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase">Dismiss</button>';
+  document.getElementById('seed-banner-close').addEventListener('click', hideSeedBanner);
+  if(_seedBannerTimer) clearTimeout(_seedBannerTimer);
+  _seedBannerTimer = setTimeout(hideSeedBanner, 30000);
 }
 
 // ─── MARKET WATCHLIST ──────────────────────────────────────────────────────
