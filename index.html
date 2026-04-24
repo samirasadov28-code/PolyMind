@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.2</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.3</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -558,9 +558,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
           <span class="land-tier-price">$0</span>
         </div>
         <ul>
-          <li><span class="ic">&#10003;</span><span>5 live signals / day</span></li>
-          <li><span class="ic">&#10003;</span><span>Delayed alerts after (up to 30 / day)</span></li>
-          <li><span class="ic">&#10003;</span><span>Multi-AI analysis included</span></li>
+          <li><span class="ic">&#10003;</span><span data-i18n="land_free_sig">5 live signals / day</span></li>
+          <li><span class="ic">&#10003;</span><span data-i18n="land_free_delay">Delayed alerts after (up to 30 / day)</span></li>
+          <li><span class="ic">&#10003;</span><span data-i18n="land_free_ai">Multi-AI analysis included</span></li>
         </ul>
       </div>
       <div class="land-tier pro">
@@ -569,9 +569,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
           <span class="land-tier-price">$3.99/mo</span>
         </div>
         <ul>
-          <li><span class="ic">&#9733;</span><span>Unlimited live signals</span></li>
-          <li><span class="ic">&#9733;</span><span>Zero delay &middot; real-time</span></li>
-          <li><span class="ic">&#9733;</span><span>Everything in Free</span></li>
+          <li><span class="ic">&#9733;</span><span data-i18n="land_pro_sig">Unlimited live signals</span></li>
+          <li><span class="ic">&#9733;</span><span data-i18n="land_pro_delay">Zero delay &middot; real-time</span></li>
+          <li><span class="ic">&#9733;</span><span data-i18n="land_pro_all">Everything in Free</span></li>
         </ul>
       </div>
     </div>
@@ -593,9 +593,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <div class="land-footer-row">
       <span>&copy; 2026 PolyMind</span>
       <span class="sep">&middot;</span>
-      <span>&#128274; Secure by Stripe</span>
+      <span data-i18n="land_stripe" data-i18n-prefix="&#128274; ">&#128274; Secure by Stripe</span>
       <span class="sep">&middot;</span>
-      <a href="#" id="land-feedback-link">Send feedback</a>
+      <a href="#" id="land-feedback-link" data-i18n="land_feedback">Send feedback</a>
     </div>
     <div style="text-align:center"><button class="land-force-link" id="land-force-btn" data-i18n="land_force" data-i18n-prefix="⟲ ">⟲ Force Update</button></div>
   </div>
@@ -1194,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.2';  // Bump on each release
+var APP_VERSION = '1.12.3';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1222,54 +1222,93 @@ function langFlagHtml(code,h){
 }
 var I18N={
   en:{land_sub:'Real-Time Poly Alerts',land_free:'Free Tier',land_pro:'Pro Tier',land_enter:'Enter Free Dashboard',land_buypro:'Buy Pro — $3.99/month',land_redeem:'Redeem activation code',land_already:'Already paid?',land_force:'Force Update',
+      land_free_sig:'5 live signals / day',land_free_delay:'Delayed alerts after (up to 30 / day)',land_free_ai:'Multi-AI analysis included',
+      land_pro_sig:'Unlimited live signals',land_pro_delay:'Zero delay · real-time',land_pro_all:'Everything in Free',
+      land_stripe:'Secure by Stripe',land_feedback:'Send feedback',
       tab_alerts:'ALERTS',tab_markets:'MARKETS',tab_config:'CONFIG',btn_history:'HISTORY',btn_watchlist:'WATCHLIST',btn_clear:'CLEAR ALL',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
       filter_label:'Filtered',filter_clear:'CLEAR',empty_waiting:'Waiting for signals...',empty_select:'Select an alert to analyse',
       tier_high:'HIGH tier',tier_extreme:'EXTREME',lang_title:'Language',lang_desc:'Choose your language'},
   uk:{land_sub:'Сповіщення Poly у реальному часі',land_free:'Безкоштовний',land_pro:'Тариф Pro',land_enter:'Відкрити панель',land_buypro:'Купити Pro — $3.99/міс',land_redeem:'Активувати код',land_already:'Уже сплатили?',land_force:'Оновити',
+      land_free_sig:'5 сигналів наживо / день',land_free_delay:'Далі — із затримкою (до 30 / день)',land_free_ai:'Аналіз Multi-AI включено',
+      land_pro_sig:'Необмежено сигналів наживо',land_pro_delay:'Нульова затримка · в реальному часі',land_pro_all:'Усе з тарифу Free',
+      land_stripe:'Захищено Stripe',land_feedback:'Надіслати відгук',
       tab_alerts:'СПОВІЩЕННЯ',tab_markets:'РИНКИ',tab_config:'НАЛАШТ.',btn_history:'ІСТОРІЯ',btn_watchlist:'ОБРАНЕ',btn_clear:'ОЧИСТИТИ',btn_pause:'ПАУЗА',btn_live:'НАЖИВО',btn_pro:'PRO',
       filter_label:'Фільтр',filter_clear:'СКИНУТИ',empty_waiting:'Очікування сигналів...',empty_select:'Виберіть сповіщення для аналізу',
       tier_high:'Рівень ВИСОКИЙ',tier_extreme:'ЕКСТРЕМАЛЬНИЙ',lang_title:'Мова',lang_desc:'Виберіть мову'},
   fr:{land_sub:'Alertes Poly en temps réel',land_free:'Offre gratuite',land_pro:'Offre Pro',land_enter:'Ouvrir le tableau',land_buypro:'Acheter Pro — 3,99$/mois',land_redeem:"Utiliser un code d'activation",land_already:'Déjà payé ?',land_force:'Forcer la mise à jour',
+      land_free_sig:'5 signaux en direct / jour',land_free_delay:'Alertes différées ensuite (jusqu’à 30 / jour)',land_free_ai:'Analyse multi-IA incluse',
+      land_pro_sig:'Signaux illimités en direct',land_pro_delay:'Aucun délai · temps réel',land_pro_all:'Tout l’offre gratuite inclus',
+      land_stripe:'Paiement sécurisé par Stripe',land_feedback:'Envoyer un avis',
       tab_alerts:'ALERTES',tab_markets:'MARCHÉS',tab_config:'CONFIG',btn_history:'HISTORIQUE',btn_watchlist:'FAVORIS',btn_clear:'TOUT EFFACER',btn_pause:'PAUSE',btn_live:'EN DIRECT',btn_pro:'PRO',
       filter_label:'Filtré',filter_clear:'EFFACER',empty_waiting:'En attente de signaux...',empty_select:'Sélectionnez une alerte à analyser',
       tier_high:'Niveau ÉLEVÉ',tier_extreme:'EXTRÊME',lang_title:'Langue',lang_desc:'Choisissez votre langue'},
   es:{land_sub:'Alertas Poly en tiempo real',land_free:'Plan gratuito',land_pro:'Plan Pro',land_enter:'Abrir panel gratuito',land_buypro:'Comprar Pro — $3.99/mes',land_redeem:'Canjear código de activación',land_already:'¿Ya pagaste?',land_force:'Actualizar',
+      land_free_sig:'5 señales en vivo / día',land_free_delay:'Luego alertas con retraso (hasta 30 / día)',land_free_ai:'Análisis Multi-IA incluido',
+      land_pro_sig:'Señales en vivo ilimitadas',land_pro_delay:'Sin retraso · tiempo real',land_pro_all:'Todo el plan gratuito',
+      land_stripe:'Seguro con Stripe',land_feedback:'Enviar comentarios',
       tab_alerts:'ALERTAS',tab_markets:'MERCADOS',tab_config:'CONFIG.',btn_history:'HISTORIAL',btn_watchlist:'FAVORITOS',btn_clear:'BORRAR TODO',btn_pause:'PAUSA',btn_live:'EN VIVO',btn_pro:'PRO',
       filter_label:'Filtrado',filter_clear:'QUITAR',empty_waiting:'Esperando señales...',empty_select:'Selecciona una alerta para analizar',
       tier_high:'Nivel ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Elige tu idioma'},
   de:{land_sub:'Poly-Warnungen in Echtzeit',land_free:'Kostenlos',land_pro:'Pro-Tarif',land_enter:'Kostenloses Dashboard',land_buypro:'Pro kaufen — 3,99$/Monat',land_redeem:'Aktivierungscode einlösen',land_already:'Schon bezahlt?',land_force:'Aktualisieren',
+      land_free_sig:'5 Live-Signale / Tag',land_free_delay:'Danach verzögerte Alarme (bis 30 / Tag)',land_free_ai:'Multi-KI-Analyse inklusive',
+      land_pro_sig:'Unbegrenzte Live-Signale',land_pro_delay:'Keine Verzögerung · Echtzeit',land_pro_all:'Alles aus Free enthalten',
+      land_stripe:'Sicher über Stripe',land_feedback:'Feedback senden',
       tab_alerts:'ALARME',tab_markets:'MÄRKTE',tab_config:'EINST.',btn_history:'VERLAUF',btn_watchlist:'MERKLISTE',btn_clear:'ALLES LÖSCHEN',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
       filter_label:'Gefiltert',filter_clear:'LÖSCHEN',empty_waiting:'Warte auf Signale...',empty_select:'Wähle einen Alarm zur Analyse',
       tier_high:'HOHE Stufe',tier_extreme:'EXTREM',lang_title:'Sprache',lang_desc:'Sprache wählen'},
   pt:{land_sub:'Alertas Poly em tempo real',land_free:'Plano gratuito',land_pro:'Plano Pro',land_enter:'Abrir painel grátis',land_buypro:'Comprar Pro — $3,99/mês',land_redeem:'Resgatar código de ativação',land_already:'Já pagou?',land_force:'Atualizar',
+      land_free_sig:'5 sinais ao vivo / dia',land_free_delay:'Depois, alertas com atraso (até 30 / dia)',land_free_ai:'Análise Multi-IA incluída',
+      land_pro_sig:'Sinais ao vivo ilimitados',land_pro_delay:'Sem atraso · em tempo real',land_pro_all:'Tudo do plano gratuito',
+      land_stripe:'Seguro com Stripe',land_feedback:'Enviar feedback',
       tab_alerts:'ALERTAS',tab_markets:'MERCADOS',tab_config:'CONFIG',btn_history:'HISTÓRICO',btn_watchlist:'FAVORITOS',btn_clear:'LIMPAR TUDO',btn_pause:'PAUSAR',btn_live:'AO VIVO',btn_pro:'PRO',
       filter_label:'Filtrado',filter_clear:'LIMPAR',empty_waiting:'Aguardando sinais...',empty_select:'Selecione um alerta para analisar',
       tier_high:'Nível ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Escolha o idioma'},
   it:{land_sub:'Avvisi Poly in tempo reale',land_free:'Piano gratuito',land_pro:'Piano Pro',land_enter:'Apri la dashboard',land_buypro:'Acquista Pro — $3,99/mese',land_redeem:'Usa codice di attivazione',land_already:'Già pagato?',land_force:'Aggiorna',
+      land_free_sig:'5 segnali live / giorno',land_free_delay:'Poi avvisi in ritardo (fino a 30 / giorno)',land_free_ai:'Analisi Multi-IA inclusa',
+      land_pro_sig:'Segnali live illimitati',land_pro_delay:'Nessun ritardo · tempo reale',land_pro_all:'Tutto il piano gratuito',
+      land_stripe:'Sicuro con Stripe',land_feedback:'Invia feedback',
       tab_alerts:'AVVISI',tab_markets:'MERCATI',tab_config:'IMPOST.',btn_history:'CRONOLOGIA',btn_watchlist:'PREFERITI',btn_clear:'CANCELLA TUTTO',btn_pause:'PAUSA',btn_live:'DIRETTA',btn_pro:'PRO',
       filter_label:'Filtrato',filter_clear:'PULISCI',empty_waiting:'In attesa di segnali...',empty_select:'Seleziona un avviso da analizzare',
       tier_high:'Livello ALTO',tier_extreme:'ESTREMO',lang_title:'Lingua',lang_desc:'Scegli la lingua'},
   nl:{land_sub:'Poly-waarschuwingen in realtime',land_free:'Gratis',land_pro:'Pro-abonnement',land_enter:'Open gratis dashboard',land_buypro:'Koop Pro — $3,99/maand',land_redeem:'Activeringscode inwisselen',land_already:'Al betaald?',land_force:'Bijwerken',
+      land_free_sig:'5 live signalen / dag',land_free_delay:'Daarna vertraagde meldingen (tot 30 / dag)',land_free_ai:'Multi-AI-analyse inbegrepen',
+      land_pro_sig:'Onbeperkt live signalen',land_pro_delay:'Geen vertraging · realtime',land_pro_all:'Alles uit Gratis',
+      land_stripe:'Veilig via Stripe',land_feedback:'Feedback sturen',
       tab_alerts:'MELDINGEN',tab_markets:'MARKTEN',tab_config:'INSTEL',btn_history:'GESCHIED.',btn_watchlist:'FAVORIETEN',btn_clear:'ALLES WISSEN',btn_pause:'PAUZE',btn_live:'LIVE',btn_pro:'PRO',
       filter_label:'Gefilterd',filter_clear:'WISSEN',empty_waiting:'Wachten op signalen...',empty_select:'Selecteer een melding om te analyseren',
       tier_high:'HOOG niveau',tier_extreme:'EXTREEM',lang_title:'Taal',lang_desc:'Kies uw taal'},
   tr:{land_sub:'Gerçek zamanlı Poly uyarıları',land_free:'Ücretsiz',land_pro:'Pro Plan',land_enter:'Ücretsiz panele gir',land_buypro:'Pro Satın Al — 3,99$/ay',land_redeem:'Etkinleştirme kodunu kullan',land_already:'Zaten ödedin mi?',land_force:'Güncelle',
+      land_free_sig:'Günde 5 canlı sinyal',land_free_delay:'Sonrası gecikmeli (günde 30\'a kadar)',land_free_ai:'Çoklu AI analizi dahil',
+      land_pro_sig:'Sınırsız canlı sinyal',land_pro_delay:'Gecikmesiz · gerçek zamanlı',land_pro_all:'Ücretsiz\'deki her şey',
+      land_stripe:'Stripe ile güvenli',land_feedback:'Geri bildirim gönder',
       tab_alerts:'UYARILAR',tab_markets:'PİYASALAR',tab_config:'AYARLAR',btn_history:'GEÇMİŞ',btn_watchlist:'İZLEME',btn_clear:'TÜMÜNÜ SİL',btn_pause:'DURAKLAT',btn_live:'CANLI',btn_pro:'PRO',
       filter_label:'Filtrelendi',filter_clear:'TEMİZLE',empty_waiting:'Sinyaller bekleniyor...',empty_select:'Analiz için bir uyarı seçin',
       tier_high:'YÜKSEK seviye',tier_extreme:'AŞIRI',lang_title:'Dil',lang_desc:'Dilinizi seçin'},
   zh:{land_sub:'实时 Poly 提醒',land_free:'免费版',land_pro:'Pro 版',land_enter:'进入免费控制台',land_buypro:'购买 Pro — $3.99/月',land_redeem:'兑换激活码',land_already:'已付款？',land_force:'更新',
+      land_free_sig:'每天 5 条实时信号',land_free_delay:'之后延迟提醒（每天最多 30 条）',land_free_ai:'内置多 AI 分析',
+      land_pro_sig:'无限实时信号',land_pro_delay:'零延迟 · 实时',land_pro_all:'包含免费版全部功能',
+      land_stripe:'由 Stripe 安全保障',land_feedback:'发送反馈',
       tab_alerts:'提醒',tab_markets:'市场',tab_config:'设置',btn_history:'历史',btn_watchlist:'关注',btn_clear:'全部清除',btn_pause:'暂停',btn_live:'实时',btn_pro:'PRO',
       filter_label:'已筛选',filter_clear:'清除',empty_waiting:'等待信号...',empty_select:'选择提醒进行分析',
       tier_high:'高级别',tier_extreme:'极端',lang_title:'语言',lang_desc:'选择语言'},
   ar:{land_sub:'تنبيهات Poly في الوقت الفعلي',land_free:'المستوى المجاني',land_pro:'اشتراك Pro',land_enter:'فتح لوحة المجانية',land_buypro:'شراء Pro — 3.99$ شهريًا',land_redeem:'استخدام رمز التفعيل',land_already:'هل دفعت بالفعل؟',land_force:'تحديث',
+      land_free_sig:'5 إشارات مباشرة / يوميًا',land_free_delay:'بعد ذلك تنبيهات مؤجلة (حتى 30 / يومياً)',land_free_ai:'تحليل متعدد الذكاء الاصطناعي مضمّن',
+      land_pro_sig:'إشارات مباشرة غير محدودة',land_pro_delay:'بدون تأخير · في الوقت الفعلي',land_pro_all:'كل ما في الخطة المجانية',
+      land_stripe:'آمن عبر Stripe',land_feedback:'إرسال ملاحظة',
       tab_alerts:'تنبيهات',tab_markets:'الأسواق',tab_config:'الإعدادات',btn_history:'السجل',btn_watchlist:'المفضلة',btn_clear:'مسح الكل',btn_pause:'إيقاف',btn_live:'مباشر',btn_pro:'PRO',
       filter_label:'تمت التصفية',filter_clear:'مسح',empty_waiting:'بانتظار الإشارات...',empty_select:'اختر تنبيهًا للتحليل',
       tier_high:'مستوى مرتفع',tier_extreme:'متطرف',lang_title:'اللغة',lang_desc:'اختر لغتك'},
   hi:{land_sub:'रीयल-टाइम Poly अलर्ट',land_free:'निःशुल्क',land_pro:'प्रो प्लान',land_enter:'निःशुल्क डैशबोर्ड',land_buypro:'प्रो खरीदें — $3.99/माह',land_redeem:'सक्रियण कोड भुनाएँ',land_already:'पहले से भुगतान किया?',land_force:'अपडेट',
+      land_free_sig:'दिन में 5 लाइव सिग्नल',land_free_delay:'फिर देरी वाले अलर्ट (30 / दिन तक)',land_free_ai:'मल्टी-AI विश्लेषण शामिल',
+      land_pro_sig:'असीमित लाइव सिग्नल',land_pro_delay:'शून्य देरी · रीयल-टाइम',land_pro_all:'निःशुल्क की सभी सुविधाएँ',
+      land_stripe:'Stripe से सुरक्षित',land_feedback:'फ़ीडबैक भेजें',
       tab_alerts:'अलर्ट',tab_markets:'मार्केट्स',tab_config:'कॉन्फ़िग',btn_history:'इतिहास',btn_watchlist:'वॉचलिस्ट',btn_clear:'सब मिटाएँ',btn_pause:'रोकें',btn_live:'लाइव',btn_pro:'PRO',
       filter_label:'फ़िल्टर',filter_clear:'मिटाएँ',empty_waiting:'सिग्नल का इंतज़ार...',empty_select:'विश्लेषण के लिए अलर्ट चुनें',
       tier_high:'उच्च स्तर',tier_extreme:'अत्यधिक',lang_title:'भाषा',lang_desc:'अपनी भाषा चुनें'},
   ru:{land_sub:'Poly-оповещения в реальном времени',land_free:'Бесплатно',land_pro:'Тариф Pro',land_enter:'Открыть панель',land_buypro:'Купить Pro — $3.99/мес',land_redeem:'Активировать код',land_already:'Уже оплатили?',land_force:'Обновить',
+      land_free_sig:'5 live-сигналов / день',land_free_delay:'Далее — с задержкой (до 30 / день)',land_free_ai:'Multi-AI анализ включён',
+      land_pro_sig:'Неограниченные live-сигналы',land_pro_delay:'Нулевая задержка · в реальном времени',land_pro_all:'Всё из бесплатного',
+      land_stripe:'Безопасно через Stripe',land_feedback:'Отправить отзыв',
       tab_alerts:'ОПОВЕЩЕНИЯ',tab_markets:'РЫНКИ',tab_config:'НАСТР.',btn_history:'ИСТОРИЯ',btn_watchlist:'ИЗБРАННОЕ',btn_clear:'ОЧИСТИТЬ',btn_pause:'ПАУЗА',btn_live:'В ЭФИРЕ',btn_pro:'PRO',
       filter_label:'Фильтр',filter_clear:'СБРОС',empty_waiting:'Ожидание сигналов...',empty_select:'Выберите оповещение для анализа',
       tier_high:'Уровень ВЫСОКИЙ',tier_extreme:'ЭКСТРЕМАЛЬНО',lang_title:'Язык',lang_desc:'Выберите язык'}
