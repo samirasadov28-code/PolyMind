@@ -522,7 +522,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
 <!-- ─── LANDING OVERLAY ──────────────────────────────────────────────────── -->
 <div id="landing-overlay">
-  <button class="land-lang" id="land-lang-btn" title="Language" type="button"><span class="ic">&#127760;</span><span id="land-lang-lbl">EN</span></button>
+  <button class="land-lang" id="land-lang-btn" title="Language" type="button"><span id="land-lang-flag" style="display:inline-flex;align-items:center"></span><span id="land-lang-lbl">EN</span></button>
   <div class="land-card">
     <div class="land-logo">
       <svg viewBox="0 0 64 58" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.0</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.1</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -645,7 +645,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     <button id="hdr-pro-btn" onclick="showUpgradeModal()"><span data-i18n="btn_pro" data-i18n-prefix="★ ">★ PRO</span></button>
     <div class="badge"><div class="dot pulse" id="live-dot"></div><span id="live-txt" style="color:var(--gr);font-size:10px;letter-spacing:1px" data-i18n="btn_live">LIVE</span></div>
     <button class="ghost" id="snd-btn" title="EXTREME alert sound" style="padding:4px 8px;font-size:14px" aria-pressed="true">&#128266;</button>
-    <button class="ghost" id="lang-btn" title="Language" style="padding:4px 10px;font-size:10px;letter-spacing:.5px">&#127760; <span id="lang-btn-lbl">EN</span></button>
+    <button class="ghost" id="lang-btn" title="Language" style="padding:4px 8px;font-size:10px;letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px"><span id="lang-btn-flag" style="display:inline-flex;align-items:center"></span><span id="lang-btn-lbl">EN</span></button>
     <button class="ghost" id="pause-btn"><span data-i18n="btn_pause" data-i18n-prefix="⏸ ">⏸ PAUSE</span></button>
   </div>
 </div>
@@ -1194,25 +1194,32 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.0';  // Bump on each release
+var APP_VERSION = '1.12.1';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
 var LANGS=[
-  {code:'en',flag:'🇬🇧',name:'English'},
-  {code:'uk',flag:'🇺🇦',name:'Українська'},
-  {code:'fr',flag:'🇫🇷',name:'Français'},
-  {code:'es',flag:'🇪🇸',name:'Español'},
-  {code:'de',flag:'🇩🇪',name:'Deutsch'},
-  {code:'pt',flag:'🇵🇹',name:'Português'},
-  {code:'it',flag:'🇮🇹',name:'Italiano'},
-  {code:'nl',flag:'🇳🇱',name:'Nederlands'},
-  {code:'tr',flag:'🇹🇷',name:'Türkçe'},
-  {code:'zh',flag:'🇨🇳',name:'中文'},
-  {code:'ar',flag:'🇸🇦',name:'العربية',rtl:true},
-  {code:'hi',flag:'🇮🇳',name:'हिन्दी'},
-  {code:'ru',flag:'',   name:'Русский'}
+  {code:'en',cc:'gb',name:'English'},
+  {code:'uk',cc:'ua',name:'Українська'},
+  {code:'fr',cc:'fr',name:'Français'},
+  {code:'es',cc:'es',name:'Español'},
+  {code:'de',cc:'de',name:'Deutsch'},
+  {code:'pt',cc:'pt',name:'Português'},
+  {code:'it',cc:'it',name:'Italiano'},
+  {code:'nl',cc:'nl',name:'Nederlands'},
+  {code:'tr',cc:'tr',name:'Türkçe'},
+  {code:'zh',cc:'cn',name:'中文'},
+  {code:'ar',cc:'sa',name:'العربية',rtl:true},
+  {code:'hi',cc:'in',name:'हिन्दी'},
+  {code:'ru',cc:'ru',name:'Русский'}
 ];
+function langFlagHtml(code,h){
+  h=h||14;
+  var L=LANGS.find(function(x){return x.code===code;});
+  if(!L||!L.cc) return '<span style="display:inline-block;width:'+(h*1.5)+'px;text-align:center;color:var(--tx3);font-size:10px;letter-spacing:1px">'+code.toUpperCase()+'</span>';
+  var w=Math.round(h*1.5);
+  return '<img src="https://flagcdn.com/w40/'+L.cc+'.png" srcset="https://flagcdn.com/w80/'+L.cc+'.png 2x" width="'+w+'" height="'+h+'" alt="'+L.name+'" style="display:inline-block;vertical-align:middle;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.06);object-fit:cover" onerror="this.outerHTML=\'<span style=&quot;display:inline-block;width:'+w+'px;text-align:center;color:var(--tx3);font-size:10px;letter-spacing:1px&quot;>'+code.toUpperCase()+'</span>\'">';
+}
 var I18N={
   en:{land_sub:'Real-Time Poly Alerts',land_free:'Free Tier',land_pro:'Pro Tier',land_enter:'Enter Free Dashboard',land_buypro:'Buy Pro — $3.99/month',land_redeem:'Redeem activation code',land_already:'Already paid?',land_force:'Force Update',
       tab_alerts:'ALERTS',tab_markets:'MARKETS',tab_config:'CONFIG',btn_history:'HISTORY',btn_watchlist:'WATCHLIST',btn_clear:'CLEAR ALL',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
@@ -1295,6 +1302,10 @@ function applyI18n(){
     if(btn) btn.textContent = LANG.toUpperCase();
     var lbl=document.getElementById('land-lang-lbl');
     if(lbl) lbl.textContent = LANG.toUpperCase();
+    var hFlag=document.getElementById('lang-btn-flag');
+    if(hFlag) hFlag.innerHTML = langFlagHtml(LANG, 12);
+    var lFlag=document.getElementById('land-lang-flag');
+    if(lFlag) lFlag.innerHTML = langFlagHtml(LANG, 13);
   }catch(e){}
 }
 function setLanguage(code){
@@ -1315,9 +1326,8 @@ function showLangModal(){
   m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
   var cards=LANGS.map(function(L){
     var active=L.code===LANG;
-    var flagHtml = L.flag ? '<span style="font-size:20px;line-height:1">'+L.flag+'</span>' : '<span style="font-size:13px;color:var(--tx3);letter-spacing:1px;width:22px;text-align:center">'+L.code.toUpperCase()+'</span>';
     return '<button class="lang-card" data-lang="'+L.code+'" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:'+(active?'rgba(245,194,0,.1)':'var(--bg3)')+';border:1px solid '+(active?'var(--gold)':'var(--bdr2)')+';color:var(--tx);font-family:Inter,sans-serif;font-size:11px;cursor:pointer;transition:all .15s;text-align:left;width:100%">'
-      +flagHtml
+      +langFlagHtml(L.code,16)
       +'<span style="flex:1;font-weight:'+(active?'700':'500')+';color:'+(active?'var(--gold)':'var(--tx2)')+'">'+L.name+'</span>'
       +(active?'<span style="color:var(--gold);font-size:10px">&#10003;</span>':'')
       +'</button>';
