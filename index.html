@@ -426,6 +426,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
 /* LANDING OVERLAY */
 #landing-overlay{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;overflow-y:auto}
+.land-lang{position:absolute;top:16px;right:16px;z-index:2;display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--bdr2);color:var(--tx2);padding:6px 12px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:.8px;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
+.land-lang:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3)}
+.land-lang .ic{font-size:13px;line-height:1}
 .land-card{max-width:440px;width:92%;padding:36px 32px;text-align:center}
 .land-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
 .land-logo svg{width:44px;height:44px}
@@ -472,6 +475,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 /* Mobile landing fixes */
 @media (max-width:640px){
   #landing-overlay{align-items:flex-start;padding:16px 0 24px}
+  .land-lang{top:10px;right:10px;padding:5px 10px;font-size:10px}
   .land-card{padding:24px 18px;width:100%;max-width:100%}
   .land-title{font-size:22px}
   .land-sub{font-size:9px;margin-bottom:20px}
@@ -508,6 +512,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
 <!-- ─── LANDING OVERLAY ──────────────────────────────────────────────────── -->
 <div id="landing-overlay">
+  <button class="land-lang" id="land-lang-btn" title="Language" type="button"><span class="ic">&#127760;</span><span id="land-lang-lbl">EN</span></button>
   <div class="land-card">
     <div class="land-logo">
       <svg viewBox="0 0 64 58" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1260,6 +1265,8 @@ function applyI18n(){
     });
     var btn=document.getElementById('lang-btn-lbl');
     if(btn) btn.textContent = LANG.toUpperCase();
+    var lbl=document.getElementById('land-lang-lbl');
+    if(lbl) lbl.textContent = LANG.toUpperCase();
   }catch(e){}
 }
 function setLanguage(code){
@@ -3307,8 +3314,9 @@ document.addEventListener('DOMContentLoaded',function(){
   // Language selector
   (function(){
     var lb=document.getElementById('lang-btn');
-    if(!lb) return;
-    lb.addEventListener('click',showLangModal);
+    if(lb) lb.addEventListener('click',showLangModal);
+    var ll=document.getElementById('land-lang-btn');
+    if(ll) ll.addEventListener('click',showLangModal);
   })();
   document.getElementById('tab-a').addEventListener('click',function(){
     if(IS_MOBILE){ setMobTab('alerts'); return; }
