@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.1</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.2</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -1194,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.1';  // Bump on each release
+var APP_VERSION = '1.12.2';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -3642,25 +3642,33 @@ document.addEventListener('DOMContentLoaded',function(){
   async function analyzeMobile(a){
     var body = document.getElementById('mob-ai-body');
     body.innerHTML = '<div class="ldg" style="padding-top:40px"><div class="ldg-ic">&#9672;</div><div style="color:var(--tx2);font-size:10px;letter-spacing:2px;margin-top:6px">ANALYZING...</div></div>';
-    var key = document.getElementById('ki').value.trim();
-    if(!key){
-      body.innerHTML = '<div style="padding:16px"><div class="err">&#9888; No API key. Get a free Groq key at console.groq.com</div></div>';
-      return;
-    }
+    // Match desktop analyze() logic: default to server-side Groq proxy when the
+    // user hasn't supplied their own Claude/Gemini key. The Groq key lives in
+    // Netlify env vars, so no client-side key is required for the default path.
+    var userKey = S.userKey || '';
+    var prov = (userKey.length > 10 && S.userProv) ? S.userProv : 'groq';
+    var key = (prov !== 'groq') ? userKey : null;
+    S.prov = prov;
     var sv = getSev(a), d = AD[a.t]||AD.SPIKE;
     var ctx = 'Alert: '+d.lb+(sv.tier!=='NORMAL'?' ['+sv.tier+' — '+sv.mult.toFixed(1)+'x threshold]':'')
       +'\nMarket: "'+a.mkt+'"\nYES: '+pct(a.pr)
       +'\nDetails: '+alertDetail(a).replace(/<[^>]+>/g,'');
     try{
       setSrc('ai','yw','CALLING');
-      var txt = await callAI(S.prov, key, ctx);
+      var txt = await callAI(prov, key, ctx);
       var parsed = JSON.parse(txt.replace(/```json|```/g,'').trim());
       setSrc('ai','teal','OK');
       // Render into mobile body
       showAnalysisMobile(parsed, a, sv, body);
     }catch(e){
       setSrc('ai','or','ERROR');
-      body.innerHTML = '<div style="padding:16px"><div class="err">&#9888; '+esc(e.message)+'</div></div>';
+      var msg = e.message || 'Unknown error';
+      var isAuth = msg.includes('401')||msg.includes('403')||msg.toLowerCase().includes('key')||msg.toLowerCase().includes('auth');
+      var is404  = msg.includes('404') || msg.toLowerCase().includes('not found');
+      var errTxt = isAuth ? 'Invalid API key — check your provider console.'
+                 : is404  ? '&#9888; AI proxy not found. Make sure the Netlify function is deployed and <code>GROQ_API_KEY</code> is set.'
+                 :           'Error: '+esc(msg);
+      body.innerHTML = '<div style="padding:16px"><div class="err">'+errTxt+'</div></div>';
     }
   }
 
