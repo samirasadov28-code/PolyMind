@@ -434,24 +434,36 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .land-logo svg{width:44px;height:44px}
 .land-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.5px;color:var(--tx)}
 .land-title span{color:var(--gold)}
-.land-sub{color:var(--tx3);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px}
-.land-version{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--bdr);padding:4px 12px;font-size:9px;color:var(--tx2);letter-spacing:1px;margin-bottom:24px}
+.land-sub{color:var(--tx3);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.land-version{display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--bdr);padding:3px 10px;font-size:9px;color:var(--tx3);letter-spacing:1px;margin-bottom:22px}
 .land-version strong{color:var(--gold);font-weight:700}
-.land-section{background:var(--bg2);border:1px solid var(--bdr);padding:18px 20px;margin-bottom:12px;text-align:left}
-.land-section-title{color:var(--gold);font-size:8px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
-.land-tier-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11px;color:var(--tx);line-height:1.4}
-.land-tier-row .ic{width:18px;text-align:center;flex-shrink:0;font-size:13px}
-.land-tier-free{color:var(--gr)}
-.land-tier-pro{color:var(--gold)}
-.land-divider{height:1px;background:var(--bdr);margin:10px 0}
-.land-pro-price{display:flex;align-items:baseline;justify-content:center;gap:4px;margin:8px 0 4px}
-.land-pro-price .amt{font-size:22px;font-weight:700;color:var(--tx)}
-.land-pro-price .per{font-size:10px;color:var(--tx3)}
-.land-enter{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#d4a800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s;margin-bottom:10px}
+.land-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;text-align:left}
+.land-tier{background:var(--bg2);border:1px solid var(--bdr);padding:16px 14px;display:flex;flex-direction:column}
+.land-tier.pro{border-color:rgba(245,194,0,.4);background:linear-gradient(180deg,rgba(245,194,0,.05),var(--bg2))}
+.land-tier-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bdr)}
+.land-tier.pro .land-tier-head{border-bottom-color:rgba(245,194,0,.2)}
+.land-tier-name{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx2)}
+.land-tier.pro .land-tier-name{color:var(--gold)}
+.land-tier-price{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.3px}
+.land-tier.pro .land-tier-price{color:var(--gold)}
+.land-tier ul{list-style:none;padding:0;margin:0}
+.land-tier li{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--tx2);line-height:1.45;margin-bottom:8px}
+.land-tier li:last-child{margin-bottom:0}
+.land-tier li .ic{flex-shrink:0;width:10px;text-align:center;font-size:10px;color:var(--gr);margin-top:2px}
+.land-tier.pro li .ic{color:var(--gold)}
+.land-enter{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#d4a800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s;margin-bottom:8px}
 .land-enter:hover{filter:brightness(1.15)}
-.land-force{background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:1px;padding:7px 16px;cursor:pointer;text-transform:uppercase;transition:all .2s;width:100%}
-.land-force:hover{border-color:var(--gold);color:var(--gold)}
-.land-footer{color:var(--tx3);font-size:8px;letter-spacing:1px;margin-top:18px}
+.land-upgrade-sec{width:100%;padding:11px;background:transparent;border:1px solid rgba(245,194,0,.45);color:var(--gold);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:background .2s,border-color .2s}
+.land-upgrade-sec:hover{background:rgba(245,194,0,.08);border-color:var(--gold)}
+.land-redeem-row{text-align:center;margin-top:10px}
+.land-redeem-row a{color:var(--tx3);font-size:10px;text-decoration:none;letter-spacing:.5px}
+.land-redeem-row a .on{color:var(--gold);text-decoration:underline}
+.land-footer-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;color:var(--tx3);font-size:9px;letter-spacing:.8px;margin-top:18px}
+.land-footer-row a{color:var(--tx3);text-decoration:none;transition:color .2s}
+.land-footer-row a:hover{color:var(--gold)}
+.land-footer-row .sep{color:var(--bdr2)}
+.land-force-link{display:inline-block;margin-top:6px;background:none;border:none;color:var(--tx3);font-family:'Inter',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;padding:4px 8px;transition:color .2s}
+.land-force-link:hover{color:var(--gold)}
 .land-modeloop{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-top:14px;background:var(--bg2);border:1px solid var(--bdr);text-decoration:none;color:var(--tx);transition:border-color .2s,background .2s;text-align:left}
 .land-modeloop:hover{border-color:var(--gold);background:var(--bg3)}
 .land-modeloop .ml-body{flex:1;min-width:0}
@@ -464,9 +476,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 #fb-fab{position:fixed;right:16px;bottom:16px;z-index:9998;width:44px;height:44px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr2);color:var(--tx2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45);transition:border-color .2s,color .2s,transform .15s,background .2s}
 #fb-fab:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3);transform:translateY(-1px)}
 @media (max-width:640px){#fb-fab{right:12px;bottom:12px;width:40px;height:40px;font-size:16px}}
-/* Landing Pro Buy Button */
-.land-pro-buy{width:100%;padding:13px;margin-top:10px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s;box-shadow:0 4px 18px rgba(245,194,0,.3)}
-.land-pro-buy:hover{filter:brightness(1.15)}
 /* Header PRO button — always visible */
 #hdr-pro-btn{background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:filter .2s;flex-shrink:0}
 #hdr-pro-btn:hover{filter:brightness(1.15)}
@@ -478,11 +487,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   .land-lang{top:10px;right:10px;padding:5px 10px;font-size:10px}
   .land-card{padding:24px 18px;width:100%;max-width:100%}
   .land-title{font-size:22px}
-  .land-sub{font-size:9px;margin-bottom:20px}
-  .land-section{padding:14px 14px}
-  .land-tier-row{font-size:12px;margin-bottom:8px}
+  .land-sub{font-size:9px;margin-bottom:14px}
+  .land-compare{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+  .land-tier{padding:14px 14px}
+  .land-tier li{font-size:12px;margin-bottom:8px}
   .land-enter{padding:16px;font-size:13px}
-  .land-pro-buy{padding:14px;font-size:12px}
+  .land-upgrade-sec{padding:13px;font-size:12px}
   /* Delay bar — stack on mobile */
   #tier-delay-bar{flex-wrap:wrap;padding:10px 12px;gap:8px}
   #tier-delay-bar>div{min-width:0;width:100%}
@@ -539,26 +549,37 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.11.2</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.0</strong></div>
 
-    <div class="land-section">
-      <div class="land-section-title" data-i18n="land_free">Free Tier</div>
-      <div class="land-tier-row"><span class="ic land-tier-free">&#10003;</span> <strong>5 live signals</strong>&nbsp;per day — real-time delivery</div>
-      <div class="land-tier-row"><span class="ic" style="color:var(--or)">&#9202;</span> After limit: alerts delivered with <strong>30-min delay</strong></div>
-      <div class="land-tier-row"><span class="ic" style="color:var(--red)">&#9632;</span> Max <strong>30 alerts</strong> visible per day</div>
-      <div class="land-tier-row"><span class="ic land-tier-free">&#10003;</span> Multi-AI analysis (Groq, Claude, Gemini)</div>
-      <div class="land-tier-row"><span class="ic land-tier-free">&#10003;</span> 12 signal types &amp; market tracking</div>
-      <div class="land-divider"></div>
-      <div class="land-section-title" style="margin-top:10px" data-i18n="land_pro" data-i18n-prefix="★ ">★ Pro Tier</div>
-      <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Unlimited</strong> live signals — no daily cap</div>
-      <div class="land-tier-row"><span class="ic land-tier-pro">&#9733;</span> <strong>Zero delay</strong> — every alert in real-time</div>
-      <div class="land-pro-price"><span class="amt">$3.99</span><span class="per">/month &nbsp;·&nbsp; cancel any time</span></div>
-      <button class="land-pro-buy" id="land-pro-buy-btn" data-i18n="land_buypro" data-i18n-prefix="★ ">★ Buy Pro — $3.99/month</button>
-      <div style="text-align:center;margin-top:8px"><a href="#" id="land-redeem-link" style="color:var(--tx3);font-size:10px;text-decoration:none;letter-spacing:.5px"><span data-i18n="land_already">Already paid?</span> <span style="color:var(--gold);text-decoration:underline" data-i18n="land_redeem">Redeem activation code</span></a></div>
+    <div class="land-compare">
+      <div class="land-tier">
+        <div class="land-tier-head">
+          <span class="land-tier-name" data-i18n="land_free">Free Tier</span>
+          <span class="land-tier-price">$0</span>
+        </div>
+        <ul>
+          <li><span class="ic">&#10003;</span><span>5 live signals / day</span></li>
+          <li><span class="ic">&#10003;</span><span>Delayed alerts after (up to 30 / day)</span></li>
+          <li><span class="ic">&#10003;</span><span>Multi-AI analysis included</span></li>
+        </ul>
+      </div>
+      <div class="land-tier pro">
+        <div class="land-tier-head">
+          <span class="land-tier-name" data-i18n="land_pro">Pro Tier</span>
+          <span class="land-tier-price">$3.99/mo</span>
+        </div>
+        <ul>
+          <li><span class="ic">&#9733;</span><span>Unlimited live signals</span></li>
+          <li><span class="ic">&#9733;</span><span>Zero delay &middot; real-time</span></li>
+          <li><span class="ic">&#9733;</span><span>Everything in Free</span></li>
+        </ul>
+      </div>
     </div>
 
     <button class="land-enter" id="land-enter-btn" data-i18n="land_enter" data-i18n-prefix="▶ ">▶ Enter Free Dashboard</button>
-    <button class="land-force" id="land-force-btn" data-i18n="land_force" data-i18n-prefix="⟲ ">⟲ Force Update</button>
+    <button class="land-upgrade-sec" id="land-pro-buy-btn" data-i18n="land_buypro" data-i18n-prefix="★ ">★ Buy Pro — $3.99/month</button>
+
+    <div class="land-redeem-row"><a href="#" id="land-redeem-link"><span data-i18n="land_already">Already paid?</span> <span class="on" data-i18n="land_redeem">Redeem activation code</span></a></div>
 
     <a class="land-modeloop" id="land-modeloop-link" href="http://modeloop.net/Other-Products" target="_blank" rel="noopener noreferrer">
       <span class="ml-body">
@@ -569,7 +590,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <span class="ml-arrow">&#8599;</span>
     </a>
 
-    <div class="land-footer">&copy; 2026 PolyMind &middot; <a href="#" id="land-feedback-link" style="color:var(--tx3);text-decoration:underline;text-decoration-color:var(--bdr2)">Send feedback</a> &middot; &#128274; Secure checkout via Stripe</div>
+    <div class="land-footer-row">
+      <span>&copy; 2026 PolyMind</span>
+      <span class="sep">&middot;</span>
+      <span>&#128274; Secure by Stripe</span>
+      <span class="sep">&middot;</span>
+      <a href="#" id="land-feedback-link">Send feedback</a>
+    </div>
+    <div style="text-align:center"><button class="land-force-link" id="land-force-btn" data-i18n="land_force" data-i18n-prefix="⟲ ">⟲ Force Update</button></div>
   </div>
 </div>
 
@@ -1166,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.11.2';  // Bump on each release
+var APP_VERSION = '1.12.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
