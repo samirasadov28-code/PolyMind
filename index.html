@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.4</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.5</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -652,10 +652,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 <div id="tier-delay-bar" style="display:none;background:linear-gradient(90deg,rgba(232,93,74,.13),rgba(245,164,0,.1));border-bottom:2px solid rgba(245,164,0,.5);padding:9px 14px;align-items:center;gap:10px;font-family:'Inter',sans-serif;flex-shrink:0;animation:proBarPulse 2.5s ease-in-out infinite">
   <span style="font-size:16px;animation:blink 1.4s ease-in-out infinite">&#9888;</span>
   <div style="flex:1;min-width:0">
-    <div style="color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.8px">FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN</div>
-    <div style="color:var(--tx2);font-size:9px;margin-top:1px">You have used all <strong style="color:var(--or)">5 live signals</strong> for today. Upgrade to PRO for unlimited real-time alerts.</div>
+    <div style="color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.8px" data-i18n="delay_title">FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN</div>
+    <div style="color:var(--tx2);font-size:9px;margin-top:1px" data-i18n="delay_desc">You have used all 5 live signals for today. Upgrade to PRO for unlimited real-time alerts.</div>
   </div>
-  <button id="tier-upgrade-btn" onclick="showUpgradeModal()" style="flex-shrink:0;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;box-shadow:0 0 14px rgba(245,194,0,.35);transition:filter .2s">&#9733; UPGRADE — $3.99/mo</button>
+  <button id="tier-upgrade-btn" onclick="showUpgradeModal()" style="flex-shrink:0;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:8px 18px;cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;box-shadow:0 0 14px rgba(245,194,0,.35);transition:filter .2s" data-i18n="delay_cta" data-i18n-prefix="&#9733; ">&#9733; UPGRADE — $3.99/mo</button>
 </div>
 <div id="prog"></div>
 
@@ -771,79 +771,79 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
 
       <div class="cs" id="usage-stats-section">
-        <div class="ct">YOUR USAGE</div>
+        <div class="ct" data-i18n="right_usage">YOUR USAGE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">
           <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
-            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">TODAY LIVE</div>
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px" data-i18n="stat_today_live">TODAY LIVE</div>
             <div id="stat-today-live" style="font-size:16px;font-weight:700;color:var(--gr)">0</div>
-            <div style="color:var(--tx3);font-size:8px">of 5 free</div>
+            <div style="color:var(--tx3);font-size:8px" data-i18n="stat_of_free">of 5 free</div>
           </div>
           <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
-            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">TODAY TOTAL</div>
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px" data-i18n="stat_today_total">TODAY TOTAL</div>
             <div id="stat-today-total" style="font-size:16px;font-weight:700;color:var(--cyan)">0</div>
-            <div style="color:var(--tx3);font-size:8px">of 30 max</div>
+            <div style="color:var(--tx3);font-size:8px" data-i18n="stat_of_max">of 30 max</div>
           </div>
           <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
-            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">ALL-TIME LIVE</div>
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px" data-i18n="stat_alltime_live">ALL-TIME LIVE</div>
             <div id="stat-alltime-live" style="font-size:16px;font-weight:700;color:var(--gold)">0</div>
-            <div style="color:var(--tx3);font-size:8px">signals seen</div>
+            <div style="color:var(--tx3);font-size:8px" data-i18n="stat_signals_seen">signals seen</div>
           </div>
           <div style="background:var(--bg3);border:1px solid var(--bdr);padding:8px 10px">
-            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px">ALL-TIME TOTAL</div>
+            <div style="color:var(--tx3);font-size:8px;letter-spacing:1px;margin-bottom:3px" data-i18n="stat_alltime_total">ALL-TIME TOTAL</div>
             <div id="stat-alltime-total" style="font-size:16px;font-weight:700;color:var(--pu)">0</div>
-            <div style="color:var(--tx3);font-size:8px">alerts shown</div>
+            <div style="color:var(--tx3);font-size:8px" data-i18n="stat_alerts_shown">alerts shown</div>
           </div>
         </div>
       </div>
 
       <div class="cs">
-        <div class="ct">SEVERITY</div>
+        <div class="ct" data-i18n="right_severity">SEVERITY</div>
         <div class="legend">
-          <div class="leg"><div class="ld" style="background:var(--tx2)"></div>NORMAL 1&times;</div>
-          <div class="leg"><div class="ld" style="background:var(--yw)"></div>HIGH 2–4.9&times;</div>
-          <div class="leg"><div class="ld" style="background:var(--red)"></div>EXTREME 5&times;+</div>
+          <div class="leg"><div class="ld" style="background:var(--tx2)"></div><span data-i18n="sev_normal">NORMAL 1&times;</span></div>
+          <div class="leg"><div class="ld" style="background:var(--yw)"></div><span data-i18n="sev_high">HIGH 2–4.9&times;</span></div>
+          <div class="leg"><div class="ld" style="background:var(--red)"></div><span data-i18n="sev_extreme">EXTREME 5&times;+</span></div>
         </div>
       </div>
 
       <!-- SESSION COUNTS — all clickable including HIGH/EXTREME -->
       <div class="cs">
-        <div class="ct">SESSION ALERTS <span style="color:var(--tx3);font-size:7px;letter-spacing:0;font-weight:400">· click to filter</span></div>
+        <div class="ct"><span data-i18n="right_session">SESSION ALERTS</span> <span style="color:var(--tx3);font-size:7px;letter-spacing:0;font-weight:400">· <span data-i18n="right_click_filter">click to filter</span></span></div>
         <div class="cg" id="count-grid">
-          <div class="cr2" data-ftype="WHALE"><span class="ic" style="color:var(--or)">&#11041;</span><span class="cl">Whale</span><b id="c-whale" style="color:var(--or)">0</b></div>
-          <div class="cr2" data-ftype="VOL_PCT"><span class="ic" style="color:var(--amber)">&#9670;</span><span class="cl">Vol %</span><b id="c-volpct" style="color:var(--amber)">0</b></div>
-          <div class="cr2" data-ftype="SPIKE"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl">Spike</span><b id="c-spike" style="color:var(--yw)">0</b></div>
-          <div class="cr2" data-ftype="NEW"><span class="ic" style="color:var(--gr)">&#9672;</span><span class="cl">New Mkt</span><b id="c-new" style="color:var(--gr)">0</b></div>
-          <div class="cr2" data-ftype="COORD"><span class="ic" style="color:var(--pu)">&#11041;</span><span class="cl">Coord</span><b id="c-coord" style="color:var(--pu)">0</b></div>
-          <div class="cr2" data-ftype="REVERSAL"><span class="ic" style="color:var(--pink)">&#8635;</span><span class="cl">Reversal</span><b id="c-rev" style="color:var(--pink)">0</b></div>
-          <div class="cr2" data-ftype="MOMENTUM"><span class="ic" style="color:var(--cyan)">&#9654;</span><span class="cl">Momentum</span><b id="c-mom" style="color:var(--cyan)">0</b></div>
-          <div class="cr2" data-ftype="VOL_SURGE"><span class="ic" style="color:var(--yw)">&#9650;</span><span class="cl">Vol Surge</span><b id="c-vsurge" style="color:var(--yw)">0</b></div>
-          <div class="cr2" data-ftype="LATE"><span class="ic" style="color:var(--red)">&#8987;</span><span class="cl">Late $</span><b id="c-late" style="color:var(--red)">0</b></div>
-          <div class="cr2" data-ftype="CONTRA"><span class="ic" style="color:var(--pink)">&#9888;</span><span class="cl">Contra</span><b id="c-contra" style="color:var(--pink)">0</b></div>
-          <div class="cr2" data-ftype="THIN"><span class="ic" style="color:var(--violet)">&#9632;</span><span class="cl">Thin Mkt</span><b id="c-thin" style="color:var(--violet)">0</b></div>
-          <div class="cr2" data-ftype="WALLET"><span class="ic" style="color:var(--teal)">&#9673;</span><span class="cl">Rpt Wallet</span><b id="c-wallet" style="color:var(--teal)">0</b></div>
+          <div class="cr2" data-ftype="WHALE"><span class="ic" style="color:var(--or)">&#11041;</span><span class="cl" data-i18n="sig_whale">Whale</span><b id="c-whale" style="color:var(--or)">0</b></div>
+          <div class="cr2" data-ftype="VOL_PCT"><span class="ic" style="color:var(--amber)">&#9670;</span><span class="cl" data-i18n="sig_volpct">Vol %</span><b id="c-volpct" style="color:var(--amber)">0</b></div>
+          <div class="cr2" data-ftype="SPIKE"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="sig_spike">Spike</span><b id="c-spike" style="color:var(--yw)">0</b></div>
+          <div class="cr2" data-ftype="NEW"><span class="ic" style="color:var(--gr)">&#9672;</span><span class="cl" data-i18n="sig_newmkt">New Mkt</span><b id="c-new" style="color:var(--gr)">0</b></div>
+          <div class="cr2" data-ftype="COORD"><span class="ic" style="color:var(--pu)">&#11041;</span><span class="cl" data-i18n="sig_coord">Coord</span><b id="c-coord" style="color:var(--pu)">0</b></div>
+          <div class="cr2" data-ftype="REVERSAL"><span class="ic" style="color:var(--pink)">&#8635;</span><span class="cl" data-i18n="sig_reversal">Reversal</span><b id="c-rev" style="color:var(--pink)">0</b></div>
+          <div class="cr2" data-ftype="MOMENTUM"><span class="ic" style="color:var(--cyan)">&#9654;</span><span class="cl" data-i18n="sig_momentum">Momentum</span><b id="c-mom" style="color:var(--cyan)">0</b></div>
+          <div class="cr2" data-ftype="VOL_SURGE"><span class="ic" style="color:var(--yw)">&#9650;</span><span class="cl" data-i18n="sig_vsurge">Vol Surge</span><b id="c-vsurge" style="color:var(--yw)">0</b></div>
+          <div class="cr2" data-ftype="LATE"><span class="ic" style="color:var(--red)">&#8987;</span><span class="cl" data-i18n="sig_late">Late $</span><b id="c-late" style="color:var(--red)">0</b></div>
+          <div class="cr2" data-ftype="CONTRA"><span class="ic" style="color:var(--pink)">&#9888;</span><span class="cl" data-i18n="sig_contra">Contra</span><b id="c-contra" style="color:var(--pink)">0</b></div>
+          <div class="cr2" data-ftype="THIN"><span class="ic" style="color:var(--violet)">&#9632;</span><span class="cl" data-i18n="sig_thin">Thin Mkt</span><b id="c-thin" style="color:var(--violet)">0</b></div>
+          <div class="cr2" data-ftype="WALLET"><span class="ic" style="color:var(--teal)">&#9673;</span><span class="cl" data-i18n="sig_wallet">Rpt Wallet</span><b id="c-wallet" style="color:var(--teal)">0</b></div>
           <!-- Tier rows — also clickable filters -->
           <div class="cr2" data-ftier="HIGH" style="border-color:rgba(255,208,96,.1)"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="tier_high">HIGH tier</span><b id="c-high" style="color:var(--yw)">0</b></div>
           <div class="cr2" data-ftier="EXTREME" style="border-color:rgba(255,59,107,.1)"><span class="ic" style="color:var(--red)">&#9651;</span><span class="cl" data-i18n="tier_extreme">EXTREME</span><b id="c-ext" style="color:var(--red)">0</b></div>
         </div>
       </div>
 
-      <div class="cs"><div class="ct">ACTIVITY</div><div id="act-list"></div></div>
+      <div class="cs"><div class="ct" data-i18n="right_activity">ACTIVITY</div><div id="act-list"></div></div>
 
       <!-- PRO UPGRADE CARD — desktop right panel -->
       <div class="cs" id="rp-pro-card">
         <div style="background:linear-gradient(135deg,rgba(245,164,0,.08),rgba(232,93,74,.05));border:1px solid rgba(245,194,0,.3);padding:12px 14px;border-left:3px solid var(--gold)">
-          <div style="color:var(--gold);font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px">&#9733; POLYMIND PRO</div>
-          <div style="color:var(--tx2);font-size:10px;line-height:1.6;margin-bottom:10px">Remove the 5-signal daily cap. Get every alert the instant it fires — no delays, no limits.</div>
+          <div style="color:var(--gold);font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px" data-i18n="rpc_title" data-i18n-prefix="&#9733; ">&#9733; POLYMIND PRO</div>
+          <div style="color:var(--tx2);font-size:10px;line-height:1.6;margin-bottom:10px" data-i18n="rpc_desc">Remove the 5-signal daily cap. Get every alert the instant it fires — no delays, no limits.</div>
           <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:10px">
             <span style="color:var(--gold);font-size:22px;font-weight:700">$3.99</span>
-            <span style="color:var(--tx3);font-size:9px">/month · cancel any time</span>
+            <span style="color:var(--tx3);font-size:9px" data-i18n="rpc_per">/month · cancel any time</span>
           </div>
-          <button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 10px rgba(245,194,0,.2)">&#9733; UPGRADE TO PRO</button>
+          <button onclick="showUpgradeModal()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 10px rgba(245,194,0,.2)" data-i18n="rpc_cta" data-i18n-prefix="&#9733; ">&#9733; UPGRADE TO PRO</button>
         </div>
       </div>
 
       <div class="cs">
-        <div class="ct">DATA SOURCES</div>
+        <div class="ct" data-i18n="right_sources">DATA SOURCES</div>
         <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)">CONNECTING</span></div><div class="su" id="api-src-mode">Detecting proxy mode...</div></div>
         <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-poll" style="background:var(--steel)"></div><span class="srl">Poll interval</span><span class="ss" id="st-poll" style="color:var(--gr)">15s</span></div><div class="su" id="mkt-count">Loading...</div></div>
         <div class="srcr"><div class="srch"><div class="sd" id="dot-ai" style="background:var(--teal)"></div><span class="srl" id="ai-lbl">Groq AI (default)</span><span class="ss" id="st-ai" style="color:var(--teal)">ACTIVE</span></div><div class="su" id="ai-url">llama-3.3-70b-versatile · override with Claude or Gemini key</div></div>
@@ -1194,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.4';  // Bump on each release
+var APP_VERSION = '1.12.5';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1227,91 +1227,169 @@ var I18N={
       land_stripe:'Secure by Stripe',land_feedback:'Send feedback',
       tab_alerts:'ALERTS',tab_markets:'MARKETS',tab_config:'CONFIG',btn_history:'HISTORY',btn_watchlist:'WATCHLIST',btn_clear:'CLEAR ALL',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
       filter_label:'Filtered',filter_clear:'CLEAR',empty_waiting:'Waiting for signals...',empty_select:'Select an alert to analyse',
-      tier_high:'HIGH tier',tier_extreme:'EXTREME',lang_title:'Language',lang_desc:'Choose your language'},
+      tier_high:'HIGH tier',tier_extreme:'EXTREME',lang_title:'Language',lang_desc:'Choose your language',
+      right_usage:'YOUR USAGE',right_severity:'SEVERITY',right_session:'SESSION ALERTS',right_click_filter:'click to filter',right_activity:'ACTIVITY',right_sources:'DATA SOURCES',
+      stat_today_live:'TODAY LIVE',stat_today_total:'TODAY TOTAL',stat_alltime_live:'ALL-TIME LIVE',stat_alltime_total:'ALL-TIME TOTAL',stat_of_free:'of 5 free',stat_of_max:'of 30 max',stat_signals_seen:'signals seen',stat_alerts_shown:'alerts shown',
+      sev_normal:'NORMAL 1×',sev_high:'HIGH 2–4.9×',sev_extreme:'EXTREME 5×+',
+      sig_whale:'Whale',sig_volpct:'Vol %',sig_spike:'Spike',sig_newmkt:'New Mkt',sig_coord:'Coord',sig_reversal:'Reversal',sig_momentum:'Momentum',sig_vsurge:'Vol Surge',sig_late:'Late $',sig_contra:'Contra',sig_thin:'Thin Mkt',sig_wallet:'Rpt Wallet',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Remove the 5-signal daily cap. Get every alert the instant it fires — no delays, no limits.',rpc_per:'/month · cancel any time',rpc_cta:'UPGRADE TO PRO',
+      delay_title:'FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN',delay_desc:'You have used all 5 live signals for today. Upgrade to PRO for unlimited real-time alerts.',delay_cta:'UPGRADE — $3.99/mo'},
   uk:{land_sub:'Сповіщення Poly у реальному часі',land_free:'Безкоштовний',land_pro:'Тариф Pro',land_enter:'Відкрити панель',land_buypro:'Купити Pro — $3.99/міс',land_redeem:'Активувати код',land_already:'Уже сплатили?',land_force:'Оновити',
       land_free_sig:'5 сигналів наживо / день',land_free_delay:'Далі — із затримкою (до 30 / день)',land_free_ai:'Аналіз Multi-AI включено',
       land_pro_sig:'Необмежено сигналів наживо',land_pro_delay:'Нульова затримка · в реальному часі',land_pro_all:'Усе з тарифу Free',
       land_stripe:'Захищено Stripe',land_feedback:'Надіслати відгук',
       tab_alerts:'СПОВІЩЕННЯ',tab_markets:'РИНКИ',tab_config:'НАЛАШТ.',btn_history:'ІСТОРІЯ',btn_watchlist:'ОБРАНЕ',btn_clear:'ОЧИСТИТИ',btn_pause:'ПАУЗА',btn_live:'НАЖИВО',btn_pro:'PRO',
       filter_label:'Фільтр',filter_clear:'СКИНУТИ',empty_waiting:'Очікування сигналів...',empty_select:'Виберіть сповіщення для аналізу',
-      tier_high:'Рівень ВИСОКИЙ',tier_extreme:'ЕКСТРЕМАЛЬНИЙ',lang_title:'Мова',lang_desc:'Виберіть мову'},
+      tier_high:'Рівень ВИСОКИЙ',tier_extreme:'ЕКСТРЕМАЛЬНИЙ',lang_title:'Мова',lang_desc:'Виберіть мову',
+      right_usage:'ВАША АКТИВНІСТЬ',right_severity:'РІВЕНЬ',right_session:'СИГНАЛИ СЕСІЇ',right_click_filter:'натисніть для фільтра',right_activity:'ДІЇ',right_sources:'ДЖЕРЕЛА ДАНИХ',
+      stat_today_live:'СЬОГОДНІ НАЖИВО',stat_today_total:'СЬОГОДНІ ВСЬОГО',stat_alltime_live:'ВСЬОГО НАЖИВО',stat_alltime_total:'ВСЬОГО АЛЕРТІВ',stat_of_free:'з 5 безкоштовних',stat_of_max:'з 30 макс.',stat_signals_seen:'сигналів побачено',stat_alerts_shown:'показано алертів',
+      sev_normal:'ЗВИЧАЙНИЙ 1×',sev_high:'ВИСОКИЙ 2–4.9×',sev_extreme:'ЕКСТРЕМ. 5×+',
+      sig_whale:'Кит',sig_volpct:'Об’єм %',sig_spike:'Сплеск',sig_newmkt:'Новий',sig_coord:'Координ.',sig_reversal:'Розворот',sig_momentum:'Моментум',sig_vsurge:'Сплеск об.',sig_late:'Пізні $',sig_contra:'Контра',sig_thin:'Тонкий',sig_wallet:'Повт. гам.',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Зніміть обмеження 5 сигналів на день. Отримуйте кожен алерт миттєво — без затримок і лімітів.',rpc_per:'/міс · скасуйте будь-коли',rpc_cta:'ПЕРЕЙТИ НА PRO',
+      delay_title:'ЛІМІТ FREE ВИЧЕРПАНО — АЛЕРТИ ІЗ ЗАТРИМКОЮ 30 ХВ',delay_desc:'Ви використали всі 5 live-сигналів сьогодні. PRO — необмежені алерти в реальному часі.',delay_cta:'PRO — $3.99/міс'},
   fr:{land_sub:'Alertes Poly en temps réel',land_free:'Offre gratuite',land_pro:'Offre Pro',land_enter:'Ouvrir le tableau',land_buypro:'Acheter Pro — 3,99$/mois',land_redeem:"Utiliser un code d'activation",land_already:'Déjà payé ?',land_force:'Forcer la mise à jour',
       land_free_sig:'5 signaux en direct / jour',land_free_delay:'Alertes différées ensuite (jusqu’à 30 / jour)',land_free_ai:'Analyse multi-IA incluse',
       land_pro_sig:'Signaux illimités en direct',land_pro_delay:'Aucun délai · temps réel',land_pro_all:'Tout l’offre gratuite inclus',
       land_stripe:'Paiement sécurisé par Stripe',land_feedback:'Envoyer un avis',
       tab_alerts:'ALERTES',tab_markets:'MARCHÉS',tab_config:'CONFIG',btn_history:'HISTORIQUE',btn_watchlist:'FAVORIS',btn_clear:'TOUT EFFACER',btn_pause:'PAUSE',btn_live:'EN DIRECT',btn_pro:'PRO',
       filter_label:'Filtré',filter_clear:'EFFACER',empty_waiting:'En attente de signaux...',empty_select:'Sélectionnez une alerte à analyser',
-      tier_high:'Niveau ÉLEVÉ',tier_extreme:'EXTRÊME',lang_title:'Langue',lang_desc:'Choisissez votre langue'},
+      tier_high:'Niveau ÉLEVÉ',tier_extreme:'EXTRÊME',lang_title:'Langue',lang_desc:'Choisissez votre langue',
+      right_usage:'VOTRE USAGE',right_severity:'GRAVITÉ',right_session:'ALERTES DE SESSION',right_click_filter:'cliquer pour filtrer',right_activity:'ACTIVITÉ',right_sources:'SOURCES',
+      stat_today_live:"AUJ. EN DIRECT",stat_today_total:"AUJ. TOTAL",stat_alltime_live:"TOTAL DIRECT",stat_alltime_total:"TOTAL ALERTES",stat_of_free:'sur 5 gratuits',stat_of_max:'sur 30 max',stat_signals_seen:'signaux vus',stat_alerts_shown:'alertes affichées',
+      sev_normal:'NORMAL 1×',sev_high:'ÉLEVÉ 2–4.9×',sev_extreme:'EXTRÊME 5×+',
+      sig_whale:'Baleine',sig_volpct:'Vol %',sig_spike:'Pic',sig_newmkt:'Nouveau',sig_coord:'Coord.',sig_reversal:'Revers.',sig_momentum:'Momentum',sig_vsurge:'Vol. surge',sig_late:'Tardif',sig_contra:'Contre',sig_thin:'Peu liq.',sig_wallet:'Wallet rép.',
+      rpc_title:'POLYMIND PRO',rpc_desc:"Supprimez la limite de 5 signaux par jour. Recevez chaque alerte à l'instant — sans délais, sans limites.",rpc_per:'/mois · résiliable à tout moment',rpc_cta:'PASSER À PRO',
+      delay_title:'LIMITE GRATUITE ATTEINTE — ALERTES RETARDÉES DE 30 MIN',delay_desc:'Vous avez utilisé vos 5 signaux en direct du jour. Passez à PRO pour des alertes en temps réel illimitées.',delay_cta:'PRO — 3,99$/mois'},
   es:{land_sub:'Alertas Poly en tiempo real',land_free:'Plan gratuito',land_pro:'Plan Pro',land_enter:'Abrir panel gratuito',land_buypro:'Comprar Pro — $3.99/mes',land_redeem:'Canjear código de activación',land_already:'¿Ya pagaste?',land_force:'Actualizar',
       land_free_sig:'5 señales en vivo / día',land_free_delay:'Luego alertas con retraso (hasta 30 / día)',land_free_ai:'Análisis Multi-IA incluido',
       land_pro_sig:'Señales en vivo ilimitadas',land_pro_delay:'Sin retraso · tiempo real',land_pro_all:'Todo el plan gratuito',
       land_stripe:'Seguro con Stripe',land_feedback:'Enviar comentarios',
       tab_alerts:'ALERTAS',tab_markets:'MERCADOS',tab_config:'CONFIG.',btn_history:'HISTORIAL',btn_watchlist:'FAVORITOS',btn_clear:'BORRAR TODO',btn_pause:'PAUSA',btn_live:'EN VIVO',btn_pro:'PRO',
       filter_label:'Filtrado',filter_clear:'QUITAR',empty_waiting:'Esperando señales...',empty_select:'Selecciona una alerta para analizar',
-      tier_high:'Nivel ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Elige tu idioma'},
+      tier_high:'Nivel ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Elige tu idioma',
+      right_usage:'TU USO',right_severity:'GRAVEDAD',right_session:'ALERTAS DE SESIÓN',right_click_filter:'clic para filtrar',right_activity:'ACTIVIDAD',right_sources:'FUENTES',
+      stat_today_live:'HOY EN VIVO',stat_today_total:'HOY TOTAL',stat_alltime_live:'TOTAL EN VIVO',stat_alltime_total:'TOTAL ALERTAS',stat_of_free:'de 5 gratis',stat_of_max:'de 30 máx',stat_signals_seen:'señales vistas',stat_alerts_shown:'alertas mostradas',
+      sev_normal:'NORMAL 1×',sev_high:'ALTO 2–4.9×',sev_extreme:'EXTREMO 5×+',
+      sig_whale:'Ballena',sig_volpct:'Vol %',sig_spike:'Pico',sig_newmkt:'Nuevo',sig_coord:'Coord.',sig_reversal:'Reversión',sig_momentum:'Momentum',sig_vsurge:'Subida vol.',sig_late:'Tardío',sig_contra:'Contra',sig_thin:'Poca liq.',sig_wallet:'Wallet rep.',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Elimina el límite de 5 señales al día. Recibe cada alerta al instante — sin retrasos ni límites.',rpc_per:'/mes · cancela cuando quieras',rpc_cta:'PASAR A PRO',
+      delay_title:'LÍMITE GRATIS ALCANZADO — ALERTAS RETRASADAS 30 MIN',delay_desc:'Has usado las 5 señales en vivo de hoy. Pásate a PRO para alertas ilimitadas en tiempo real.',delay_cta:'PRO — $3.99/mes'},
   de:{land_sub:'Poly-Warnungen in Echtzeit',land_free:'Kostenlos',land_pro:'Pro-Tarif',land_enter:'Kostenloses Dashboard',land_buypro:'Pro kaufen — 3,99$/Monat',land_redeem:'Aktivierungscode einlösen',land_already:'Schon bezahlt?',land_force:'Aktualisieren',
       land_free_sig:'5 Live-Signale / Tag',land_free_delay:'Danach verzögerte Alarme (bis 30 / Tag)',land_free_ai:'Multi-KI-Analyse inklusive',
       land_pro_sig:'Unbegrenzte Live-Signale',land_pro_delay:'Keine Verzögerung · Echtzeit',land_pro_all:'Alles aus Free enthalten',
       land_stripe:'Sicher über Stripe',land_feedback:'Feedback senden',
       tab_alerts:'ALARME',tab_markets:'MÄRKTE',tab_config:'EINST.',btn_history:'VERLAUF',btn_watchlist:'MERKLISTE',btn_clear:'ALLES LÖSCHEN',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
       filter_label:'Gefiltert',filter_clear:'LÖSCHEN',empty_waiting:'Warte auf Signale...',empty_select:'Wähle einen Alarm zur Analyse',
-      tier_high:'HOHE Stufe',tier_extreme:'EXTREM',lang_title:'Sprache',lang_desc:'Sprache wählen'},
+      tier_high:'HOHE Stufe',tier_extreme:'EXTREM',lang_title:'Sprache',lang_desc:'Sprache wählen',
+      right_usage:'DEINE NUTZUNG',right_severity:'SCHWERE',right_session:'SITZUNGS-ALARME',right_click_filter:'zum Filtern klicken',right_activity:'AKTIVITÄT',right_sources:'DATENQUELLEN',
+      stat_today_live:'HEUTE LIVE',stat_today_total:'HEUTE GESAMT',stat_alltime_live:'GESAMT LIVE',stat_alltime_total:'GESAMT ALARME',stat_of_free:'von 5 gratis',stat_of_max:'von 30 max.',stat_signals_seen:'Signale gesehen',stat_alerts_shown:'Alarme gezeigt',
+      sev_normal:'NORMAL 1×',sev_high:'HOCH 2–4.9×',sev_extreme:'EXTREM 5×+',
+      sig_whale:'Wal',sig_volpct:'Vol %',sig_spike:'Spike',sig_newmkt:'Neuer Mkt',sig_coord:'Koord.',sig_reversal:'Umkehr',sig_momentum:'Momentum',sig_vsurge:'Vol-Surge',sig_late:'Spät $',sig_contra:'Contra',sig_thin:'Dünn',sig_wallet:'Wdh. Wallet',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Entferne das 5-Signal-Tageslimit. Erhalte jeden Alarm im Moment — ohne Verzögerung, ohne Limit.',rpc_per:'/Monat · jederzeit kündbar',rpc_cta:'AUF PRO UPGRADEN',
+      delay_title:'KOSTENLOS-LIMIT ERREICHT — ALARME 30 MIN VERZÖGERT',delay_desc:'Du hast deine 5 Live-Signale für heute aufgebraucht. Wechsle zu PRO für unbegrenzte Echtzeit-Alarme.',delay_cta:'PRO — 3,99$/Mon.'},
   pt:{land_sub:'Alertas Poly em tempo real',land_free:'Plano gratuito',land_pro:'Plano Pro',land_enter:'Abrir painel grátis',land_buypro:'Comprar Pro — $3,99/mês',land_redeem:'Resgatar código de ativação',land_already:'Já pagou?',land_force:'Atualizar',
       land_free_sig:'5 sinais ao vivo / dia',land_free_delay:'Depois, alertas com atraso (até 30 / dia)',land_free_ai:'Análise Multi-IA incluída',
       land_pro_sig:'Sinais ao vivo ilimitados',land_pro_delay:'Sem atraso · em tempo real',land_pro_all:'Tudo do plano gratuito',
       land_stripe:'Seguro com Stripe',land_feedback:'Enviar feedback',
       tab_alerts:'ALERTAS',tab_markets:'MERCADOS',tab_config:'CONFIG',btn_history:'HISTÓRICO',btn_watchlist:'FAVORITOS',btn_clear:'LIMPAR TUDO',btn_pause:'PAUSAR',btn_live:'AO VIVO',btn_pro:'PRO',
       filter_label:'Filtrado',filter_clear:'LIMPAR',empty_waiting:'Aguardando sinais...',empty_select:'Selecione um alerta para analisar',
-      tier_high:'Nível ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Escolha o idioma'},
+      tier_high:'Nível ALTO',tier_extreme:'EXTREMO',lang_title:'Idioma',lang_desc:'Escolha o idioma',
+      right_usage:'SEU USO',right_severity:'SEVERIDADE',right_session:'ALERTAS DA SESSÃO',right_click_filter:'clique para filtrar',right_activity:'ATIVIDADE',right_sources:'FONTES',
+      stat_today_live:'HOJE AO VIVO',stat_today_total:'HOJE TOTAL',stat_alltime_live:'TOTAL AO VIVO',stat_alltime_total:'TOTAL ALERTAS',stat_of_free:'de 5 grátis',stat_of_max:'de 30 máx',stat_signals_seen:'sinais vistos',stat_alerts_shown:'alertas mostrados',
+      sev_normal:'NORMAL 1×',sev_high:'ALTO 2–4.9×',sev_extreme:'EXTREMO 5×+',
+      sig_whale:'Baleia',sig_volpct:'Vol %',sig_spike:'Pico',sig_newmkt:'Novo Mkt',sig_coord:'Coord.',sig_reversal:'Reversão',sig_momentum:'Momentum',sig_vsurge:'Vol. surge',sig_late:'Tardio',sig_contra:'Contra',sig_thin:'Poca liq.',sig_wallet:'Wallet rep.',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Remova o limite de 5 sinais diários. Receba cada alerta no instante — sem atrasos, sem limites.',rpc_per:'/mês · cancele a qualquer hora',rpc_cta:'ASSINAR PRO',
+      delay_title:'LIMITE GRÁTIS ATINGIDO — ALERTAS ATRASADOS 30 MIN',delay_desc:'Você usou os 5 sinais ao vivo de hoje. Assine PRO para alertas ilimitados em tempo real.',delay_cta:'PRO — $3,99/mês'},
   it:{land_sub:'Avvisi Poly in tempo reale',land_free:'Piano gratuito',land_pro:'Piano Pro',land_enter:'Apri la dashboard',land_buypro:'Acquista Pro — $3,99/mese',land_redeem:'Usa codice di attivazione',land_already:'Già pagato?',land_force:'Aggiorna',
       land_free_sig:'5 segnali live / giorno',land_free_delay:'Poi avvisi in ritardo (fino a 30 / giorno)',land_free_ai:'Analisi Multi-IA inclusa',
       land_pro_sig:'Segnali live illimitati',land_pro_delay:'Nessun ritardo · tempo reale',land_pro_all:'Tutto il piano gratuito',
       land_stripe:'Sicuro con Stripe',land_feedback:'Invia feedback',
       tab_alerts:'AVVISI',tab_markets:'MERCATI',tab_config:'IMPOST.',btn_history:'CRONOLOGIA',btn_watchlist:'PREFERITI',btn_clear:'CANCELLA TUTTO',btn_pause:'PAUSA',btn_live:'DIRETTA',btn_pro:'PRO',
       filter_label:'Filtrato',filter_clear:'PULISCI',empty_waiting:'In attesa di segnali...',empty_select:'Seleziona un avviso da analizzare',
-      tier_high:'Livello ALTO',tier_extreme:'ESTREMO',lang_title:'Lingua',lang_desc:'Scegli la lingua'},
+      tier_high:'Livello ALTO',tier_extreme:'ESTREMO',lang_title:'Lingua',lang_desc:'Scegli la lingua',
+      right_usage:'IL TUO USO',right_severity:'GRAVITÀ',right_session:'AVVISI SESSIONE',right_click_filter:'clicca per filtrare',right_activity:'ATTIVITÀ',right_sources:'FONTI',
+      stat_today_live:'OGGI LIVE',stat_today_total:'OGGI TOTALE',stat_alltime_live:'TOTALE LIVE',stat_alltime_total:'TOTALE AVVISI',stat_of_free:'di 5 gratuiti',stat_of_max:'di 30 max',stat_signals_seen:'segnali visti',stat_alerts_shown:'avvisi mostrati',
+      sev_normal:'NORMALE 1×',sev_high:'ALTO 2–4.9×',sev_extreme:'ESTREMO 5×+',
+      sig_whale:'Balena',sig_volpct:'Vol %',sig_spike:'Picco',sig_newmkt:'Nuovo',sig_coord:'Coord.',sig_reversal:'Invers.',sig_momentum:'Momentum',sig_vsurge:'Vol-surge',sig_late:'Tardivo',sig_contra:'Contra',sig_thin:'Sottile',sig_wallet:'Wallet rip.',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Elimina il limite di 5 segnali al giorno. Ricevi ogni avviso all’istante — senza ritardi, senza limiti.',rpc_per:'/mese · disdici quando vuoi',rpc_cta:'PASSA A PRO',
+      delay_title:'LIMITE FREE RAGGIUNTO — AVVISI RITARDATI DI 30 MIN',delay_desc:'Hai usato i 5 segnali live di oggi. Passa a PRO per avvisi illimitati in tempo reale.',delay_cta:'PRO — $3,99/mese'},
   nl:{land_sub:'Poly-waarschuwingen in realtime',land_free:'Gratis',land_pro:'Pro-abonnement',land_enter:'Open gratis dashboard',land_buypro:'Koop Pro — $3,99/maand',land_redeem:'Activeringscode inwisselen',land_already:'Al betaald?',land_force:'Bijwerken',
       land_free_sig:'5 live signalen / dag',land_free_delay:'Daarna vertraagde meldingen (tot 30 / dag)',land_free_ai:'Multi-AI-analyse inbegrepen',
       land_pro_sig:'Onbeperkt live signalen',land_pro_delay:'Geen vertraging · realtime',land_pro_all:'Alles uit Gratis',
       land_stripe:'Veilig via Stripe',land_feedback:'Feedback sturen',
       tab_alerts:'MELDINGEN',tab_markets:'MARKTEN',tab_config:'INSTEL',btn_history:'GESCHIED.',btn_watchlist:'FAVORIETEN',btn_clear:'ALLES WISSEN',btn_pause:'PAUZE',btn_live:'LIVE',btn_pro:'PRO',
       filter_label:'Gefilterd',filter_clear:'WISSEN',empty_waiting:'Wachten op signalen...',empty_select:'Selecteer een melding om te analyseren',
-      tier_high:'HOOG niveau',tier_extreme:'EXTREEM',lang_title:'Taal',lang_desc:'Kies uw taal'},
+      tier_high:'HOOG niveau',tier_extreme:'EXTREEM',lang_title:'Taal',lang_desc:'Kies uw taal',
+      right_usage:'JOUW GEBRUIK',right_severity:'ERNST',right_session:'SESSIEMELDINGEN',right_click_filter:'klik om te filteren',right_activity:'ACTIVITEIT',right_sources:'GEGEVENSBRON',
+      stat_today_live:'VANDAAG LIVE',stat_today_total:'VANDAAG TOT.',stat_alltime_live:'TOTAAL LIVE',stat_alltime_total:'TOTAAL MELD.',stat_of_free:'van 5 gratis',stat_of_max:'van 30 max',stat_signals_seen:'signalen gezien',stat_alerts_shown:'meldingen getoond',
+      sev_normal:'NORMAAL 1×',sev_high:'HOOG 2–4.9×',sev_extreme:'EXTREEM 5×+',
+      sig_whale:'Walvis',sig_volpct:'Vol %',sig_spike:'Piek',sig_newmkt:'Nieuw',sig_coord:'Coörd.',sig_reversal:'Omkering',sig_momentum:'Momentum',sig_vsurge:'Vol-surge',sig_late:'Laat $',sig_contra:'Contra',sig_thin:'Dun',sig_wallet:'Herh. wallet',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Verwijder de dagelijkse limiet van 5 signalen. Krijg elke melding op het moment zelf — geen vertraging, geen limieten.',rpc_per:'/maand · stop wanneer je wilt',rpc_cta:'UPGRADE NAAR PRO',
+      delay_title:'GRATIS LIMIET BEREIKT — MELDINGEN 30 MIN VERTRAAGD',delay_desc:'Je hebt je 5 live signalen voor vandaag gebruikt. Upgrade naar PRO voor onbeperkte realtime meldingen.',delay_cta:'PRO — $3,99/maand'},
   tr:{land_sub:'Gerçek zamanlı Poly uyarıları',land_free:'Ücretsiz',land_pro:'Pro Plan',land_enter:'Ücretsiz panele gir',land_buypro:'Pro Satın Al — 3,99$/ay',land_redeem:'Etkinleştirme kodunu kullan',land_already:'Zaten ödedin mi?',land_force:'Güncelle',
       land_free_sig:'Günde 5 canlı sinyal',land_free_delay:'Sonrası gecikmeli (günde 30\'a kadar)',land_free_ai:'Çoklu AI analizi dahil',
       land_pro_sig:'Sınırsız canlı sinyal',land_pro_delay:'Gecikmesiz · gerçek zamanlı',land_pro_all:'Ücretsiz\'deki her şey',
       land_stripe:'Stripe ile güvenli',land_feedback:'Geri bildirim gönder',
       tab_alerts:'UYARILAR',tab_markets:'PİYASALAR',tab_config:'AYARLAR',btn_history:'GEÇMİŞ',btn_watchlist:'İZLEME',btn_clear:'TÜMÜNÜ SİL',btn_pause:'DURAKLAT',btn_live:'CANLI',btn_pro:'PRO',
       filter_label:'Filtrelendi',filter_clear:'TEMİZLE',empty_waiting:'Sinyaller bekleniyor...',empty_select:'Analiz için bir uyarı seçin',
-      tier_high:'YÜKSEK seviye',tier_extreme:'AŞIRI',lang_title:'Dil',lang_desc:'Dilinizi seçin'},
+      tier_high:'YÜKSEK seviye',tier_extreme:'AŞIRI',lang_title:'Dil',lang_desc:'Dilinizi seçin',
+      right_usage:'KULLANIMINIZ',right_severity:'ŞİDDET',right_session:'OTURUM UYARILARI',right_click_filter:'filtrelemek için tıkla',right_activity:'ETKİNLİK',right_sources:'VERİ KAYNAKLARI',
+      stat_today_live:'BUGÜN CANLI',stat_today_total:'BUGÜN TOPLAM',stat_alltime_live:'TOPLAM CANLI',stat_alltime_total:'TOPLAM UYARI',stat_of_free:'/ 5 ücretsizden',stat_of_max:'/ 30 maks.',stat_signals_seen:'sinyal görüldü',stat_alerts_shown:'uyarı gösterildi',
+      sev_normal:'NORMAL 1×',sev_high:'YÜKSEK 2–4.9×',sev_extreme:'AŞIRI 5×+',
+      sig_whale:'Balina',sig_volpct:'Hac %',sig_spike:'Sıçrama',sig_newmkt:'Yeni',sig_coord:'Koord.',sig_reversal:'Dönüş',sig_momentum:'Momentum',sig_vsurge:'Hac patl.',sig_late:'Geç $',sig_contra:'Kontra',sig_thin:'Sığ',sig_wallet:'Tekrar cüzd.',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Günlük 5 sinyal sınırını kaldırın. Her uyarıyı anında alın — gecikmesiz, sınırsız.',rpc_per:'/ay · istediğin zaman iptal',rpc_cta:"PRO'YA GEÇ",
+      delay_title:'ÜCRETSİZ LİMİT DOLDU — UYARILAR 30 DK GECİKMELİ',delay_desc:'Bugünkü 5 canlı sinyali kullandınız. Sınırsız gerçek zamanlı uyarılar için PRO\'ya yükseltin.',delay_cta:'PRO — 3,99$/ay'},
   zh:{land_sub:'实时 Poly 提醒',land_free:'免费版',land_pro:'Pro 版',land_enter:'进入免费控制台',land_buypro:'购买 Pro — $3.99/月',land_redeem:'兑换激活码',land_already:'已付款？',land_force:'更新',
       land_free_sig:'每天 5 条实时信号',land_free_delay:'之后延迟提醒（每天最多 30 条）',land_free_ai:'内置多 AI 分析',
       land_pro_sig:'无限实时信号',land_pro_delay:'零延迟 · 实时',land_pro_all:'包含免费版全部功能',
       land_stripe:'由 Stripe 安全保障',land_feedback:'发送反馈',
       tab_alerts:'提醒',tab_markets:'市场',tab_config:'设置',btn_history:'历史',btn_watchlist:'关注',btn_clear:'全部清除',btn_pause:'暂停',btn_live:'实时',btn_pro:'PRO',
       filter_label:'已筛选',filter_clear:'清除',empty_waiting:'等待信号...',empty_select:'选择提醒进行分析',
-      tier_high:'高级别',tier_extreme:'极端',lang_title:'语言',lang_desc:'选择语言'},
+      tier_high:'高级别',tier_extreme:'极端',lang_title:'语言',lang_desc:'选择语言',
+      right_usage:'我的用量',right_severity:'严重度',right_session:'会话提醒',right_click_filter:'点击筛选',right_activity:'动态',right_sources:'数据来源',
+      stat_today_live:'今日实时',stat_today_total:'今日总计',stat_alltime_live:'累计实时',stat_alltime_total:'累计提醒',stat_of_free:'/ 5 条免费',stat_of_max:'/ 30 条上限',stat_signals_seen:'信号已看',stat_alerts_shown:'提醒已显示',
+      sev_normal:'普通 1×',sev_high:'较高 2–4.9×',sev_extreme:'极端 5×+',
+      sig_whale:'鲸鱼',sig_volpct:'量 %',sig_spike:'突增',sig_newmkt:'新市',sig_coord:'协调',sig_reversal:'反转',sig_momentum:'动量',sig_vsurge:'量涌',sig_late:'晚单',sig_contra:'逆向',sig_thin:'薄市',sig_wallet:'复用钱包',
+      rpc_title:'POLYMIND PRO',rpc_desc:'取消每天 5 条信号限制。每条提醒即时送达——无延迟、无限制。',rpc_per:'/月 · 随时取消',rpc_cta:'升级到 PRO',
+      delay_title:'免费额度已用完 — 提醒延迟 30 分钟',delay_desc:'您今天的 5 条实时信号已用完。升级到 PRO 获取无限实时提醒。',delay_cta:'PRO — $3.99/月'},
   ar:{land_sub:'تنبيهات Poly في الوقت الفعلي',land_free:'المستوى المجاني',land_pro:'اشتراك Pro',land_enter:'فتح لوحة المجانية',land_buypro:'شراء Pro — 3.99$ شهريًا',land_redeem:'استخدام رمز التفعيل',land_already:'هل دفعت بالفعل؟',land_force:'تحديث',
       land_free_sig:'5 إشارات مباشرة / يوميًا',land_free_delay:'بعد ذلك تنبيهات مؤجلة (حتى 30 / يومياً)',land_free_ai:'تحليل متعدد الذكاء الاصطناعي مضمّن',
       land_pro_sig:'إشارات مباشرة غير محدودة',land_pro_delay:'بدون تأخير · في الوقت الفعلي',land_pro_all:'كل ما في الخطة المجانية',
       land_stripe:'آمن عبر Stripe',land_feedback:'إرسال ملاحظة',
       tab_alerts:'تنبيهات',tab_markets:'الأسواق',tab_config:'الإعدادات',btn_history:'السجل',btn_watchlist:'المفضلة',btn_clear:'مسح الكل',btn_pause:'إيقاف',btn_live:'مباشر',btn_pro:'PRO',
       filter_label:'تمت التصفية',filter_clear:'مسح',empty_waiting:'بانتظار الإشارات...',empty_select:'اختر تنبيهًا للتحليل',
-      tier_high:'مستوى مرتفع',tier_extreme:'متطرف',lang_title:'اللغة',lang_desc:'اختر لغتك'},
+      tier_high:'مستوى مرتفع',tier_extreme:'متطرف',lang_title:'اللغة',lang_desc:'اختر لغتك',
+      right_usage:'استخدامك',right_severity:'الشدة',right_session:'تنبيهات الجلسة',right_click_filter:'انقر للتصفية',right_activity:'النشاط',right_sources:'مصادر البيانات',
+      stat_today_live:'اليوم مباشر',stat_today_total:'إجمالي اليوم',stat_alltime_live:'الإجمالي المباشر',stat_alltime_total:'إجمالي التنبيهات',stat_of_free:'من 5 مجاني',stat_of_max:'من 30 كحد أقصى',stat_signals_seen:'إشارات مُشاهدة',stat_alerts_shown:'تنبيهات معروضة',
+      sev_normal:'عادي 1×',sev_high:'مرتفع 2–4.9×',sev_extreme:'متطرف 5×+',
+      sig_whale:'حوت',sig_volpct:'حجم %',sig_spike:'قفزة',sig_newmkt:'سوق جديد',sig_coord:'تنسيق',sig_reversal:'انعكاس',sig_momentum:'زخم',sig_vsurge:'تدفق حجم',sig_late:'متأخر',sig_contra:'معاكس',sig_thin:'سوق ضعيف',sig_wallet:'محفظة متكررة',
+      rpc_title:'POLYMIND PRO',rpc_desc:'أزل حد 5 إشارات يوميًا. احصل على كل تنبيه في اللحظة — بدون تأخير أو قيود.',rpc_per:'/شهر · ألغِ في أي وقت',rpc_cta:'الترقية إلى PRO',
+      delay_title:'تم بلوغ حد المجاني — تنبيهات مؤجلة 30 دقيقة',delay_desc:'لقد استخدمت إشاراتك المباشرة الخمس اليوم. ترقَّ إلى PRO لتنبيهات غير محدودة في الوقت الفعلي.',delay_cta:'PRO — 3.99$ شهريًا'},
   hi:{land_sub:'रीयल-टाइम Poly अलर्ट',land_free:'निःशुल्क',land_pro:'प्रो प्लान',land_enter:'निःशुल्क डैशबोर्ड',land_buypro:'प्रो खरीदें — $3.99/माह',land_redeem:'सक्रियण कोड भुनाएँ',land_already:'पहले से भुगतान किया?',land_force:'अपडेट',
       land_free_sig:'दिन में 5 लाइव सिग्नल',land_free_delay:'फिर देरी वाले अलर्ट (30 / दिन तक)',land_free_ai:'मल्टी-AI विश्लेषण शामिल',
       land_pro_sig:'असीमित लाइव सिग्नल',land_pro_delay:'शून्य देरी · रीयल-टाइम',land_pro_all:'निःशुल्क की सभी सुविधाएँ',
       land_stripe:'Stripe से सुरक्षित',land_feedback:'फ़ीडबैक भेजें',
       tab_alerts:'अलर्ट',tab_markets:'मार्केट्स',tab_config:'कॉन्फ़िग',btn_history:'इतिहास',btn_watchlist:'वॉचलिस्ट',btn_clear:'सब मिटाएँ',btn_pause:'रोकें',btn_live:'लाइव',btn_pro:'PRO',
       filter_label:'फ़िल्टर',filter_clear:'मिटाएँ',empty_waiting:'सिग्नल का इंतज़ार...',empty_select:'विश्लेषण के लिए अलर्ट चुनें',
-      tier_high:'उच्च स्तर',tier_extreme:'अत्यधिक',lang_title:'भाषा',lang_desc:'अपनी भाषा चुनें'},
+      tier_high:'उच्च स्तर',tier_extreme:'अत्यधिक',lang_title:'भाषा',lang_desc:'अपनी भाषा चुनें',
+      right_usage:'आपका उपयोग',right_severity:'गंभीरता',right_session:'सत्र अलर्ट',right_click_filter:'फ़िल्टर के लिए क्लिक',right_activity:'गतिविधि',right_sources:'डेटा स्रोत',
+      stat_today_live:'आज लाइव',stat_today_total:'आज कुल',stat_alltime_live:'कुल लाइव',stat_alltime_total:'कुल अलर्ट',stat_of_free:'5 निःशुल्क में से',stat_of_max:'30 अधिकतम में से',stat_signals_seen:'सिग्नल देखे',stat_alerts_shown:'अलर्ट दिखाए',
+      sev_normal:'सामान्य 1×',sev_high:'उच्च 2–4.9×',sev_extreme:'अत्यधिक 5×+',
+      sig_whale:'व्हेल',sig_volpct:'वॉल्यूम %',sig_spike:'स्पाइक',sig_newmkt:'नया',sig_coord:'समन्वय',sig_reversal:'रिवर्सल',sig_momentum:'मोमेंटम',sig_vsurge:'वॉल्यूम उछाल',sig_late:'लेट $',sig_contra:'विरोध',sig_thin:'पतला',sig_wallet:'पुन. वॉलेट',
+      rpc_title:'POLYMIND PRO',rpc_desc:'प्रति दिन 5 सिग्नल की सीमा हटाएँ। हर अलर्ट तुरंत पाएँ — बिना देरी, बिना सीमा।',rpc_per:'/माह · कभी भी रद्द करें',rpc_cta:'PRO में अपग्रेड',
+      delay_title:'निःशुल्क सीमा समाप्त — अलर्ट अब 30 मिनट देर से',delay_desc:'आपने आज के सभी 5 लाइव सिग्नल उपयोग कर लिए हैं। असीमित रीयल-टाइम अलर्ट के लिए PRO में अपग्रेड करें।',delay_cta:'PRO — $3.99/माह'},
   ru:{land_sub:'Poly-оповещения в реальном времени',land_free:'Бесплатно',land_pro:'Тариф Pro',land_enter:'Открыть панель',land_buypro:'Купить Pro — $3.99/мес',land_redeem:'Активировать код',land_already:'Уже оплатили?',land_force:'Обновить',
       land_free_sig:'5 live-сигналов / день',land_free_delay:'Далее — с задержкой (до 30 / день)',land_free_ai:'Multi-AI анализ включён',
       land_pro_sig:'Неограниченные live-сигналы',land_pro_delay:'Нулевая задержка · в реальном времени',land_pro_all:'Всё из бесплатного',
       land_stripe:'Безопасно через Stripe',land_feedback:'Отправить отзыв',
       tab_alerts:'ОПОВЕЩЕНИЯ',tab_markets:'РЫНКИ',tab_config:'НАСТР.',btn_history:'ИСТОРИЯ',btn_watchlist:'ИЗБРАННОЕ',btn_clear:'ОЧИСТИТЬ',btn_pause:'ПАУЗА',btn_live:'В ЭФИРЕ',btn_pro:'PRO',
       filter_label:'Фильтр',filter_clear:'СБРОС',empty_waiting:'Ожидание сигналов...',empty_select:'Выберите оповещение для анализа',
-      tier_high:'Уровень ВЫСОКИЙ',tier_extreme:'ЭКСТРЕМАЛЬНО',lang_title:'Язык',lang_desc:'Выберите язык'}
+      tier_high:'Уровень ВЫСОКИЙ',tier_extreme:'ЭКСТРЕМАЛЬНО',lang_title:'Язык',lang_desc:'Выберите язык',
+      right_usage:'ВАША АКТИВНОСТЬ',right_severity:'УРОВЕНЬ',right_session:'СИГНАЛЫ СЕССИИ',right_click_filter:'нажмите для фильтра',right_activity:'ДЕЙСТВИЯ',right_sources:'ИСТОЧНИКИ ДАННЫХ',
+      stat_today_live:'СЕГОДНЯ LIVE',stat_today_total:'СЕГОДНЯ ВСЕГО',stat_alltime_live:'ВСЕГО LIVE',stat_alltime_total:'ВСЕГО АЛЕРТОВ',stat_of_free:'из 5 бесплатных',stat_of_max:'из 30 макс.',stat_signals_seen:'сигналов видно',stat_alerts_shown:'алертов показано',
+      sev_normal:'ОБЫЧНЫЙ 1×',sev_high:'ВЫСОКИЙ 2–4.9×',sev_extreme:'ЭКСТРЕМ. 5×+',
+      sig_whale:'Кит',sig_volpct:'Объём %',sig_spike:'Всплеск',sig_newmkt:'Новый',sig_coord:'Координ.',sig_reversal:'Разворот',sig_momentum:'Моментум',sig_vsurge:'Объём surge',sig_late:'Поздний $',sig_contra:'Контра',sig_thin:'Тонкий',sig_wallet:'Повт. кош.',
+      rpc_title:'POLYMIND PRO',rpc_desc:'Снимите ограничение в 5 сигналов в день. Получайте каждое оповещение мгновенно — без задержек и лимитов.',rpc_per:'/мес · отмена в любое время',rpc_cta:'ПЕРЕЙТИ НА PRO',
+      delay_title:'ЛИМИТ FREE ИСЧЕРПАН — ОПОВЕЩЕНИЯ С ЗАДЕРЖКОЙ 30 МИН',delay_desc:'Вы использовали все 5 live-сигналов за сегодня. PRO — неограниченные оповещения в реальном времени.',delay_cta:'PRO — $3.99/мес'}
 };
 var LANG_KEY='polymind_lang_v1';
 var LANG=(function(){
