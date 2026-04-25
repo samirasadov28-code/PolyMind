@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.7</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.8</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -628,23 +628,23 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   <span class="logo-sub">POLY ALERTS</span>
 </div>
   <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
-    <span style="color:var(--tx3);font-size:8px;letter-spacing:1px;white-space:nowrap">OPTIONAL AI:</span>
+    <span style="color:var(--tx3);font-size:8px;letter-spacing:1px;white-space:nowrap" data-i18n="hdr_optional_ai">OPTIONAL AI:</span>
     <div class="ai-tabs">
       <button class="ai-tab on" data-p="claude">CLAUDE</button>
       <button class="ai-tab" data-p="gemini">GEMINI</button>
     </div>
   </div>
   <div class="kw">
-    <input type="password" id="ki" placeholder="Paste Claude or Gemini key to override default AI" title="Optional — leave blank to use the built-in Groq AI">
+    <input type="password" id="ki" placeholder="Paste Claude or Gemini key to override default AI" title="Optional — leave blank to use the built-in Groq AI" data-i18n-attr="placeholder:hdr_key_ph;title:hdr_key_title">
   </div>
   <div class="hdr-r">
-    <span id="poly-st" style="font-size:9px;color:var(--tx3)">&#9679; Connecting...</span>
+    <span id="poly-st" style="font-size:9px;color:var(--tx3)" data-i18n="hdr_connecting" data-i18n-prefix="&#9679; ">&#9679; Connecting...</span>
     <div id="tier-badge" class="badge" style="cursor:pointer;border-color:rgba(245,194,0,.25);background:rgba(245,194,0,.06)" title="Signal tier status">
       <span style="color:var(--gr)">5/5 live</span>
     </div>
     <button id="hdr-pro-btn" onclick="showUpgradeModal()"><span data-i18n="btn_pro" data-i18n-prefix="★ ">★ PRO</span></button>
     <div class="badge"><div class="dot pulse" id="live-dot"></div><span id="live-txt" style="color:var(--gr);font-size:10px;letter-spacing:1px" data-i18n="btn_live">LIVE</span></div>
-    <button class="ghost" id="snd-btn" title="EXTREME alert sound" style="padding:4px 8px;font-size:14px" aria-pressed="true">&#128266;</button>
+    <button class="ghost" id="snd-btn" title="EXTREME alert sound" style="padding:4px 8px;font-size:14px" aria-pressed="true" data-i18n-attr="title:hdr_sound_title">&#128266;</button>
     <button class="ghost" id="lang-btn" title="Language" style="padding:4px 8px;font-size:10px;letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px"><span id="lang-btn-flag" style="display:inline-flex;align-items:center"></span><span id="lang-btn-lbl">EN</span></button>
     <button class="ghost" id="pause-btn"><span data-i18n="btn_pause" data-i18n-prefix="⏸ ">⏸ PAUSE</span></button>
   </div>
@@ -844,9 +844,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
       <div class="cs">
         <div class="ct" data-i18n="right_sources">DATA SOURCES</div>
-        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)">CONNECTING</span></div><div class="su" id="api-src-mode">Detecting proxy mode...</div></div>
-        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-poll" style="background:var(--steel)"></div><span class="srl">Poll interval</span><span class="ss" id="st-poll" style="color:var(--gr)">15s</span></div><div class="su" id="mkt-count">Loading...</div></div>
-        <div class="srcr"><div class="srch"><div class="sd" id="dot-ai" style="background:var(--teal)"></div><span class="srl" id="ai-lbl">Groq AI (default)</span><span class="ss" id="st-ai" style="color:var(--teal)">ACTIVE</span></div><div class="su" id="ai-url">llama-3.3-70b-versatile · override with Claude or Gemini key</div></div>
+        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl" data-i18n="src_polymarket">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)" data-i18n="src_connecting">CONNECTING</span></div><div class="su" id="api-src-mode" data-i18n="src_detect">Detecting proxy mode...</div></div>
+        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-poll" style="background:var(--steel)"></div><span class="srl" data-i18n="src_poll">Poll interval</span><span class="ss" id="st-poll" style="color:var(--gr)">15s</span></div><div class="su" id="mkt-count" data-i18n="src_loading">Loading...</div></div>
+        <div class="srcr"><div class="srch"><div class="sd" id="dot-ai" style="background:var(--teal)"></div><span class="srl" id="ai-lbl" data-i18n="src_ai_default">Groq AI (default)</span><span class="ss" id="st-ai" style="color:var(--teal)" data-i18n="src_active">ACTIVE</span></div><div class="su" id="ai-url" data-i18n="src_ai_url">llama-3.3-70b-versatile · override with Claude or Gemini key</div></div>
         <div style="margin-top:6px;color:var(--tx3);font-size:9px" id="last-fetch"></div>
       </div>
 
@@ -862,13 +862,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   <div class="imod">
     <div class="imod-hdr">
       <span class="imod-ic" id="info-icon"></span>
-      <span class="imod-title" id="info-title">Alert Info</span>
+      <span class="imod-title" id="info-title" data-i18n="info_title">Alert Info</span>
       <button class="imod-x" id="info-close">&#10005;</button>
     </div>
     <div class="imod-body" id="info-body"></div>
     <div class="imod-foot">
-      <button class="btn" id="info-analyze" style="flex:2">&#9672; ANALYZE THIS ALERT WITH AI</button>
-      <button class="ghost" id="info-close2" style="flex:1">CLOSE</button>
+      <button class="btn" id="info-analyze" style="flex:2" data-i18n="info_analyze" data-i18n-prefix="&#9672; ">&#9672; ANALYZE THIS ALERT WITH AI</button>
+      <button class="ghost" id="info-close2" style="flex:1" data-i18n="info_close">CLOSE</button>
     </div>
   </div>
 </div>
@@ -877,16 +877,16 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 <div class="ov" id="order-modal" style="display:none" role="dialog">
   <div class="omod">
     <div class="imod-hdr">
-      <span class="imod-title" style="color:var(--ac)">&#9672; CONFIRM ORDER</span>
+      <span class="imod-title" style="color:var(--ac)" data-i18n="ord_title" data-i18n-prefix="&#9672; ">&#9672; CONFIRM ORDER</span>
       <button class="imod-x" id="ord-x">&#10005;</button>
     </div>
     <div style="padding:14px 18px">
       <div class="mi" id="ord-body"></div>
       <div style="display:flex;gap:8px">
-        <button class="ghost" id="ord-cancel" style="flex:1">CANCEL</button>
-        <button class="btn" id="ord-confirm" style="flex:2">&#9672; SUBMIT ORDER</button>
+        <button class="ghost" id="ord-cancel" style="flex:1" data-i18n="ord_cancel">CANCEL</button>
+        <button class="btn" id="ord-confirm" style="flex:2" data-i18n="ord_submit" data-i18n-prefix="&#9672; ">&#9672; SUBMIT ORDER</button>
       </div>
-      <div style="color:var(--tx3);font-size:8px;text-align:center;margin-top:8px">Requires Polymarket account + funded USDC wallet on Polygon</div>
+      <div style="color:var(--tx3);font-size:8px;text-align:center;margin-top:8px" data-i18n="ord_hint">Requires Polymarket account + funded USDC wallet on Polygon</div>
     </div>
   </div>
 </div>
@@ -1194,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.7';  // Bump on each release
+var APP_VERSION = '1.12.8';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1235,7 +1235,8 @@ var I18N={
       rpc_title:'POLYMIND PRO',rpc_desc:'Remove the 5-signal daily cap. Get every alert the instant it fires — no delays, no limits.',rpc_per:'/month · cancel any time',rpc_cta:'UPGRADE TO PRO',
       delay_title:'FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN',delay_desc:'You have used all 5 live signals for today. Upgrade to PRO for unlimited real-time alerts.',delay_cta:'UPGRADE — $3.99/mo',
       up_title:'POLYMIND PRO',up_tagline:'UNLIMITED REAL-TIME SIGNALS',up_warn_title:'You\'ve used your 5 free live signals today',up_warn_desc:'New alerts are now delayed 30 minutes. Upgrade to keep every edge.',up_bullet_unlim:'Unlimited live signals — no daily cap',up_bullet_zero:'Zero delay — every alert the instant it fires',up_plan:'PRO PLAN',up_per:'/month',up_cancel:'Cancel any time · Instant activation',up_cta:'UPGRADE NOW — $3.99/month',up_secure:'Secure checkout via Stripe',up_already:'Already paid? Redeem your activation code',up_redeem_btn:'Redeem Pro Code',up_no_stripe:'Payment not yet configured.',up_set_stripe:'Set {code} in the source to enable checkout.',
-      rd_title:'REDEEM PRO CODE',rd_tagline:'ENTER YOUR ACTIVATION CODE',rd_desc:'Paste the code you received after payment. Pro unlocks instantly on this device.',rd_email:'EMAIL',rd_email_opt:'(optional — for code recovery)',rd_activate:'Activate Pro',rd_err_empty:'Enter your code to continue.',rd_verifying:'Verifying...',rd_success:'Pro activated — unlimited real-time alerts unlocked.',rd_activated:'Activated',rd_err_invalid:'Invalid code. Check and try again.',rd_err_network:'Network error. Try again in a moment.'},
+      rd_title:'REDEEM PRO CODE',rd_tagline:'ENTER YOUR ACTIVATION CODE',rd_desc:'Paste the code you received after payment. Pro unlocks instantly on this device.',rd_email:'EMAIL',rd_email_opt:'(optional — for code recovery)',rd_activate:'Activate Pro',rd_err_empty:'Enter your code to continue.',rd_verifying:'Verifying...',rd_success:'Pro activated — unlimited real-time alerts unlocked.',rd_activated:'Activated',rd_err_invalid:'Invalid code. Check and try again.',rd_err_network:'Network error. Try again in a moment.',
+      hdr_optional_ai:'OPTIONAL AI:',hdr_key_ph:'Paste Claude or Gemini key to override default AI',hdr_key_title:'Optional — leave blank to use the built-in Groq AI',hdr_sound_title:'EXTREME alert sound',hdr_connecting:'Connecting...',hdr_loading:'Loading — {n} so far',hdr_live:'Live — {n} markets',hdr_sim:'Simulation mode',src_polymarket:'Polymarket API',src_poll:'Poll interval',src_loading:'Loading...',src_detect:'Detecting proxy mode...',src_ai_default:'Groq AI (default)',src_ai_url:'llama-3.3-70b-versatile · override with Claude or Gemini key',src_loading_st:'LOADING',src_live_st:'LIVE',src_error_st:'ERROR',src_calling_st:'CALLING',src_ok_st:'OK',src_paused_st:'PAUSED',info_title:'Alert Info',info_analyze:'ANALYZE THIS ALERT WITH AI',info_close:'CLOSE',ord_title:'CONFIRM ORDER',ord_cancel:'CANCEL',ord_submit:'SUBMIT ORDER',ord_hint:'Requires Polymarket account + funded USDC wallet on Polygon',hi_title:'ALERT HISTORY',hi_tagline:'LAST 7 DAYS · STORED ON THIS DEVICE',hi_empty_title:'No archived alerts yet.',hi_empty_desc:'Alerts you see will be stored here for up to 7 days.',hi_no_day:'No alerts this day.',hi_alert:'alert',hi_alerts:'alerts',hi_unknown:'(unknown market)',fb_title:'SEND FEEDBACK',fb_tagline:'BUGS · IDEAS · QUESTIONS',fb_category:'CATEGORY',fb_cat_bug:'Bug report',fb_cat_feature:'Feature idea',fb_cat_alerts:'Issue with alerts',fb_cat_billing:'Billing / subscription',fb_cat_general:'General feedback',fb_message:'MESSAGE',fb_msg_ph:'What happened, what you expected, or what you\'d love to see...',fb_email:'EMAIL',fb_email_opt:'(optional — only if you\'d like a reply)',fb_send:'Send',fb_err_short:'Please write a bit more so we can help.',fb_sending:'Sending...',fb_success:'Thanks — we got it.',fb_sent:'Sent',fb_err_failed:'Could not send. Try again.',fb_err_network:'Network error. Try again.',ob_step1_t:'Live signals stream in here',ob_step1_b:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.',ob_step2_t:'7-day history',ob_step2_b:'Every alert is archived on this device for 7 days. Click HISTORY to browse past signals by day.',ob_step3_t:'Watchlist filter',ob_step3_b:'Star any market on the MARKETS tab to add it to your watchlist, then toggle this chip to see only alerts from those markets.',ob_step4_t:'AI analysis appears here',ob_step4_b:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.',ob_step5_t:'Tune thresholds here',ob_step5_b:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.',ob_step_of:'STEP {n} OF {total}',ob_skip:'Skip tour',ob_next:'Next',ob_got_it:'Got it'},
   uk:{land_sub:'Сповіщення Poly у реальному часі',land_free:'Безкоштовний',land_pro:'Тариф Pro',land_enter:'Відкрити панель',land_buypro:'Купити Pro — $3.99/міс',land_redeem:'Активувати код',land_already:'Уже сплатили?',land_force:'Оновити',
       land_free_sig:'5 сигналів наживо / день',land_free_delay:'Далі — із затримкою (до 30 / день)',land_free_ai:'Аналіз Multi-AI включено',
       land_pro_sig:'Необмежено сигналів наживо',land_pro_delay:'Нульова затримка · в реальному часі',land_pro_all:'Усе з тарифу Free',
@@ -1440,6 +1441,13 @@ function applyI18n(){
       var prefix=el.getAttribute('data-i18n-prefix')||'';
       var suffix=el.getAttribute('data-i18n-suffix')||'';
       el.textContent = prefix + t(key) + suffix;
+    });
+    // data-i18n-attr="placeholder:fb_msg_ph;title:hdr_key_title" — translate attributes
+    document.querySelectorAll('[data-i18n-attr]').forEach(function(el){
+      el.getAttribute('data-i18n-attr').split(';').forEach(function(pair){
+        var parts=pair.split(':');
+        if(parts.length===2) el.setAttribute(parts[0].trim(), t(parts[1].trim()));
+      });
     });
     var btn=document.getElementById('lang-btn-lbl');
     if(btn) btn.textContent = LANG.toUpperCase();
@@ -1846,16 +1854,21 @@ async function loadAll(){
 function setBar(p){document.getElementById('prog').style.width=p+'%';}
 function setPolySt(ok,n,loading){
   var el=document.getElementById('poly-st');
-  if(loading){el.style.color='var(--yw)';el.innerHTML='&#9679; Loading &mdash; '+n+' so far';return;}
+  if(loading){el.style.color='var(--yw)';el.innerHTML='&#9679; '+t('hdr_loading').replace('{n}',n);return;}
   el.style.color=ok?'var(--gr)':'var(--or)';
-  el.innerHTML=ok?'&#9679; Live &mdash; '+n+' markets':'&#9679; Simulation mode';
+  el.innerHTML=ok?'&#9679; '+t('hdr_live').replace('{n}',n):'&#9679; '+t('hdr_sim');
   // Trigger notif banner on first successful live load
   if(ok && !loading) maybeShowNotifBanner();
 }
+var SRC_STATUS_KEYS={LOADING:'src_loading_st',LIVE:'src_live_st',ERROR:'src_error_st',CALLING:'src_calling_st',OK:'src_ok_st',PAUSED:'src_paused_st',CONNECTING:'src_connecting',ACTIVE:'src_active'};
 function setSrc(id,col,txt){
   var d=document.getElementById('dot-'+id),s=document.getElementById('st-'+id);
   if(d)d.style.background='var(--'+col+')';
-  if(s){s.textContent=txt;s.style.color='var(--'+col+')';}
+  if(s){
+    var k=SRC_STATUS_KEYS[txt];
+    s.textContent=k?t(k):txt;
+    s.style.color='var(--'+col+')';
+  }
 }
 
 function parseM(r){
@@ -2944,11 +2957,11 @@ function startOnboarding(){
     return;
   }
   var steps=[
-    {sel:'#ap', title:'Live signals stream in here', body:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.'},
-    {sel:'#hist-btn', title:'7-day history', body:'Every alert is archived on this device for 7 days. Click HISTORY to browse past signals by day.'},
-    {sel:'#wl-chip', title:'Watchlist filter', body:'Star any market on the MARKETS tab to add it to your watchlist, then toggle this chip to see only alerts from those markets.'},
-    {sel:'#center-ai', title:'AI analysis appears here', body:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.'},
-    {sel:'.rp', title:'Tune thresholds here', body:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.'}
+    {sel:'#ap', title:t('ob_step1_t'), body:t('ob_step1_b')},
+    {sel:'#hist-btn', title:t('ob_step2_t'), body:t('ob_step2_b')},
+    {sel:'#wl-chip', title:t('ob_step3_t'), body:t('ob_step3_b')},
+    {sel:'#center-ai', title:t('ob_step4_t'), body:t('ob_step4_b')},
+    {sel:'.rp', title:t('ob_step5_t'), body:t('ob_step5_b')}
   ];
   var i=0;
   var box=document.createElement('div');
@@ -2979,12 +2992,12 @@ function startOnboarding(){
     tip.style.left=left+'px';
     tip.style.top=top+'px';
     tip.innerHTML=
-      '<div style="color:var(--gold);font-size:9px;letter-spacing:1.5px;margin-bottom:4px">STEP '+(i+1)+' OF '+steps.length+'</div>'
+      '<div style="color:var(--gold);font-size:9px;letter-spacing:1.5px;margin-bottom:4px">'+t('ob_step_of').replace('{n}',i+1).replace('{total}',steps.length)+'</div>'
       +'<div style="color:var(--tx);font-size:13px;font-weight:600;margin-bottom:6px">'+s.title+'</div>'
       +'<div style="color:var(--tx2);font-size:11px;line-height:1.55;margin-bottom:12px">'+s.body+'</div>'
       +'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'
-        +'<button id="onboard-skip" style="background:transparent;border:none;color:var(--tx3);font-family:Inter,sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Skip tour</button>'
-        +'<button id="onboard-next" style="background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:7px 16px;font-family:Inter,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase">'+(i<steps.length-1?'Next':'Got it')+'</button>'
+        +'<button id="onboard-skip" style="background:transparent;border:none;color:var(--tx3);font-family:Inter,sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">'+t('ob_skip')+'</button>'
+        +'<button id="onboard-next" style="background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:7px 16px;font-family:Inter,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase">'+(i<steps.length-1?t('ob_next'):t('ob_got_it'))+'</button>'
       +'</div>';
     document.getElementById('onboard-skip').onclick=function(){ track('onboarding_skipped',{step:i}); done(); };
     document.getElementById('onboard-next').onclick=function(){
@@ -3011,7 +3024,7 @@ function showHistoryModal(){
   m.style.cssText='position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)';
   var body='';
   if(!days.length){
-    body='<div style="padding:40px 16px;color:var(--tx3);font-size:11px;text-align:center;line-height:1.6">No archived alerts yet.<br><span style="font-size:10px">Alerts you see will be stored here for up to 7 days.</span></div>';
+    body='<div style="padding:40px 16px;color:var(--tx3);font-size:11px;text-align:center;line-height:1.6">'+t('hi_empty_title')+'<br><span style="font-size:10px">'+t('hi_empty_desc')+'</span></div>';
   } else {
     var typeLabel=function(t){return (AD[t]&&AD[t].lb)||t;};
     body=days.map(function(day){
@@ -3020,7 +3033,7 @@ function showHistoryModal(){
         var d=AD[a.t]||AD.SPIKE;
         var tm=new Date(a.ts||Date.now()).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
         var sevColor=a.sev==='EXTREME'?'var(--red)':a.sev==='HIGH'?'var(--yw)':'var(--tx3)';
-        var mkt=a.mkt?String(a.mkt):'(unknown market)';
+        var mkt=a.mkt?String(a.mkt):t('hi_unknown');
         if(mkt.length>68) mkt=mkt.slice(0,68)+'…';
         return '<div style="padding:8px 12px;border-bottom:1px solid #0d1e2e;display:flex;align-items:center;gap:8px;font-size:10px">'
           +'<span style="color:'+d.c+';font-size:11px;min-width:14px">'+d.ic+'</span>'
@@ -3032,8 +3045,8 @@ function showHistoryModal(){
       }).join('');
       return '<div style="margin-bottom:14px">'
         +'<div style="padding:6px 12px;background:rgba(245,194,0,.06);color:var(--gold);font-size:9px;letter-spacing:1.2px;font-weight:700;border-bottom:1px solid rgba(245,194,0,.2)">'
-        +dateLabel+' &middot; '+day.alerts.length+' alert'+(day.alerts.length===1?'':'s')+'</div>'
-        +(rows||'<div style="padding:10px 12px;color:var(--tx3);font-size:10px">No alerts this day.</div>')
+        +dateLabel+' &middot; '+day.alerts.length+' '+(day.alerts.length===1?t('hi_alert'):t('hi_alerts'))+'</div>'
+        +(rows||'<div style="padding:10px 12px;color:var(--tx3);font-size:10px">'+t('hi_no_day')+'</div>')
         +'</div>';
     }).join('');
   }
@@ -3041,8 +3054,8 @@ function showHistoryModal(){
     '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);max-width:640px;width:92%;max-height:82vh;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);display:flex;flex-direction:column;position:relative">'
     +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
     +'<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--bdr2);flex-shrink:0">'
-      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9201; ALERT HISTORY</div>'
-      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">LAST 7 DAYS &middot; STORED ON THIS DEVICE</div></div>'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9201; '+t('hi_title')+'</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">'+t('hi_tagline')+'</div></div>'
       +'<button id="close-hist" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
     +'</div>'
     +'<div style="overflow-y:auto;flex:1;padding:14px 4px">'+body+'</div>'
@@ -3064,24 +3077,24 @@ function showFeedbackModal(source){
     '<div style="background:var(--bg2);border:1px solid rgba(245,194,0,.4);padding:26px 24px;max-width:440px;width:92%;font-family:Inter,sans-serif;box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);position:relative">'
     +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
-      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9993; SEND FEEDBACK</div>'
-      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">BUGS &middot; IDEAS &middot; QUESTIONS</div></div>'
+      +'<div><div style="color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.5px">&#9993; '+t('fb_title')+'</div>'
+      +'<div style="color:var(--tx3);font-size:9px;letter-spacing:1.5px;margin-top:2px">'+t('fb_tagline')+'</div></div>'
       +'<button id="close-fb" style="background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>'
     +'</div>'
-    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">CATEGORY</label>'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">'+t('fb_category')+'</label>'
     +'<select id="fb-category" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:11px;outline:none;margin-bottom:12px;box-sizing:border-box">'
-      +'<option value="bug">Bug report</option>'
-      +'<option value="feature">Feature idea</option>'
-      +'<option value="alerts">Issue with alerts</option>'
-      +'<option value="billing">Billing / subscription</option>'
-      +'<option value="general" selected>General feedback</option>'
+      +'<option value="bug">'+t('fb_cat_bug')+'</option>'
+      +'<option value="feature">'+t('fb_cat_feature')+'</option>'
+      +'<option value="alerts">'+t('fb_cat_alerts')+'</option>'
+      +'<option value="billing">'+t('fb_cat_billing')+'</option>'
+      +'<option value="general" selected>'+t('fb_cat_general')+'</option>'
     +'</select>'
-    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">MESSAGE</label>'
-    +'<textarea id="fb-message" rows="5" placeholder="What happened, what you expected, or what you\'d love to see..." style="width:100%;padding:11px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:12px;outline:none;margin-bottom:12px;box-sizing:border-box;resize:vertical;line-height:1.5"></textarea>'
-    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">EMAIL <span style="text-transform:none;letter-spacing:0;color:var(--tx3)">(optional — only if you\'d like a reply)</span></label>'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">'+t('fb_message')+'</label>'
+    +'<textarea id="fb-message" rows="5" placeholder="'+t('fb_msg_ph').replace(/"/g,'&quot;')+'" style="width:100%;padding:11px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:12px;outline:none;margin-bottom:12px;box-sizing:border-box;resize:vertical;line-height:1.5"></textarea>'
+    +'<label style="display:block;color:var(--tx3);font-size:8px;letter-spacing:1.5px;margin-bottom:4px">'+t('fb_email')+' <span style="text-transform:none;letter-spacing:0;color:var(--tx3)">'+t('fb_email_opt')+'</span></label>'
     +'<input id="fb-email" type="email" autocomplete="email" placeholder="you@example.com" style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:Inter,sans-serif;font-size:11px;outline:none;margin-bottom:12px;box-sizing:border-box">'
     +'<div id="fb-msg" style="min-height:16px;font-size:10px;margin-bottom:10px"></div>'
-    +'<button id="fb-send" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s">Send</button>'
+    +'<button id="fb-send" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;font-family:Inter,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:filter .2s">'+t('fb_send')+'</button>'
   +'</div>';
   document.body.appendChild(m);
   function close(){m.remove();}
@@ -3094,9 +3107,9 @@ function showFeedbackModal(source){
     var msgEl=document.getElementById('fb-msg');
     var message=(ta.value||'').trim();
     if(message.length<5){
-      msgEl.style.color='var(--or)';msgEl.textContent='Please write a bit more so we can help.';return;
+      msgEl.style.color='var(--or)';msgEl.textContent=t('fb_err_short');return;
     }
-    btn.disabled=true;btn.textContent='Sending...';msgEl.style.color='var(--tx3)';msgEl.textContent='';
+    btn.disabled=true;btn.textContent=t('fb_sending');msgEl.style.color='var(--tx3)';msgEl.textContent='';
     fetch('/api/feedback',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -3114,17 +3127,17 @@ function showFeedbackModal(source){
       .then(function(res){
         if(res.status===200 && res.body && res.body.ok){
           track('feedback_sent', {category: document.getElementById('fb-category').value});
-          msgEl.style.color='var(--gr)';msgEl.textContent='\u2713 Thanks — we got it.';
-          btn.textContent='\u2713 Sent';
+          msgEl.style.color='var(--gr)';msgEl.textContent='\u2713 '+t('fb_success');
+          btn.textContent='\u2713 '+t('fb_sent');
           setTimeout(close, 1200);
         } else {
-          var err=(res.body && res.body.error) || 'Could not send. Try again.';
+          var err=(res.body && res.body.error) || t('fb_err_failed');
           msgEl.style.color='var(--or)';msgEl.textContent=err;
-          btn.disabled=false;btn.textContent='Send';
+          btn.disabled=false;btn.textContent=t('fb_send');
         }
       }).catch(function(){
-        msgEl.style.color='var(--or)';msgEl.textContent='Network error. Try again.';
-        btn.disabled=false;btn.textContent='Send';
+        msgEl.style.color='var(--or)';msgEl.textContent=t('fb_err_network');
+        btn.disabled=false;btn.textContent=t('fb_send');
       });
   });
 }
