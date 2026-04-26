@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.20</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.21</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -1194,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.20';  // Bump on each release
+var APP_VERSION = '1.12.21';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2742,6 +2742,15 @@ async function analyze(a,aiDiv){
 async function callAI(prov,key,msg){
   // All AI calls go through the Netlify serverless function at /api/ai
   // The Groq key never leaves the server — it lives in Netlify environment variables
+  // When the user is on a non-English language, ask the model to respond in that
+  // language. JSON keys/enums (signal_strength, BUY YES, etc.) stay English so
+  // downstream parsing keeps working — only the prose values get translated.
+  var langNames={en:'English',uk:'Ukrainian',fr:'French',es:'Spanish',de:'German',pt:'Portuguese',it:'Italian',nl:'Dutch',tr:'Turkish',zh:'Simplified Chinese',ar:'Arabic',hi:'Hindi',ru:'Russian'};
+  var langName=langNames[LANG]||'English';
+  var sys=SYS;
+  if(LANG && LANG!=='en'){
+    sys += '\n\nRespond entirely in '+langName+'. Translate every prose field (summary, market_interpretation, all thesis fields, rationale, risk_factors, position_size descriptors). Keep JSON keys, enum values (STRONG/MODERATE/WEAK, BULLISH_YES/BEARISH_YES/NEUTRAL, LONG/SHORT/NEUTRAL, BUY YES/BUY NO/HOLD/FADE), tickers and instrument symbols in English.';
+  }
   var r = await fetch('/api/ai',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -2749,7 +2758,7 @@ async function callAI(prov,key,msg){
       provider: prov,
       key: (prov !== 'groq') ? key : null,
       message: msg,
-      system: SYS
+      system: sys
     })
   });
   var data = await r.json().catch(function(){return{error:'Bad response'};});
