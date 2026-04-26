@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.21</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.22</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -1194,7 +1194,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.21';  // Bump on each release
+var APP_VERSION = '1.12.22';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1236,7 +1236,8 @@ var I18N={
       delay_title:'FREE LIMIT REACHED — ALERTS NOW DELAYED 30 MIN',delay_desc:'You have used all 5 live signals for today. Upgrade to PRO for unlimited real-time alerts.',delay_cta:'UPGRADE — $3.99/mo',
       up_title:'POLYMIND PRO',up_tagline:'UNLIMITED REAL-TIME SIGNALS',up_warn_title:'You\'ve used your 5 free live signals today',up_warn_desc:'New alerts are now delayed 30 minutes. Upgrade to keep every edge.',up_bullet_unlim:'Unlimited live signals — no daily cap',up_bullet_zero:'Zero delay — every alert the instant it fires',up_plan:'PRO PLAN',up_per:'/month',up_cancel:'Cancel any time · Instant activation',up_cta:'UPGRADE NOW — $3.99/month',up_secure:'Secure checkout via Stripe',up_already:'Already paid? Redeem your activation code',up_redeem_btn:'Redeem Pro Code',up_no_stripe:'Payment not yet configured.',up_set_stripe:'Set {code} in the source to enable checkout.',
       rd_title:'REDEEM PRO CODE',rd_tagline:'ENTER YOUR ACTIVATION CODE',rd_desc:'Paste the code you received after payment. Pro unlocks instantly on this device.',rd_email:'EMAIL',rd_email_opt:'(optional — for code recovery)',rd_activate:'Activate Pro',rd_err_empty:'Enter your code to continue.',rd_verifying:'Verifying...',rd_success:'Pro activated — unlimited real-time alerts unlocked.',rd_activated:'Activated',rd_err_invalid:'Invalid code. Check and try again.',rd_err_network:'Network error. Try again in a moment.',
-      hdr_optional_ai:'OPTIONAL AI:',hdr_key_ph:'Paste Claude or Gemini key to override default AI',hdr_key_title:'Optional — leave blank to use the built-in Groq AI',hdr_sound_title:'EXTREME alert sound',hdr_connecting:'Connecting...',hdr_loading:'Loading — {n} so far',hdr_live:'Live — {n} markets',hdr_sim:'Simulation mode',src_polymarket:'Polymarket API',src_poll:'Poll interval',src_loading:'Loading...',src_detect:'Detecting proxy mode...',src_ai_default:'Groq AI (default)',src_ai_url:'llama-3.3-70b-versatile · override with Claude or Gemini key',src_loading_st:'LOADING',src_live_st:'LIVE',src_error_st:'ERROR',src_calling_st:'CALLING',src_ok_st:'OK',src_paused_st:'PAUSED',info_title:'Alert Info',info_analyze:'ANALYZE THIS ALERT WITH AI',info_close:'CLOSE',ord_title:'CONFIRM ORDER',ord_cancel:'CANCEL',ord_submit:'SUBMIT ORDER',ord_hint:'Requires Polymarket account + funded USDC wallet on Polygon',hi_title:'ALERT HISTORY',hi_tagline:'LAST 7 DAYS · STORED ON THIS DEVICE',hi_empty_title:'No archived alerts yet.',hi_empty_desc:'Alerts you see will be stored here for up to 7 days.',hi_no_day:'No alerts this day.',hi_alert:'alert',hi_alerts:'alerts',hi_unknown:'(unknown market)',fb_title:'SEND FEEDBACK',fb_tagline:'BUGS · IDEAS · QUESTIONS',fb_category:'CATEGORY',fb_cat_bug:'Bug report',fb_cat_feature:'Feature idea',fb_cat_alerts:'Issue with alerts',fb_cat_billing:'Billing / subscription',fb_cat_general:'General feedback',fb_message:'MESSAGE',fb_msg_ph:'What happened, what you expected, or what you\'d love to see...',fb_email:'EMAIL',fb_email_opt:'(optional — only if you\'d like a reply)',fb_send:'Send',fb_err_short:'Please write a bit more so we can help.',fb_sending:'Sending...',fb_success:'Thanks — we got it.',fb_sent:'Sent',fb_err_failed:'Could not send. Try again.',fb_err_network:'Network error. Try again.',ob_step1_t:'Live signals stream in here',ob_step1_b:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.',ob_step2_t:'7-day history',ob_step2_b:'Every alert is archived on this device for 7 days. Click HISTORY to browse past signals by day.',ob_step3_t:'Watchlist filter',ob_step3_b:'Star any market on the MARKETS tab to add it to your watchlist, then toggle this chip to see only alerts from those markets.',ob_step4_t:'AI analysis appears here',ob_step4_b:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.',ob_step5_t:'Tune thresholds here',ob_step5_b:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.',ob_step_of:'STEP {n} OF {total}',ob_skip:'Skip tour',ob_next:'Next',ob_got_it:'Got it'},
+      hdr_optional_ai:'OPTIONAL AI:',hdr_key_ph:'Paste Claude or Gemini key to override default AI',hdr_key_title:'Optional — leave blank to use the built-in Groq AI',hdr_sound_title:'EXTREME alert sound',hdr_connecting:'Connecting...',hdr_loading:'Loading — {n} so far',hdr_live:'Live — {n} markets',hdr_sim:'Simulation mode',src_polymarket:'Polymarket API',src_poll:'Poll interval',src_loading:'Loading...',src_detect:'Detecting proxy mode...',src_ai_default:'Groq AI (default)',src_ai_url:'llama-3.3-70b-versatile · override with Claude or Gemini key',src_loading_st:'LOADING',src_live_st:'LIVE',src_error_st:'ERROR',src_calling_st:'CALLING',src_ok_st:'OK',src_paused_st:'PAUSED',info_title:'Alert Info',info_analyze:'ANALYZE THIS ALERT WITH AI',info_close:'CLOSE',ord_title:'CONFIRM ORDER',ord_cancel:'CANCEL',ord_submit:'SUBMIT ORDER',ord_hint:'Requires Polymarket account + funded USDC wallet on Polygon',hi_title:'ALERT HISTORY',hi_tagline:'LAST 7 DAYS · STORED ON THIS DEVICE',hi_empty_title:'No archived alerts yet.',hi_empty_desc:'Alerts you see will be stored here for up to 7 days.',hi_no_day:'No alerts this day.',hi_alert:'alert',hi_alerts:'alerts',hi_unknown:'(unknown market)',fb_title:'SEND FEEDBACK',fb_tagline:'BUGS · IDEAS · QUESTIONS',fb_category:'CATEGORY',fb_cat_bug:'Bug report',fb_cat_feature:'Feature idea',fb_cat_alerts:'Issue with alerts',fb_cat_billing:'Billing / subscription',fb_cat_general:'General feedback',fb_message:'MESSAGE',fb_msg_ph:'What happened, what you expected, or what you\'d love to see...',fb_email:'EMAIL',fb_email_opt:'(optional — only if you\'d like a reply)',fb_send:'Send',fb_err_short:'Please write a bit more so we can help.',fb_sending:'Sending...',fb_success:'Thanks — we got it.',fb_sent:'Sent',fb_err_failed:'Could not send. Try again.',fb_err_network:'Network error. Try again.',ob_step1_t:'Live signals stream in here',ob_step1_b:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.',ob_step2_t:'7-day history',ob_step2_b:'Every alert is archived on this device for 7 days. Click HISTORY to browse past signals by day.',ob_step3_t:'Watchlist filter',ob_step3_b:'Star any market on the MARKETS tab to add it to your watchlist, then toggle this chip to see only alerts from those markets.',ob_step4_t:'AI analysis appears here',ob_step4_b:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.',ob_step5_t:'Tune thresholds here',ob_step5_b:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.',ob_step_of:'STEP {n} OF {total}',ob_skip:'Skip tour',ob_next:'Next',ob_got_it:'Got it',
+      det_whale:'{amt} → {side}',det_volpct:'{amt} = {pct} of {mktVol} vol',det_spike:'{pb} → {pr} {move}',det_coord:'{amt} → {side}',det_reversal:'Flipped → {side} ({pb}→{pr})',det_momentum:'{polls} consecutive {side} polls → {pr}',det_volsurge:'Volume {move}',det_late:'{hrs} to resolution — late flow',det_contra:'Betting {side} at {odds}{amt} — vs consensus',det_thin:'{amt} into thin {mktVol} mkt → {side}',det_wallet:'{wallet} → {count} markets in window',det_new:'New market → {pr} YES',ad_lb_whale:'WHALE BET',ad_lb_vol_pct:'VOL % BET',ad_lb_spike:'PRICE SPIKE',ad_lb_new:'NEW MARKET',ad_lb_coord:'COORD. WALLETS',ad_lb_reversal:'REVERSAL',ad_lb_momentum:'MOMENTUM',ad_lb_vol_surge:'VOL SURGE',ad_lb_late:'LATE MONEY',ad_lb_contra:'CONTRA-CONSENSUS',ad_lb_thin:'THIN MARKET',ad_lb_wallet:'REPEAT WALLET',badge_delayed:'30m DELAYED',badge_past:'PAST',empty_filter_watch:'No alerts from your watched markets yet',empty_filter_type:'No {lb} alerts',empty_filter_tier:'No {tier} tier alerts'},
   uk:{land_sub:'Сповіщення Poly у реальному часі',land_free:'Безкоштовний',land_pro:'Тариф Pro',land_enter:'Відкрити панель',land_buypro:'Купити Pro — $3.99/міс',land_redeem:'Активувати код',land_already:'Уже сплатили?',land_force:'Оновити',
       land_free_sig:'5 сигналів наживо / день',land_free_delay:'Далі — із затримкою (до 30 / день)',land_free_ai:'Аналіз Multi-AI включено',
       land_pro_sig:'Необмежено сигналів наживо',land_pro_delay:'Нульова затримка · в реальному часі',land_pro_all:'Усе з тарифу Free',
@@ -2437,7 +2438,7 @@ function setFilter(type,tier){
   var active=S.filterType||S.filterTier;
   if(active){
     bar.classList.add('on');
-    if(S.filterType)lbl.textContent='Showing: '+(AD[S.filterType]?AD[S.filterType].lb:S.filterType);
+    if(S.filterType)lbl.textContent=t('filter_label')+': '+(AD[S.filterType]?adLb(S.filterType):S.filterType);
     else lbl.textContent='Showing: '+S.filterTier+' tier alerts';
   } else {bar.classList.remove('on');}
   updCounts();renderAlerts();
@@ -2501,20 +2502,32 @@ function startSim(){
 // ─── RENDER ──────────────────────────────────────────────────────────────────
 function renderAll(){renderAlerts();renderActivity();}
 
+function adLb(typeKey){
+  // Localized AD label — falls back to the English label embedded in AD.
+  var k='ad_lb_'+(typeKey||'').toLowerCase();
+  var v=t(k);
+  if(v && v!==k) return v;
+  return (AD[typeKey] && AD[typeKey].lb) || typeKey || '';
+}
 function alertDetail(a){
   var d=AD[a.t]||AD.SPIKE;
-  if(a.t==='WHALE'&&a.amt)return fmt(a.amt)+' &rarr; '+a.side+(a.wal?' <span style="color:var(--tx3)">'+a.wal+'</span>':'');
-  if(a.t==='VOL_PCT')return fmt(a.amt||0)+' = <b>'+a.pct+'%</b> of '+fmt(a.mktVol||0)+' vol';
-  if(a.t==='SPIKE'&&a.pb!=null)return pct(a.pb)+' &rarr; <span style="color:'+d.c+'">'+pct(a.pr)+'</span> '+(a.side==='YES'?'<span style="color:var(--gr)">&#9650;':'<span style="color:var(--or)">&#9660;')+' '+Math.abs((a.pr-a.pb)*100).toFixed(1)+'pp</span>';
-  if(a.t==='COORD'&&a.amt)return fmt(a.amt)+' &rarr; '+a.side+(a.wal?' <span style="color:var(--tx3)">'+a.wal+'</span>':'');
-  if(a.t==='REVERSAL')return 'Flipped &rarr; <b>'+a.side+'</b> ('+pct(a.pb)+'&rarr;'+pct(a.pr)+')';
-  if(a.t==='MOMENTUM')return '<b>'+a.polls+'</b> consecutive '+a.side+' polls &rarr; '+pct(a.pr);
-  if(a.t==='VOL_SURGE')return 'Volume <b style="color:var(--yw)">&#9650;'+a.spct+'%</b>';
-  if(a.t==='LATE'&&a.hrs!=null)return '<b>'+a.hrs+'h</b> to resolution — late flow';
-  if(a.t==='CONTRA'&&a.odds!=null)return 'Betting <b>'+a.side+'</b> at <b>'+pct(a.odds)+'</b>'+(a.amt?' &middot; <b>'+fmt(a.amt)+'</b>':'')+' — vs consensus';
-  if(a.t==='THIN'&&a.mktVol)return fmt(a.amt||0)+' into thin '+fmt(a.mktVol)+' mkt &rarr; '+(a.side||'');
-  if(a.t==='WALLET')return '<b>'+a.wallet+'</b> &rarr; <b>'+a.count+'</b> markets in window';
-  if(a.t==='NEW')return 'New market &rarr; '+pct(a.pr)+' YES';
+  if(a.t==='WHALE'&&a.amt) return t('det_whale').replace('{amt}',fmt(a.amt)).replace('{side}',a.side)+(a.wal?' <span style="color:var(--tx3)">'+a.wal+'</span>':'');
+  if(a.t==='VOL_PCT') return t('det_volpct').replace('{amt}',fmt(a.amt||0)).replace('{pct}','<b>'+a.pct+'%</b>').replace('{mktVol}',fmt(a.mktVol||0));
+  if(a.t==='SPIKE'&&a.pb!=null){
+    var dir = a.side==='YES'
+      ? '<span style="color:var(--gr)">&#9650; '+Math.abs((a.pr-a.pb)*100).toFixed(1)+'pp</span>'
+      : '<span style="color:var(--or)">&#9660; '+Math.abs((a.pr-a.pb)*100).toFixed(1)+'pp</span>';
+    return t('det_spike').replace('{pb}',pct(a.pb)).replace('{pr}','<span style="color:'+d.c+'">'+pct(a.pr)+'</span>').replace('{move}',dir);
+  }
+  if(a.t==='COORD'&&a.amt) return t('det_coord').replace('{amt}',fmt(a.amt)).replace('{side}',a.side)+(a.wal?' <span style="color:var(--tx3)">'+a.wal+'</span>':'');
+  if(a.t==='REVERSAL') return t('det_reversal').replace('{side}','<b>'+a.side+'</b>').replace('{pb}',pct(a.pb)).replace('{pr}',pct(a.pr));
+  if(a.t==='MOMENTUM') return t('det_momentum').replace('{polls}','<b>'+a.polls+'</b>').replace('{side}',a.side).replace('{pr}',pct(a.pr));
+  if(a.t==='VOL_SURGE') return t('det_volsurge').replace('{move}','<b style="color:var(--yw)">&#9650;'+a.spct+'%</b>');
+  if(a.t==='LATE'&&a.hrs!=null) return t('det_late').replace('{hrs}','<b>'+a.hrs+'h</b>');
+  if(a.t==='CONTRA'&&a.odds!=null) return t('det_contra').replace('{side}','<b>'+a.side+'</b>').replace('{odds}','<b>'+pct(a.odds)+'</b>').replace('{amt}',a.amt?' &middot; <b>'+fmt(a.amt)+'</b>':'');
+  if(a.t==='THIN'&&a.mktVol) return t('det_thin').replace('{amt}',fmt(a.amt||0)).replace('{mktVol}',fmt(a.mktVol)).replace('{side}',a.side||'');
+  if(a.t==='WALLET') return t('det_wallet').replace('{wallet}','<b>'+a.wallet+'</b>').replace('{count}','<b>'+a.count+'</b>');
+  if(a.t==='NEW') return t('det_new').replace('{pr}',pct(a.pr));
   return pct(a.pr);
 }
 
@@ -2532,7 +2545,7 @@ function renderAlerts(){
   var p=document.getElementById('ap');if(!p)return;
   var list=getFilteredAlerts();
   if(!list.length){
-    var msg=S.filterWatchlist?'No alerts from your watched markets yet':S.filterType?'No '+AD[S.filterType].lb+' alerts':S.filterTier?'No '+S.filterTier+' tier alerts':t('empty_waiting');
+    var msg=S.filterWatchlist?t('empty_filter_watch'):S.filterType?t('empty_filter_type').replace('{lb}',adLb(S.filterType)):S.filterTier?t('empty_filter_tier').replace('{tier}',S.filterTier):t('empty_waiting');
     p.innerHTML='<div style="padding:24px 16px;color:var(--tx3);font-size:10px;text-align:center">'+msg+'</div>';
     return;
   }
@@ -2540,11 +2553,11 @@ function renderAlerts(){
     var d=AD[a.t]||AD.SPIKE,sv=getSev(a),sel=a.id===S.selId;
     var bc=sel?d.c:sv.tier==='EXTREME'?'var(--red)':sv.tier==='HIGH'?'var(--yw)':'transparent';
     var badge=sv.mult>=1.2?'<span class="mbd '+sv.bc+'">'+sv.mult.toFixed(1)+'&times;'+(sv.tier!=='NORMAL'?' '+sv.tier:'')+'</span>':'';
-    var delayBadge=a.delayed?'<span style="display:inline-flex;align-items:center;padding:1px 5px;font-size:7px;letter-spacing:.5px;font-weight:700;background:rgba(240,144,58,.15);color:var(--or);margin-left:4px;vertical-align:middle">30m DELAYED</span>':'';
-    var seedBadge=a.seeded?'<span style="display:inline-flex;align-items:center;padding:1px 5px;font-size:7px;letter-spacing:.5px;font-weight:700;background:rgba(122,156,184,.15);color:var(--tx3);margin-left:4px;vertical-align:middle">PAST</span>':'';
+    var delayBadge=a.delayed?'<span style="display:inline-flex;align-items:center;padding:1px 5px;font-size:7px;letter-spacing:.5px;font-weight:700;background:rgba(240,144,58,.15);color:var(--or);margin-left:4px;vertical-align:middle">'+t('badge_delayed')+'</span>':'';
+    var seedBadge=a.seeded?'<span style="display:inline-flex;align-items:center;padding:1px 5px;font-size:7px;letter-spacing:.5px;font-weight:700;background:rgba(122,156,184,.15);color:var(--tx3);margin-left:4px;vertical-align:middle">'+t('badge_past')+'</span>':'';
     return '<div class="arow'+(sel?' sel':'')+(a.seeded?' seeded':'')+' '+sv.cls+'" style="border-left-color:'+bc+'" data-id="'+a.id+'">'
       +'<div class="arow-main" data-select="'+a.id+'">'
-        +'<div class="ahd"><span style="color:'+d.c+';font-size:12px">'+d.ic+'</span><span class="aty" style="color:'+d.c+'">'+d.lb+'</span>'+badge+delayBadge+seedBadge+'<span class="atm">'+ago(a.ts)+'</span></div>'
+        +'<div class="ahd"><span style="color:'+d.c+';font-size:12px">'+d.ic+'</span><span class="aty" style="color:'+d.c+'">'+adLb(a.t)+'</span>'+badge+delayBadge+seedBadge+'<span class="atm">'+ago(a.ts)+'</span></div>'
         +'<div class="amk">'+(a.mkt.length>50?a.mkt.slice(0,50)+'&hellip;':a.mkt)+'</div>'
         +'<div class="adt">'+alertDetail(a)+'</div>'
       +'</div>'
@@ -2590,7 +2603,7 @@ function openInfo(type,alertId){
   S.infoAlertId=alertId||null;
   document.getElementById('info-icon').innerHTML='<span style="color:'+d.c+'">'+d.ic+'</span>';
   var titleEl=document.getElementById('info-title');
-  titleEl.textContent=d.lb;
+  titleEl.textContent=adLb(a.t);
   titleEl.style.color=d.c;
   var tags=info.tags.map(function(t){return '<span class="dtag" style="color:'+d.c+';border-color:'+d.c+'44">'+t+'</span>';}).join('');
   var noteHtml=info.note?'<div class="dnote">&#9432; Note: '+info.note+'</div>':'';
@@ -3047,7 +3060,7 @@ function showHistoryModal(){
   if(!days.length){
     body='<div style="padding:40px 16px;color:var(--tx3);font-size:11px;text-align:center;line-height:1.6">'+t('hi_empty_title')+'<br><span style="font-size:10px">'+t('hi_empty_desc')+'</span></div>';
   } else {
-    var typeLabel=function(t){return (AD[t]&&AD[t].lb)||t;};
+    var typeLabel=function(typeKey){return adLb(typeKey);};
     body=days.map(function(day){
       var dateLabel=new Date(day.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
       var rows=day.alerts.map(function(a){
@@ -3790,7 +3803,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var d = a ? (AD[a.t] || AD.SPIKE) : null;
     if(a && d){
       document.getElementById('mob-ai-title').innerHTML =
-        '<span style="color:'+d.c+'">'+d.ic+'</span> '+esc(d.lb)
+        '<span style="color:'+d.c+'">'+d.ic+'</span> '+esc(adLb(a.t))
         +'<span style="color:var(--tx3);font-size:9px;margin-left:8px;font-weight:400">'
         +esc(a.mkt.length>30?a.mkt.slice(0,30)+'…':a.mkt)+'</span>';
       body.innerHTML = '<div class="ldg" style="padding-top:60px">'
