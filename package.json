@@ -1,7 +1,7 @@
 {
   "name": "polymind",
   "private": true,
-  "version": "1.13.3",
+  "version": "1.13.4",
   "description": "PolyMind · Real-time prediction market alerts",
   "dependencies": {
     "@netlify/blobs": "^8.1.0"
