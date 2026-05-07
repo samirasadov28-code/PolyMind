@@ -7,7 +7,8 @@
 //   GROQ_API_KEY  →  your Groq key from console.groq.com
 //
 // Endpoint: POST /api/ai
-// Body: { provider: 'groq'|'claude'|'gemini', key: string|null, message: string, system: string }
+// Body (alert analysis): { provider, key, message, system }
+// Body (chat):           { provider, key, messages: [{role,content},...], system, max_tokens? }
 // ─────────────────────────────────────────────────────────────────────────────
 
 exports.handler = async function(event) {
@@ -23,14 +24,23 @@ exports.handler = async function(event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON body' }) };
   }
 
-  const { provider = 'groq', key, message, system } = body;
+  const { provider = 'groq', key, message, messages, system, max_tokens } = body;
 
   // Validate
-  if (!message) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Missing message' }) };
+  if (!message && !(Array.isArray(messages) && messages.length)) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Missing message or messages' }) };
   }
 
   const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
+  // Cap conversation length defensively (latest 30 turns).
+  const trimmedMessages = Array.isArray(messages)
+    ? messages
+        .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+        .slice(-30)
+        .map(m => ({ role: m.role, content: m.content }))
+    : null;
+  const isChat = !!trimmedMessages;
+  const maxTokens = Math.min(Math.max(parseInt(max_tokens, 10) || (isChat ? 600 : 900), 64), 1500);
 
   try {
     let text = '';
@@ -45,16 +55,19 @@ exports.handler = async function(event) {
           body: JSON.stringify({ error: 'GROQ_API_KEY not configured in Netlify environment variables' })
         };
       }
+      const groqMessages = [{ role: 'system', content: system || '' }];
+      if (isChat) {
+        groqMessages.push(...trimmedMessages);
+      } else {
+        groqMessages.push({ role: 'user', content: 'Analyze this prediction market signal:\n\n' + message });
+      }
       const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + groqKey },
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
-          max_tokens: 900,
-          messages: [
-            { role: 'system', content: system },
-            { role: 'user',   content: 'Analyze this prediction market signal:\n\n' + message }
-          ]
+          max_tokens: maxTokens,
+          messages: groqMessages
         })
       });
       const data = await resp.json();
@@ -64,6 +77,9 @@ exports.handler = async function(event) {
     // ── CLAUDE (user-supplied key forwarded server-side) ──────────────────────
     } else if (provider === 'claude') {
       if (!key) return { statusCode: 400, headers, body: JSON.stringify({ error: 'Claude key required' }) };
+      const claudeMessages = isChat
+        ? trimmedMessages
+        : [{ role: 'user', content: 'Analyze:\n\n' + message }];
       const resp = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -73,9 +89,9 @@ exports.handler = async function(event) {
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 900,
+          max_tokens: maxTokens,
           system: system,
-          messages: [{ role: 'user', content: 'Analyze:\n\n' + message }]
+          messages: claudeMessages
         })
       });
       const data = await resp.json();
@@ -85,6 +101,12 @@ exports.handler = async function(event) {
     // ── GEMINI (user-supplied key forwarded server-side) ──────────────────────
     } else if (provider === 'gemini') {
       if (!key) return { statusCode: 400, headers, body: JSON.stringify({ error: 'Gemini key required' }) };
+      const geminiContents = isChat
+        ? trimmedMessages.map(m => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.content }]
+          }))
+        : [{ role: 'user', parts: [{ text: 'Analyze:\n\n' + message }] }];
       const resp = await fetch(
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + key,
         {
@@ -92,7 +114,7 @@ exports.handler = async function(event) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: system }] },
-            contents: [{ role: 'user', parts: [{ text: 'Analyze:\n\n' + message }] }]
+            contents: geminiContents
           })
         }
       );

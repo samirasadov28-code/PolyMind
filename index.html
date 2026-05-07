@@ -473,9 +473,41 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .land-modeloop .ml-arrow{color:var(--tx3);font-size:14px;flex-shrink:0;transition:color .2s,transform .2s}
 .land-modeloop:hover .ml-arrow{color:var(--gold);transform:translateX(2px)}
 /* FEEDBACK FAB — floating button on the dashboard */
-#fb-fab{position:fixed;right:16px;bottom:16px;z-index:9998;width:44px;height:44px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr2);color:var(--tx2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45);transition:border-color .2s,color .2s,transform .15s,background .2s}
+#fb-fab{position:fixed;left:16px;bottom:16px;z-index:9998;width:44px;height:44px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr2);color:var(--tx2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45);transition:border-color .2s,color .2s,transform .15s,background .2s}
 #fb-fab:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3);transform:translateY(-1px)}
-@media (max-width:640px){#fb-fab{right:12px;bottom:12px;width:40px;height:40px;font-size:16px}}
+@media (max-width:640px){#fb-fab{left:12px;bottom:12px;width:40px;height:40px;font-size:16px}}
+/* CHAT FAB + PANEL — Groq-backed assistant, dashboard only */
+#chat-fab{display:none;position:fixed;right:16px;bottom:16px;z-index:9998;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#c89800);border:none;color:#0a1220;font-size:20px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(245,194,0,.35),0 4px 16px rgba(0,0,0,.4);transition:transform .15s,filter .2s}
+#chat-fab.shown{display:flex}
+#chat-fab:hover{filter:brightness(1.1);transform:translateY(-1px)}
+#chat-panel{position:fixed;right:16px;bottom:76px;z-index:9999;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 100px);background:var(--bg2);border:1px solid rgba(245,194,0,.4);box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);display:none;flex-direction:column;font-family:'Inter',sans-serif}
+#chat-panel.open{display:flex}
+.chat-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--bdr2);flex-shrink:0;background:linear-gradient(180deg,rgba(245,194,0,.04),transparent)}
+.chat-hdr-l{display:flex;flex-direction:column}
+.chat-hdr-title{color:var(--gold);font-size:13px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.chat-hdr-sub{color:var(--tx3);font-size:9px;letter-spacing:1.2px;margin-top:2px}
+.chat-hdr-x{background:rgba(255,255,255,.05);border:1px solid var(--bdr2);color:var(--tx2);width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s}
+.chat-hdr-x:hover{border-color:var(--gold);color:var(--gold)}
+.chat-body{flex:1;overflow-y:auto;padding:14px 14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.chat-msg{display:flex;flex-direction:column;max-width:85%;font-size:12px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap}
+.chat-msg.u{align-self:flex-end;background:linear-gradient(135deg,rgba(245,194,0,.18),rgba(245,194,0,.1));border:1px solid rgba(245,194,0,.3);color:var(--tx);padding:8px 11px}
+.chat-msg.a{align-self:flex-start;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx2);padding:8px 11px}
+.chat-msg.err{align-self:stretch;background:rgba(232,93,74,.1);border:1px solid rgba(232,93,74,.4);color:var(--or);padding:8px 11px;font-size:11px}
+.chat-typing{align-self:flex-start;color:var(--tx3);font-size:11px;letter-spacing:.5px;padding:6px 11px}
+.chat-typing::after{content:'...';display:inline-block;animation:chatDots 1.2s infinite}
+@keyframes chatDots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
+.chat-empty{color:var(--tx3);font-size:11px;text-align:center;padding:24px 16px;line-height:1.5}
+.chat-empty .ic{font-size:24px;color:var(--gold);display:block;margin-bottom:8px}
+.chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--bdr2);background:var(--bg2);flex-shrink:0;align-items:flex-end}
+.chat-input-row textarea{flex:1;background:var(--bg3);border:1px solid var(--bdr);color:var(--tx);font-family:'Inter',sans-serif;font-size:12px;padding:8px 10px;outline:none;resize:none;line-height:1.4;max-height:120px;min-height:38px;box-sizing:border-box}
+.chat-input-row textarea:focus{border-color:rgba(245,194,0,.4)}
+.chat-send-btn{background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:0 14px;height:38px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;transition:filter .2s;flex-shrink:0}
+.chat-send-btn:hover:not(:disabled){filter:brightness(1.15)}
+.chat-send-btn:disabled{opacity:.5;cursor:not-allowed}
+@media (max-width:640px){
+  #chat-fab{right:12px;bottom:12px;width:44px;height:44px;font-size:18px}
+  #chat-panel{right:8px;left:8px;bottom:68px;width:auto;max-width:none;height:calc(100vh - 90px)}
+}
 /* Header PRO button — always visible */
 #hdr-pro-btn{background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:filter .2s;flex-shrink:0}
 #hdr-pro-btn:hover{filter:brightness(1.15)}
@@ -549,7 +581,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       </div>
     </div>
 
-    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.12.34</strong></div>
+    <div class="land-version" id="land-version">v<strong id="land-ver-num">1.13.0</strong></div>
 
     <div class="land-compare">
       <div class="land-tier">
@@ -1194,7 +1226,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.12.34';  // Bump on each release
+var APP_VERSION = '1.13.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1237,7 +1269,8 @@ var I18N={
       up_title:'POLYMIND PRO',up_tagline:'UNLIMITED REAL-TIME SIGNALS',up_warn_title:'You\'ve used your 5 free live signals today',up_warn_desc:'New alerts are now delayed 30 minutes. Upgrade to keep every edge.',up_bullet_unlim:'Unlimited live signals — no daily cap',up_bullet_zero:'Zero delay — every alert the instant it fires',up_plan:'PRO PLAN',up_per:'/month',up_cancel:'Cancel any time · Instant activation',up_cta:'UPGRADE NOW — $3.99/month',up_secure:'Secure checkout via Stripe',up_already:'Already paid? Redeem your activation code',up_redeem_btn:'Redeem Pro Code',up_no_stripe:'Payment not yet configured.',up_set_stripe:'Set {code} in the source to enable checkout.',
       rd_title:'REDEEM PRO CODE',rd_tagline:'ENTER YOUR ACTIVATION CODE',rd_desc:'Paste the code you received after payment. Pro unlocks instantly on this device.',rd_email:'EMAIL',rd_email_opt:'(optional — for code recovery)',rd_activate:'Activate Pro',rd_err_empty:'Enter your code to continue.',rd_verifying:'Verifying...',rd_success:'Pro activated — unlimited real-time alerts unlocked.',rd_activated:'Activated',rd_err_invalid:'Invalid code. Check and try again.',rd_err_network:'Network error. Try again in a moment.',
       hdr_optional_ai:'OPTIONAL AI:',hdr_key_ph:'Paste Claude or Gemini key to override default AI',hdr_key_title:'Optional — leave blank to use the built-in Groq AI',hdr_sound_title:'EXTREME alert sound',hdr_connecting:'Connecting...',hdr_loading:'Loading — {n} so far',hdr_live:'Live — {n} markets',hdr_sim:'Simulation mode',src_polymarket:'Polymarket API',src_poll:'Poll interval',src_loading:'Loading...',src_detect:'Detecting proxy mode...',src_ai_default:'Groq AI (default)',src_ai_url:'llama-3.3-70b-versatile · override with Claude or Gemini key',src_loading_st:'LOADING',src_live_st:'LIVE',src_error_st:'ERROR',src_calling_st:'CALLING',src_ok_st:'OK',src_paused_st:'PAUSED',info_title:'Alert Info',info_analyze:'ANALYZE THIS ALERT WITH AI',info_close:'CLOSE',ord_title:'CONFIRM ORDER',ord_cancel:'CANCEL',ord_submit:'SUBMIT ORDER',ord_hint:'Requires Polymarket account + funded USDC wallet on Polygon',hi_title:'ALERT HISTORY',hi_tagline:'LAST 7 DAYS · STORED ON THIS DEVICE',hi_empty_title:'No archived alerts yet.',hi_empty_desc:'Alerts you see will be stored here for up to 7 days.',hi_no_day:'No alerts this day.',hi_alert:'alert',hi_alerts:'alerts',hi_unknown:'(unknown market)',fb_title:'SEND FEEDBACK',fb_tagline:'BUGS · IDEAS · QUESTIONS',fb_category:'CATEGORY',fb_cat_bug:'Bug report',fb_cat_feature:'Feature idea',fb_cat_alerts:'Issue with alerts',fb_cat_billing:'Billing / subscription',fb_cat_general:'General feedback',fb_message:'MESSAGE',fb_msg_ph:'What happened, what you expected, or what you\'d love to see...',fb_email:'EMAIL',fb_email_opt:'(optional — only if you\'d like a reply)',fb_send:'Send',fb_err_short:'Please write a bit more so we can help.',fb_sending:'Sending...',fb_success:'Thanks — we got it.',fb_sent:'Sent',fb_err_failed:'Could not send. Try again.',fb_err_network:'Network error. Try again.',ob_step1_t:'Live signals stream in here',ob_step1_b:'Whale bets, volume surges, price spikes, coordinated wallets — 12 signal types in total. Click any alert for AI analysis.',ob_step2_t:'7-day history',ob_step2_b:'Every alert is archived on this device for 7 days. Click HISTORY to browse past signals by day.',ob_step3_t:'Watchlist filter',ob_step3_b:'Star any market on the MARKETS tab to add it to your watchlist, then toggle this chip to see only alerts from those markets.',ob_step4_t:'AI analysis appears here',ob_step4_b:'Market context plus cross-asset impact (equities, commodities, FX, crypto, bonds) and a suggested Polymarket trade.',ob_step5_t:'Tune thresholds here',ob_step5_b:'Adjust whale minimums, price-spike %, volume-surge %, and more. Hover any label to see why the threshold matters.',ob_step_of:'STEP {n} OF {total}',ob_skip:'Skip tour',ob_next:'Next',ob_got_it:'Got it',
-      det_whale:'{amt} → {side}',det_volpct:'{amt} = {pct} of {mktVol} vol',det_spike:'{pb} → {pr} {move}',det_coord:'{amt} → {side}',det_reversal:'Flipped → {side} ({pb}→{pr})',det_momentum:'{polls} consecutive {side} polls → {pr}',det_volsurge:'Volume {move}',det_late:'{hrs} to resolution — late flow',det_contra:'Betting {side} at {odds}{amt} — vs consensus',det_thin:'{amt} into thin {mktVol} mkt → {side}',det_wallet:'{wallet} → {count} markets in window',det_new:'New market → {pr} YES',ad_lb_whale:'WHALE BET',ad_lb_vol_pct:'VOL % BET',ad_lb_spike:'PRICE SPIKE',ad_lb_new:'NEW MARKET',ad_lb_coord:'COORD. WALLETS',ad_lb_reversal:'REVERSAL',ad_lb_momentum:'MOMENTUM',ad_lb_vol_surge:'VOL SURGE',ad_lb_late:'LATE MONEY',ad_lb_contra:'CONTRA-CONSENSUS',ad_lb_thin:'THIN MARKET',ad_lb_wallet:'REPEAT WALLET',badge_delayed:'30m DELAYED',badge_past:'PAST',empty_filter_watch:'No alerts from your watched markets yet',empty_filter_type:'No {lb} alerts',empty_filter_tier:'No {tier} tier alerts'},
+      det_whale:'{amt} → {side}',det_volpct:'{amt} = {pct} of {mktVol} vol',det_spike:'{pb} → {pr} {move}',det_coord:'{amt} → {side}',det_reversal:'Flipped → {side} ({pb}→{pr})',det_momentum:'{polls} consecutive {side} polls → {pr}',det_volsurge:'Volume {move}',det_late:'{hrs} to resolution — late flow',det_contra:'Betting {side} at {odds}{amt} — vs consensus',det_thin:'{amt} into thin {mktVol} mkt → {side}',det_wallet:'{wallet} → {count} markets in window',det_new:'New market → {pr} YES',ad_lb_whale:'WHALE BET',ad_lb_vol_pct:'VOL % BET',ad_lb_spike:'PRICE SPIKE',ad_lb_new:'NEW MARKET',ad_lb_coord:'COORD. WALLETS',ad_lb_reversal:'REVERSAL',ad_lb_momentum:'MOMENTUM',ad_lb_vol_surge:'VOL SURGE',ad_lb_late:'LATE MONEY',ad_lb_contra:'CONTRA-CONSENSUS',ad_lb_thin:'THIN MARKET',ad_lb_wallet:'REPEAT WALLET',badge_delayed:'30m DELAYED',badge_past:'PAST',empty_filter_watch:'No alerts from your watched markets yet',empty_filter_type:'No {lb} alerts',empty_filter_tier:'No {tier} tier alerts',
+      chat_title:'PolyMind Assistant',chat_sub:'POWERED BY GROQ',chat_placeholder:'Ask anything about alerts, signals, markets…',chat_send:'SEND',chat_typing:'Thinking',chat_welcome:'Hi! Ask me anything about alerts, signal types, or how to read the dashboard. I run on Groq + Llama 3.3.',chat_err_auth:'AI key issue — check your provider settings.',chat_err_proxy:'AI proxy not found. Make sure the Netlify function is deployed and GROQ_API_KEY is set.',chat_err_generic:'Couldn\'t reach the assistant. Please try again.'},
   uk:{land_sub:'Сповіщення Poly у реальному часі',land_free:'Безкоштовний',land_pro:'Тариф Pro',land_enter:'Відкрити панель',land_buypro:'Купити Pro — $3.99/міс',land_redeem:'Активувати код',land_already:'Уже сплатили?',land_force:'Оновити',
       land_free_sig:'5 сигналів наживо / день',land_free_delay:'Далі — із затримкою (до 30 / день)',land_free_ai:'Аналіз Multi-AI включено',
       land_pro_sig:'Необмежено сигналів наживо',land_pro_delay:'Нульова затримка · в реальному часі',land_pro_all:'Усе з тарифу Free',
@@ -2764,6 +2797,104 @@ async function analyze(a,aiDiv){
   }
 }
 
+// ─── CHAT (Groq-backed assistant, dashboard only) ────────────────────────────
+var CHAT_MESSAGES = []; // session-only: [{role:'user'|'assistant', content:'...'}]
+
+function chatLangNames(){return {en:'English',uk:'Ukrainian',fr:'French',es:'Spanish',de:'German',pt:'Portuguese',it:'Italian',nl:'Dutch',tr:'Turkish',zh:'Simplified Chinese',ar:'Arabic',hi:'Hindi',ru:'Russian'};}
+function chatSystemPrompt(){
+  var langName=chatLangNames()[LANG]||'English';
+  var sys='You are a concise, helpful assistant inside PolyMind, a real-time prediction-market alerts and analysis tool. Help the user understand alert types (whale bets, volume surges, price spikes, momentum, contra-consensus, etc.), market dynamics on Polymarket, and how to interpret the dashboard. Keep replies short and practical (2-5 sentences typically). When asked unrelated general questions, answer briefly. Never invent specific market prices, odds, or trade outcomes that you do not actually know.';
+  if(LANG && LANG!=='en') sys += ' Respond in '+langName+'.';
+  return sys;
+}
+async function callChat(messages){
+  var r = await fetch('/api/ai',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      provider:'groq',
+      key:null,
+      messages:messages,
+      system:chatSystemPrompt(),
+      max_tokens:600
+    })
+  });
+  var data = await r.json().catch(function(){return{error:'Bad response'};});
+  if(!r.ok) throw new Error(data.error || 'HTTP '+r.status);
+  return data.text;
+}
+function chatRender(){
+  var body=document.getElementById('chat-body');
+  if(!body) return;
+  if(!CHAT_MESSAGES.length){
+    body.innerHTML='<div class="chat-empty"><span class="ic">&#128172;</span>'+esc(t('chat_welcome'))+'</div>';
+    return;
+  }
+  body.innerHTML = CHAT_MESSAGES.map(function(m){
+    var cls = m.role==='user' ? 'u' : (m.role==='error' ? 'err' : 'a');
+    return '<div class="chat-msg '+cls+'">'+esc(m.content)+'</div>';
+  }).join('');
+  body.scrollTop = body.scrollHeight;
+}
+function chatRenderTyping(on){
+  var body=document.getElementById('chat-body');
+  if(!body) return;
+  var existing=body.querySelector('.chat-typing');
+  if(existing) existing.remove();
+  if(on){
+    var tip=document.createElement('div');
+    tip.className='chat-typing';
+    tip.textContent=t('chat_typing');
+    body.appendChild(tip);
+    body.scrollTop = body.scrollHeight;
+  }
+}
+async function chatSend(){
+  var input=document.getElementById('chat-input');
+  var btn=document.getElementById('chat-send');
+  if(!input || !btn) return;
+  var text=(input.value||'').trim();
+  if(!text || btn.disabled) return;
+  CHAT_MESSAGES.push({role:'user', content:text});
+  input.value='';
+  input.style.height='auto';
+  btn.disabled=true;
+  chatRender();
+  chatRenderTyping(true);
+  track('chat_sent', {length: text.length, lang: LANG});
+  try{
+    var reply = await callChat(CHAT_MESSAGES);
+    CHAT_MESSAGES.push({role:'assistant', content:reply});
+    chatRenderTyping(false);
+    chatRender();
+  }catch(e){
+    chatRenderTyping(false);
+    var msg = e.message || 'Unknown error';
+    var hint = /401|403|key|auth/i.test(msg) ? t('chat_err_auth')
+             : /404|not found/i.test(msg)    ? t('chat_err_proxy')
+             :                                  t('chat_err_generic');
+    CHAT_MESSAGES.push({role:'error', content:hint});
+    chatRender();
+  }finally{
+    btn.disabled=false;
+  }
+}
+function showChatFab(){
+  var f=document.getElementById('chat-fab');
+  if(f) f.classList.add('shown');
+}
+function chatToggle(force){
+  var p=document.getElementById('chat-panel');
+  if(!p) return;
+  var open = (typeof force==='boolean') ? force : !p.classList.contains('open');
+  p.classList.toggle('open', open);
+  if(open){
+    track('chat_opened');
+    chatRender();
+    setTimeout(function(){ var i=document.getElementById('chat-input'); if(i) i.focus(); },50);
+  }
+}
+
 async function callAI(prov,key,msg){
   // All AI calls go through the Netlify serverless function at /api/ai
   // The Groq key never leaves the server — it lives in Netlify environment variables
@@ -3386,6 +3517,7 @@ document.addEventListener('DOMContentLoaded',function(){
       landOverlay.style.display='none';
       try{ seedRecentAlerts(); }catch(e){}
       startOnboarding();
+      showChatFab();
     },350);
   });
 
@@ -3414,6 +3546,27 @@ document.addEventListener('DOMContentLoaded',function(){
   // Feedback — floating dashboard button
   var fbFab=document.getElementById('fb-fab');
   if(fbFab) fbFab.addEventListener('click',function(){showFeedbackModal('fab');});
+
+  // Chat — floating Groq-backed assistant button (dashboard only; shown on land-enter)
+  (function(){
+    var cf=document.getElementById('chat-fab');
+    var cx=document.getElementById('chat-close');
+    var ci=document.getElementById('chat-input');
+    var cs=document.getElementById('chat-send');
+    if(cf) cf.addEventListener('click',function(){chatToggle();});
+    if(cx) cx.addEventListener('click',function(){chatToggle(false);});
+    if(cs) cs.addEventListener('click',chatSend);
+    if(ci){
+      ci.addEventListener('keydown',function(e){
+        if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); chatSend(); }
+      });
+      // Auto-grow textarea up to its CSS max-height
+      ci.addEventListener('input',function(){ ci.style.height='auto'; ci.style.height=Math.min(ci.scrollHeight,120)+'px'; });
+    }
+    // If user is already past the landing overlay (e.g. PWA returning), show the FAB
+    var landOv=document.getElementById('landing-overlay');
+    if(landOv && (landOv.style.display==='none' || getComputedStyle(landOv).display==='none')) showChatFab();
+  })();
 
   // Stripe return — auto-activate when Stripe redirects back with ?session_id=cs_xxx
   (function(){
@@ -4078,6 +4231,23 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 
 <button id="fb-fab" type="button" title="Send feedback" aria-label="Send feedback">&#9993;</button>
+
+<!-- ─── CHAT FAB + PANEL — Groq-backed assistant (dashboard only) ──────────── -->
+<button id="chat-fab" type="button" title="Ask the assistant" aria-label="Open chat">&#128172;</button>
+<div id="chat-panel" role="dialog" aria-label="Chat assistant">
+  <div class="chat-hdr">
+    <div class="chat-hdr-l">
+      <div class="chat-hdr-title"><span>&#128172;</span><span data-i18n="chat_title">PolyMind Assistant</span></div>
+      <div class="chat-hdr-sub" data-i18n="chat_sub">POWERED BY GROQ</div>
+    </div>
+    <button id="chat-close" class="chat-hdr-x" type="button" aria-label="Close">&times;</button>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-input-row">
+    <textarea id="chat-input" rows="1" maxlength="2000" placeholder="Ask anything about alerts, signals, markets…" data-i18n-attr="placeholder:chat_placeholder"></textarea>
+    <button id="chat-send" class="chat-send-btn" type="button" data-i18n="chat_send">SEND</button>
+  </div>
+</div>
 
 </body>
 </html>
