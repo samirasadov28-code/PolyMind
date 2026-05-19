@@ -617,7 +617,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
     <div class="land-redeem-row"><a href="#" id="land-redeem-link"><span data-i18n="land_already">Already paid?</span> <span class="on" data-i18n="land_redeem">Redeem activation code</span></a></div>
 
-    <a class="land-modeloop" id="land-modeloop-link" href="http://modeloop.net/Other-Products" target="_blank" rel="noopener noreferrer">
+    <a class="land-modeloop" id="land-modeloop-link" href="https://asadov-stack.netlify.app/" target="_blank" rel="noopener noreferrer">
       <span class="ml-body">
         <span class="ml-kick">From the makers &middot; ModeLoop</span>
         <span class="ml-title">Explore more ModeLoop products</span>
@@ -1230,7 +1230,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.19.0';  // Bump on each release
+var APP_VERSION = '1.20.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -3745,7 +3745,7 @@ document.addEventListener('DOMContentLoaded',function(){
   // ModeLoop smart link — track outbound click
   var mlLink=document.getElementById('land-modeloop-link');
   if(mlLink) mlLink.addEventListener('click',function(){
-    track('modeloop_clicked', {source: 'landing_page', url: 'http://modeloop.net/Other-Products'});
+    track('modeloop_clicked', {source: 'landing_page', url: 'https://asadov-stack.netlify.app/'});
   });
 
   // Force update — unregister SW, clear caches, reload
