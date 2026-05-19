@@ -40,7 +40,7 @@ exports.handler = async function(event) {
         .map(m => ({ role: m.role, content: m.content }))
     : null;
   const isChat = !!trimmedMessages;
-  const maxTokens = Math.min(Math.max(parseInt(max_tokens, 10) || (isChat ? 600 : 900), 64), 1500);
+  const maxTokens = Math.min(Math.max(parseInt(max_tokens, 10) || (isChat ? 600 : 2000), 64), 3000);
 
   try {
     let text = '';
@@ -67,6 +67,7 @@ exports.handler = async function(event) {
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
           max_tokens: maxTokens,
+          temperature: isChat ? 0.7 : 0,
           messages: groqMessages
         })
       });

@@ -1230,7 +1230,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.16.0';  // Bump on each release
+var APP_VERSION = '1.17.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2854,8 +2854,21 @@ async function analyze(a,aiDiv){
   try{
     setSrc('ai','yw','CALLING');
     var txt=await callAI(prov,key,ctx);
-    var clean=txt.replace(/```json|```/g,'').trim();
-    var parsed=JSON.parse(clean);
+    var clean=txt.replace(/```json[\s\S]*?```|```/g,'').trim();
+    // Try strict parse first; fall back to extracting the outermost JSON object
+    var parsed;
+    try{ parsed=JSON.parse(clean); }
+    catch(_){
+      var m=clean.match(/\{[\s\S]*\}/);
+      if(m){
+        var s=m[0];
+        // Attempt to auto-close truncated JSON by counting braces
+        var open=(s.match(/\{/g)||[]).length-(s.match(/\}/g)||[]).length;
+        for(var _i=0;_i<open;_i++) s+='}';
+        try{ parsed=JSON.parse(s); }catch(__){ parsed=null; }
+      }
+    }
+    if(!parsed) throw new Error('Could not parse AI response');
     setSrc('ai','teal','OK');
     showAnalysis(parsed,a,sv,aiDiv);
   }catch(e){
@@ -2987,7 +3000,8 @@ async function callAI(prov,key,msg){
       provider: prov,
       key: (prov !== 'groq') ? key : null,
       message: msg,
-      system: sys
+      system: sys,
+      max_tokens: 2000
     })
   });
   var data = await r.json().catch(function(){return{error:'Bad response'};});
