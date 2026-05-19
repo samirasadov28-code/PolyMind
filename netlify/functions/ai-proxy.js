@@ -72,7 +72,10 @@ exports.handler = async function(event) {
         })
       });
       const data = await resp.json();
-      if (!resp.ok) throw new Error((data.error && (data.error.message || data.error.code)) || 'Groq HTTP ' + resp.status);
+      if (!resp.ok) {
+        const errMsg = (data.error && (data.error.message || data.error.code)) || ('Groq HTTP ' + resp.status);
+        return { statusCode: resp.status === 429 ? 429 : 502, headers, body: JSON.stringify({ error: errMsg }) };
+      }
       text = data.choices[0].message.content;
 
     // ── CLAUDE (user-supplied key forwarded server-side) ──────────────────────

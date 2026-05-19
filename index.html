@@ -1230,7 +1230,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.18.0';  // Bump on each release
+var APP_VERSION = '1.19.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2381,7 +2381,7 @@ async function fetchRecentPolymarketAlerts(){
         side: side,
         seeded: true
       };
-    }).filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD; });
+    }).filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD && !isSports(a.mkt,''); });
   }catch(e){
     console.warn('[seed] Polymarket trade fetch failed:', e.message);
     return [];
@@ -2393,7 +2393,7 @@ function _seedFromArchive(){
   var days = listAlertArchive();
   var all = [];
   days.forEach(function(d){ d.alerts.forEach(function(a){ all.push(a); }); });
-  return all.filter(function(a){ return (a.ts||0) >= cutoff; })
+  return all.filter(function(a){ return (a.ts||0) >= cutoff && !isSports(a.mkt||'',''); })
             .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
             .slice(0, SEED_MAX)
             .map(function(slim){
@@ -2874,10 +2874,17 @@ async function analyze(a,aiDiv){
   }catch(e){
     setSrc('ai','or','ERROR');
     var msg = e.message || 'Unknown error';
-    var isAuth = msg.includes('401')||msg.includes('403')||msg.toLowerCase().includes('key')||msg.toLowerCase().includes('auth');
-    var is404  = msg.includes('404') || msg.toLowerCase().includes('not found');
+    var ml = msg.toLowerCase();
+    var isAuth    = msg.includes('401')||msg.includes('403')||ml.includes('key')||ml.includes('auth');
+    var is404     = msg.includes('404') || ml.includes('not found');
+    var isRate    = msg.includes('429')||ml.includes('rate limit')||ml.includes('tpd')||ml.includes('tokens per day')||ml.includes('please try again in');
+    // Extract "try again in Xm Ys" hint from Groq message if present
+    var retryHint = '';
+    var rm = msg.match(/try again in ([^.]+)/i);
+    if(rm) retryHint = ' Try again in ' + rm[1].trim() + '.';
     var errTxt = isAuth ? 'Invalid API key — check your provider console.'
                : is404  ? '&#9888; AI proxy not found. Make sure the Netlify function is deployed and <code>GROQ_API_KEY</code> is set in your Netlify environment variables.'
+               : isRate ? '&#9203; Groq daily token limit reached (free tier: 100k tokens/day).'+retryHint+' To keep analysing: add your own <b>Claude</b> or <b>Gemini</b> key in the header settings — those use your own quota.'
                :           'Error: '+esc(msg);
     aiDiv.innerHTML='<div style="padding:14px"><div class="err">'+errTxt+'</div></div>';
   }
@@ -2956,9 +2963,12 @@ async function chatSend(){
   }catch(e){
     chatRenderTyping(false);
     var msg = e.message || 'Unknown error';
-    var hint = /401|403|key|auth/i.test(msg) ? t('chat_err_auth')
-             : /404|not found/i.test(msg)    ? t('chat_err_proxy')
-             :                                  t('chat_err_generic');
+    var retryM = msg.match(/try again in ([^.]+)/i);
+    var rateHint = retryM ? ' Try again in ' + retryM[1].trim() + '.' : '';
+    var hint = /401|403|key|auth/i.test(msg)                              ? t('chat_err_auth')
+             : /404|not found/i.test(msg)                                 ? t('chat_err_proxy')
+             : /429|rate limit|tpd|tokens per day|try again in/i.test(msg)? '⏳ Groq daily limit reached.' + rateHint + ' Add a Claude or Gemini key in settings to continue.'
+             :                                                               t('chat_err_generic');
     CHAT_MESSAGES.push({role:'error', content:hint});
     chatRender();
   }finally{
