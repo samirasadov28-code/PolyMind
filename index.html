@@ -476,12 +476,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 /* FEEDBACK FAB — floating button on the dashboard */
 #fb-fab{position:fixed;left:16px;bottom:16px;z-index:9998;width:44px;height:44px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr2);color:var(--tx2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45);transition:border-color .2s,color .2s,transform .15s,background .2s}
 #fb-fab:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3);transform:translateY(-1px)}
-@media (max-width:640px){#fb-fab{left:12px;bottom:12px;width:40px;height:40px;font-size:16px}}
+@media (max-width:640px){#fb-fab{left:12px;bottom:calc(60px + env(safe-area-inset-bottom));width:40px;height:40px;font-size:16px}}
 /* CHAT FAB + PANEL — Groq-backed assistant, dashboard only */
 #chat-fab{display:none;position:fixed;right:16px;bottom:16px;z-index:9998;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#c89800);border:none;color:#0a1220;font-size:20px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(245,194,0,.35),0 4px 16px rgba(0,0,0,.4);transition:transform .15s,filter .2s}
 #chat-fab.shown{display:flex}
 #chat-fab:hover{filter:brightness(1.1);transform:translateY(-1px)}
-#chat-panel{position:fixed;right:16px;bottom:76px;z-index:9999;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 100px);background:var(--bg2);border:1px solid rgba(245,194,0,.4);box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);display:none;flex-direction:column;font-family:'Inter',sans-serif}
+#chat-panel{position:fixed;right:16px;bottom:80px;z-index:9999;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100dvh - 120px);background:var(--bg2);border:1px solid rgba(245,194,0,.4);box-shadow:0 0 60px rgba(245,194,0,.15),0 20px 60px rgba(0,0,0,.6);display:none;flex-direction:column;font-family:'Inter',sans-serif}
 #chat-panel.open{display:flex}
 .chat-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--bdr2);flex-shrink:0;background:linear-gradient(180deg,rgba(245,194,0,.04),transparent)}
 .chat-hdr-l{display:flex;flex-direction:column}
@@ -506,8 +506,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .chat-send-btn:hover:not(:disabled){filter:brightness(1.15)}
 .chat-send-btn:disabled{opacity:.5;cursor:not-allowed}
 @media (max-width:640px){
-  #chat-fab{right:12px;bottom:12px;width:44px;height:44px;font-size:18px}
-  #chat-panel{right:8px;left:8px;bottom:68px;width:auto;max-width:none;height:calc(100vh - 90px)}
+  #chat-fab{right:12px;bottom:calc(60px + env(safe-area-inset-bottom));width:44px;height:44px;font-size:18px}
+  #chat-panel{right:8px;left:8px;bottom:calc(116px + env(safe-area-inset-bottom));width:auto;max-width:none;height:calc(100dvh - 176px)}
 }
 /* Header PRO button — always visible */
 #hdr-pro-btn{background:linear-gradient(135deg,var(--gold),#c89800);color:#0a1220;border:none;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:filter .2s;flex-shrink:0}
@@ -1230,7 +1230,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.17.0';  // Bump on each release
+var APP_VERSION = '1.18.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -3252,9 +3252,19 @@ function startOnboarding(){
     box.style.top=Math.max(0,r.top-4)+'px';
     box.style.width=(r.width+8)+'px';
     box.style.height=(r.height+8)+'px';
-    var tipW=320, tipH=170;
+    var tipW=320, tipH=190;
+    // Keep tip away from the FAB zone (bottom 80px) and viewport edges
+    var fabClear=80;
     var left=Math.max(12, Math.min(window.innerWidth-tipW-12, r.left+r.width/2-tipW/2));
-    var top = (r.bottom+tipH+20 < window.innerHeight) ? r.bottom+12 : Math.max(12, r.top-tipH-12);
+    var topBelow=r.bottom+12, topAbove=r.top-tipH-16;
+    var top;
+    if(topBelow+tipH < window.innerHeight-fabClear){
+      top=topBelow; // fits below without hitting FAB zone
+    } else if(topAbove >= 12){
+      top=topAbove; // place above target
+    } else {
+      top=Math.max(12, window.innerHeight-fabClear-tipH-12); // best-effort
+    }
     tip.style.left=left+'px';
     tip.style.top=top+'px';
     tip.innerHTML=
