@@ -1,7 +1,7 @@
 {
-  "name": "PolyMind · Poly Alerts",
+  "name": "PolyMind — Real-Time Polymarket Alerts & AI Analysis",
   "short_name": "PolyMind",
-  "description": "Real-time AI-powered prediction market alerts and analysis",
+  "description": "Real-time Polymarket alerts: whale bets, price spikes, volume surges and AI cross-asset analysis. Free, no account needed.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#05101f",
