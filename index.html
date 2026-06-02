@@ -23,10 +23,12 @@
 <!-- Structured data -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PolyMind","url":"https://polymind.site/","description":"Real-time prediction market alerts and AI analysis for Polymarket. Tracks whale bets, price spikes, volume surges, coordinated wallets and 12 signal types. AI-powered cross-asset impact across equities, crypto, FX, commodities and bonds.","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free Plan"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","name":"Pro Plan","billingIncrement":"Monthly"}],"featureList":["Real-time Polymarket alerts","Whale bet detection","Price spike signals","Volume surge tracking","AI cross-asset analysis","7-day alert history","Watchlist filtering"]}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PolyMind">
-<meta name="theme-color" content="#04070f">
-<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f5c200">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1249,7 +1251,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.22.0';  // Bump on each release
+var APP_VERSION = '1.23.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -3801,7 +3803,14 @@ document.addEventListener('DOMContentLoaded',function(){
   if(notifAllow) notifAllow.addEventListener('click', requestNotifPermission);
   if(notifDeny)  notifDeny.addEventListener('click', hideBanner);
 
-  // Register service worker (don\'t block banner on SW success/failure)
+  // Register service worker unconditionally for PWA installability + offline cache
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(function(reg){
+      NOTIF.sw = reg;
+    }).catch(function(e){ console.warn('SW registration failed:', e); });
+  }
+
+  // Re-connect notification state if already granted
   initNotifications().then(function(){
     if(localStorage.getItem('sentinel-notif')==='1' && Notification.permission==='granted'){
       NOTIF.granted=true; NOTIF.enabled=true;

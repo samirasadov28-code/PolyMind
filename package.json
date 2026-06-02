@@ -5,5 +5,8 @@
   "description": "PolyMind · Real-time prediction market alerts",
   "dependencies": {
     "@netlify/blobs": "^8.1.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

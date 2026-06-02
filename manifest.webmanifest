@@ -1,0 +1,43 @@
+{
+  "name": "PolyMind — Real-Time Polymarket Alerts & AI Analysis",
+  "short_name": "PolyMind",
+  "description": "AI-powered alerts on Polymarket trades — track whale bets, price spikes, volume surges and smart-money activity in real time.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05101f",
+  "theme_color": "#f5c200",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "news", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "PolyMind alert feed"
+    }
+  ]
+}
