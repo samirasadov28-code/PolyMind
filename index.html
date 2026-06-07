@@ -1257,7 +1257,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.26.0';  // Bump on each release
+var APP_VERSION = '1.27.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -3285,13 +3285,13 @@ function startOnboarding(){
   track('onboarding_started');
   function render(){
     var s=steps[i];
-    var t=document.querySelector(s.sel);
-    if(!t || t.offsetWidth===0 || t.offsetHeight===0){
+    var el=document.querySelector(s.sel);
+    if(!el || el.offsetWidth===0 || el.offsetHeight===0){
       i++;
       if(i>=steps.length){done();return;}
       render();return;
     }
-    var r=t.getBoundingClientRect();
+    var r=el.getBoundingClientRect();
     box.style.left=Math.max(0,r.left-4)+'px';
     box.style.top=Math.max(0,r.top-4)+'px';
     box.style.width=(r.width+8)+'px';
