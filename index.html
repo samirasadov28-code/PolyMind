@@ -1140,6 +1140,10 @@ var SPORTS_KW=[
 
   // ── "vs." — almost always sport matchups ──
   ' vs. ',' vs ',
+
+  // ── Point-spread / handicap betting notation ──
+  'spread:','spread (','+1.5','+2.5','+3.5','+4.5','+5.5','+6.5','+7.5',
+  '-1.5)','-2.5)','-3.5)','-4.5)','-5.5)','-6.5)','-7.5)',
 ];
 
 
@@ -1253,7 +1257,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.25.0';  // Bump on each release
+var APP_VERSION = '1.26.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2488,9 +2492,16 @@ function showSeedBanner(count, source){
   var srcLabel = source==='polymarket' ? 'from Polymarket' : 'from your local archive';
   b.innerHTML =
     '<span style="color:var(--gold);font-size:12px">&#9432;</span>'
-    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent trade'+(count===1?'':'s')+' '+srcLabel+' &middot; last 30 minutes &middot; <span style="color:var(--tx3)">new live signals will appear above</span></span>'
+    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent trade'+(count===1?'':'s')+' '+srcLabel+' &middot; last 30 min &middot; <span style="color:var(--tx3)">live signals appear above</span></span>'
+    +'<button id="seed-banner-skip" style="background:transparent;border:1px solid rgba(245,194,0,.3);color:var(--gold);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Skip preview</button>'
     +'<button id="seed-banner-close" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase">Dismiss</button>';
   document.getElementById('seed-banner-close').addEventListener('click', hideSeedBanner);
+  document.getElementById('seed-banner-skip').addEventListener('click', function(){
+    S.alerts = S.alerts.filter(function(a){ return !a.seeded; });
+    renderAlerts(); updCounts();
+    hideSeedBanner();
+    track('seed_preview_skipped');
+  });
   if(_seedBannerTimer) clearTimeout(_seedBannerTimer);
   _seedBannerTimer = setTimeout(hideSeedBanner, 30000);
 }
@@ -3254,7 +3265,7 @@ function startOnboarding(){
     return;
   }
   var steps=[
-    {sel:'#ap', title:t('ob_step1_t'), body:t('ob_step1_b')},
+    {sel:'.arow', title:t('ob_step1_t'), body:t('ob_step1_b')},
     {sel:'#hist-btn', title:t('ob_step2_t'), body:t('ob_step2_b')},
     {sel:'#wl-chip', title:t('ob_step3_t'), body:t('ob_step3_b')},
     {sel:'#center-ai', title:t('ob_step4_t'), body:t('ob_step4_b')},
