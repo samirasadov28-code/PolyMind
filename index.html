@@ -1257,7 +1257,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.27.0';  // Bump on each release
+var APP_VERSION = '1.28.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2362,13 +2362,15 @@ function listAlertArchive(){
 try{ pruneAlertArchive(); }catch(e){}
 
 // ─── SEED RECENT ALERTS ────────────────────────────────────────────────────
-// On dashboard enter, hydrate S.alerts with recent large trades pulled from
-// Polymarket's public data API, so the user sees real recent activity
+// On dashboard enter, hydrate S.alerts so the user sees real activity
 // instead of staring at "waiting for signals…" for the first poll cycle.
-// Falls back to the local 7-day archive if the Polymarket API is unreachable.
-var SEED_WINDOW_MS = 30 * 60 * 1000;
+//
+// Strategy (in order):
+//  1. Local 7-day archive — has diverse real signal types (WHALE, SPIKE, etc.)
+//  2. Polymarket trades API — supplements if archive is thin (first run only)
+var SEED_WINDOW_MS = 6 * 60 * 60 * 1000; // 6 h window for API fetch
 var SEED_MAX = 10;
-var SEED_MIN_TRADE_USD = 500; // only consider trades of $500+ for seeding
+var SEED_MIN_TRADE_USD = 500;
 var _seedBannerTimer = null;
 
 // Polymarket data-api base — proxied on Netlify to avoid CORS.
@@ -2376,39 +2378,38 @@ var POLY_DATA = (typeof IS_NETLIFY!=='undefined' && IS_NETLIFY)
   ? '/api/polymarket-data'
   : 'https://data-api.polymarket.com';
 
-async function fetchRecentPolymarketAlerts(){
+async function fetchRecentPolymarketAlerts(needed){
+  // Only used when archive doesn't have enough alerts (typically first run).
+  // Fetches recent large trades and maps them as WHALE alerts.
+  needed = needed || SEED_MAX;
   try{
     var cutoffSec = Math.floor((Date.now() - SEED_WINDOW_MS) / 1000);
-    // Pull the most recent large takers; limit high enough that we still find
-    // ~10 after filtering to the 30-minute window.
     var url = POLY_DATA + '/trades?takerOnly=true&filterType=CASH&filterAmount='
-      + SEED_MIN_TRADE_USD + '&limit=60';
+      + SEED_MIN_TRADE_USD + '&limit=200';
     var r = await fetch(url, {headers:{Accept:'application/json'}});
     if(!r.ok) throw new Error('HTTP '+r.status);
     var trades = await r.json();
     if(!Array.isArray(trades)) return [];
-    var recent = trades
+    return trades
       .filter(function(tr){ return Number(tr.timestamp) >= cutoffSec; })
       .sort(function(a,b){ return Number(b.timestamp)-Number(a.timestamp); })
-      .slice(0, SEED_MAX);
-    return recent.map(function(tr, i){
-      var size = Number(tr.size)||0;
-      var price = Number(tr.price)||0;
-      var amt = Math.round(size * price);
-      var side = tr.outcome || (tr.outcomeIndex===0?'Yes':'No');
-      var hash = (tr.transactionHash||'').slice(2,10) || Math.random().toString(36).slice(2,10);
-      return {
-        id: 'pm-'+hash+'-'+i,
-        t: 'WHALE',
-        ts: Number(tr.timestamp) * 1000,
-        mkt: tr.title || tr.eventSlug || tr.slug || 'Polymarket market',
-        mid: tr.conditionId || tr.market || null,
-        amt: amt,
-        pr: price,
-        side: side,
-        seeded: true
-      };
-    }).filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD && !isSports(a.mkt,''); });
+      .map(function(tr, i){
+        var size = Number(tr.size)||0;
+        var price = Number(tr.price)||0;
+        var amt = Math.round(size * price);
+        var side = tr.outcome || (tr.outcomeIndex===0?'Yes':'No');
+        var hash = (tr.transactionHash||'').slice(2,10) || Math.random().toString(36).slice(2,10);
+        return {
+          id: 'pm-'+hash+'-'+i,
+          t: 'WHALE',
+          ts: Number(tr.timestamp) * 1000,
+          mkt: tr.title || tr.eventSlug || tr.slug || 'Polymarket market',
+          mid: tr.conditionId || tr.market || null,
+          amt: amt, pr: price, side: side, seeded: true
+        };
+      })
+      .filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD && !isSports(a.mkt,''); })
+      .slice(0, needed);
   }catch(e){
     console.warn('[seed] Polymarket trade fetch failed:', e.message);
     return [];
@@ -2416,51 +2417,66 @@ async function fetchRecentPolymarketAlerts(){
 }
 
 function _seedFromArchive(){
-  var cutoff = Date.now() - SEED_WINDOW_MS;
+  // Pull from the full 7-day archive — no time window restriction so
+  // returning users always see up to SEED_MAX recent diverse alerts.
   var days = listAlertArchive();
   var all = [];
   days.forEach(function(d){ d.alerts.forEach(function(a){ all.push(a); }); });
-  return all.filter(function(a){ return (a.ts||0) >= cutoff && !isSports(a.mkt||'',''); })
-            .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
-            .slice(0, SEED_MAX)
-            .map(function(slim){
-              return {
-                id: slim.id || ('seed-'+Math.random().toString(36).slice(2,8)),
-                t: slim.t, ts: slim.ts || Date.now(),
-                mkt: slim.mkt, mid: slim.mid,
-                amt: slim.amt, pr: slim.pr, prevPr: slim.prevPr, side: slim.side,
-                delayed: !!slim.delayed, seeded: true
-              };
-            });
+  return all
+    .filter(function(a){ return !isSports(a.mkt||'',''); })
+    .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
+    .slice(0, SEED_MAX)
+    .map(function(slim){
+      return {
+        id: slim.id || ('seed-'+Math.random().toString(36).slice(2,8)),
+        t: slim.t, ts: slim.ts || Date.now(),
+        mkt: slim.mkt, mid: slim.mid,
+        amt: slim.amt, pr: slim.pr, prevPr: slim.prevPr, side: slim.side,
+        delayed: !!slim.delayed, seeded: true
+      };
+    });
 }
 
 async function seedRecentAlerts(){
   try{
-    // Show a waiting-state banner while the trade fetch is in flight so the
-    // user immediately sees that something is loading, not an empty panel.
     showSeedBannerLoading();
-    var recent = await fetchRecentPolymarketAlerts();
-    var source = 'polymarket';
-    if(!recent.length){
-      recent = _seedFromArchive();
-      source = 'archive';
+
+    // 1. Archive first — has real diverse signal types (WHALE, SPIKE, SURGE…)
+    //    from previous polling sessions. Uses full 7-day window.
+    var archived = _seedFromArchive();
+    var source = archived.length ? 'archive' : 'polymarket';
+
+    // 2. Supplement with Polymarket API if archive is thin (first run / fresh device)
+    var apiAlerts = [];
+    if(archived.length < SEED_MAX){
+      apiAlerts = await fetchRecentPolymarketAlerts(SEED_MAX - archived.length);
     }
-    if(!recent.length){
+
+    // Merge: archive alerts first (diverse types), then API-only IDs to fill gaps
+    var archiveIds = new Set(archived.map(function(a){ return a.id; }));
+    var combined = archived.concat(
+      apiAlerts.filter(function(a){ return !archiveIds.has(a.id); })
+    ).slice(0, SEED_MAX);
+
+    if(combined.length > 1) source = 'mixed';
+    if(archived.length && !apiAlerts.length) source = 'archive';
+    if(!archived.length && apiAlerts.length) source = 'polymarket';
+
+    if(!combined.length){
       hideSeedBanner();
       return 0;
     }
-    recent.forEach(function(a){
+
+    combined.forEach(function(a){
       if(S.alerts.some(function(x){ return x.id===a.id; })) return;
       S.alerts.push(a);
     });
-    // Keep seeded rows chronologically at the top of the "past" stream by
-    // sorting by timestamp desc, but live alerts will still prepend above.
     S.alerts.sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
     if(S.alerts.length>100) S.alerts.length=100;
     updCounts(); renderAlerts();
-    showSeedBanner(recent.length, source);
-    track('seeded_recent_alerts', {count: recent.length, source: source});
-    return recent.length;
+    showSeedBanner(combined.length, source);
+    track('seeded_recent_alerts', {count: combined.length, source: source});
+    return combined.length;
   }catch(e){
     hideSeedBanner();
     return 0;
@@ -2489,7 +2505,9 @@ function showSeedBannerLoading(){
 }
 function showSeedBanner(count, source){
   var b = _ensureSeedBanner();
-  var srcLabel = source==='polymarket' ? 'from Polymarket' : 'from your local archive';
+  var srcLabel = source==='polymarket' ? 'from Polymarket (last 6h)'
+               : source==='archive'    ? 'from your signal history'
+               :                         'from history + Polymarket';
   b.innerHTML =
     '<span style="color:var(--gold);font-size:12px">&#9432;</span>'
     +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent trade'+(count===1?'':'s')+' '+srcLabel+' &middot; last 30 min &middot; <span style="color:var(--tx3)">live signals appear above</span></span>'
