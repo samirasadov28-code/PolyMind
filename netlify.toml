@@ -60,6 +60,14 @@
   status = 200
   force = true
 
+# Proxy Kalshi REST API — for market data alongside Polymarket
+[[redirects]]
+  from = "/api/kalshi/*"
+  to = "https://trading-api.kalshi.com/trade-api/v2/:splat"
+  status = 200
+  force = true
+  headers = {Accept = "application/json"}
+
 # SPA fallback — serve index.html for any non-file route
 [[redirects]]
   from = "/*"
