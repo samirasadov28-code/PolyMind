@@ -904,7 +904,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
       <div class="cs">
         <div class="ct" data-i18n="right_sources">DATA SOURCES</div>
         <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl" data-i18n="src_polymarket">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)" data-i18n="src_connecting">CONNECTING</span></div><div class="su" id="api-src-mode" data-i18n="src_detect">Detecting proxy mode...</div></div>
-        <div class="srcr"><div class="srch"><div class="sd" id="dot-ks" style="background:var(--steel)"></div><span class="srl">Kalshi API</span><span class="ss" id="st-ks" style="color:var(--tx3)">OFF</span><label style="margin-left:auto;display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" id="kalshi-toggle" style="width:13px;height:13px;accent-color:var(--ac)"><span style="font-size:9px;color:var(--tx3);letter-spacing:.5px">ENABLE</span></label></div><div class="su" id="ks-count">Off — enable to add Kalshi markets as a second data source</div></div>
+        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-ks" style="background:var(--gold)"></div><span class="srl">Kalshi API</span><span class="ss" id="st-ks" style="color:var(--yw)">CONNECTING</span><label style="margin-left:auto;display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" id="kalshi-toggle" checked style="width:13px;height:13px;accent-color:var(--ac)"><span style="font-size:9px;color:var(--tx3);letter-spacing:.5px">ENABLED</span></label></div><div class="su" id="ks-count">Connecting...</div></div>
         <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-poll" style="background:var(--steel)"></div><span class="srl" data-i18n="src_poll">Poll interval</span><span class="ss" id="st-poll" style="color:var(--gr)">15s</span></div><div class="su" id="mkt-count" data-i18n="src_loading">Loading...</div></div>
         <div class="srcr"><div class="srch"><div class="sd" id="dot-ai" style="background:var(--teal)"></div><span class="srl" id="ai-lbl" data-i18n="src_ai_default">Groq AI (default)</span><span class="ss" id="st-ai" style="color:var(--teal)" data-i18n="src_active">ACTIVE</span></div><div class="su" id="ai-url" data-i18n="src_ai_url">llama-3.3-70b-versatile · override with Claude or Gemini key</div></div>
         <div style="margin-top:6px;color:var(--tx3);font-size:9px" id="last-fetch"></div>
@@ -977,7 +977,7 @@ var IS_NETLIFY = window.location.hostname.endsWith('.netlify.app') || window.loc
 var GAMMA = IS_NETLIFY ? '/api/polymarket' : GAMMA_DIRECT;
 var KALSHI_BASE = IS_NETLIFY ? '/api/kalshi' : 'https://trading-api.kalshi.com/trade-api/v2';
 var KALSHI_ENABLED_KEY = 'polymind_kalshi_enabled';
-function getKalshiEnabled(){ try{ return localStorage.getItem(KALSHI_ENABLED_KEY)==='1'; }catch(e){ return false; } }
+function getKalshiEnabled(){ try{ var v=localStorage.getItem(KALSHI_ENABLED_KEY); return v===null?true:v==='1'; }catch(e){ return true; } }
 function setKalshiEnabled(v){ try{ localStorage.setItem(KALSHI_ENABLED_KEY, v?'1':'0'); }catch(e){} }
 // Kalshi state — separate from Polymarket to avoid ID conflicts
 var KS = { prevP:{}, prevVol:{}, seen:{}, markets:[] };
@@ -1265,7 +1265,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.29.0';  // Bump on each release
+var APP_VERSION = '1.29.1';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -4484,8 +4484,10 @@ document.addEventListener('DOMContentLoaded',function(){
     var kt = document.getElementById('kalshi-toggle');
     if(!kt) return;
     kt.checked = getKalshiEnabled();
+    var ksLabel = kt.parentElement.querySelector('span:last-child');
     kt.addEventListener('change', function(){
       setKalshiEnabled(this.checked);
+      if(ksLabel) ksLabel.textContent = this.checked ? 'ENABLED' : 'DISABLED';
       if(this.checked){
         document.getElementById('st-ks').textContent = 'CONNECTING';
         document.getElementById('st-ks').style.color = 'var(--yw)';
@@ -4496,14 +4498,18 @@ document.addEventListener('DOMContentLoaded',function(){
         document.getElementById('st-ks').textContent = 'OFF';
         document.getElementById('st-ks').style.color = 'var(--tx3)';
         document.getElementById('dot-ks').style.background = 'var(--steel)';
-        document.getElementById('ks-count').textContent = 'Off — enable to add Kalshi markets as a second data source';
-        renderAlerts(); // refresh badges
+        document.getElementById('ks-count').textContent = 'Off — toggle to re-enable Kalshi';
+        renderAlerts(); // refresh PM/KS badges
       }
     });
-    if(getKalshiEnabled()){
-      document.getElementById('st-ks').textContent = 'CONNECTING';
-      document.getElementById('st-ks').style.color = 'var(--yw)';
-      document.getElementById('dot-ks').style.background = 'var(--yw)';
+    // Sync initial state from storage (may differ from HTML default)
+    kt.checked = getKalshiEnabled();
+    if(ksLabel) ksLabel.textContent = kt.checked ? 'ENABLED' : 'DISABLED';
+    if(!kt.checked){
+      document.getElementById('st-ks').textContent = 'OFF';
+      document.getElementById('st-ks').style.color = 'var(--tx3)';
+      document.getElementById('dot-ks').style.background = 'var(--steel)';
+      document.getElementById('ks-count').textContent = 'Off — toggle to re-enable Kalshi';
     }
   })();
 
