@@ -404,9 +404,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 
 }
 
-/* On desktop: hide all mobile-only elements */
+/* On desktop: hide all mobile-only elements; hide config sliders (accessible via mobile sheet) */
 @media (min-width:641px){
   #mob-nav,#mob-ai-modal,#mob-cfg-sheet,#mob-cfg-view,#tab-cfg,#notif-banner{display:none!important}
+  .rp-cfg{display:none!important}
 }
 
 
@@ -754,80 +755,43 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
     </div><!-- /center -->
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT — DATA SOURCES panel (desktop); config sliders hidden on desktop, visible in mobile sheet -->
   <div class="panel bl">
-    <div class="ph"><span class="pt" data-i18n="ph_cfg">◈ CONFIG &amp; STATUS</span></div>
+    <div class="ph"><span class="pt">◈ DATA SOURCES</span></div>
     <div class="pb"><div class="rp">
 
+      <!-- ── DATA SOURCES — top of panel on desktop ── -->
       <div class="cs">
-        <div class="ct"><span data-i18n="cfg_whale_vol">WHALE &amp; VOLUME</span><button class="rbtn" id="rb1" data-i18n="cfg_reset">RESET</button></div>
-        <div class="tg2">
-          <div class="tr">
-            <span class="trl" data-tip="Min $ for a single bet to trigger WHALE BET. Whales risk real capital — a signal of high conviction informed money." data-i18n="cfg_whale_min">Whale bet min</span>
-            <div class="tri"><input class="tin" id="t-whale" type="number" value="30000" min="100" step="500"><span class="tru">$</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Min % of THIS market's total volume a single bet must represent. A $5k bet on an $80k market (6%) is far more significant than on a $10M market (0.05%)." data-i18n="cfg_volpct_min">Vol % bet min</span>
-            <div class="tri"><input class="tin" id="t-volpct" type="number" value="5" min="0.5" max="50" step="0.5"><span class="tru">%</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Min % increase in total market volume per poll to trigger VOL SURGE. Aggregate volume spikes often precede price moves — many participants reacting at once." data-i18n="cfg_vsurge_min">Vol surge min</span>
-            <div class="tri"><input class="tin" id="t-vsurge" type="number" value="20" min="5" max="200" step="5"><span class="tru">%</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Min number of wallets betting same direction in one window to trigger COORD. Coordinated activity may indicate shared information or organised manipulation." data-i18n="cfg_coord_w">Coord wallets</span>
-            <div class="tri"><input class="tin" id="t-coord" type="number" value="3" min="2" max="20" step="1"><span class="tru">min</span></div>
-          </div>
+        <div class="ct" data-i18n="right_sources">DATA SOURCES</div>
+        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl" data-i18n="src_polymarket">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)" data-i18n="src_connecting">CONNECTING</span></div><div class="su" id="api-src-mode" data-i18n="src_detect">Detecting proxy mode...</div></div>
+        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-ks" style="background:var(--gold)"></div><span class="srl">Kalshi API</span><span class="ss" id="st-ks" style="color:var(--yw)">CONNECTING</span><label style="margin-left:auto;display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" id="kalshi-toggle" checked style="width:13px;height:13px;accent-color:var(--ac)"><span style="font-size:9px;color:var(--tx3);letter-spacing:.5px">ENABLED</span></label></div><div class="su" id="ks-count">Connecting...</div></div>
+        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-poll" style="background:var(--steel)"></div><span class="srl" data-i18n="src_poll">Poll interval</span><span class="ss" id="st-poll" style="color:var(--gr)">15s</span></div><div class="su" id="mkt-count" data-i18n="src_loading">Loading...</div></div>
+        <div class="srcr"><div class="srch"><div class="sd" id="dot-ai" style="background:var(--teal)"></div><span class="srl" id="ai-lbl" data-i18n="src_ai_default">Groq AI (default)</span><span class="ss" id="st-ai" style="color:var(--teal)" data-i18n="src_active">ACTIVE</span></div><div class="su" id="ai-url" data-i18n="src_ai_url">llama-3.3-70b-versatile · override with Claude or Gemini key</div></div>
+        <div style="margin-top:6px;color:var(--tx3);font-size:9px" id="last-fetch"></div>
+      </div>
+
+      <!-- SESSION COUNTS — clickable filters -->
+      <div class="cs">
+        <div class="ct"><span data-i18n="right_session">SESSION ALERTS</span> <span style="color:var(--tx3);font-size:7px;letter-spacing:0;font-weight:400">· <span data-i18n="right_click_filter">click to filter</span></span></div>
+        <div class="cg" id="count-grid">
+          <div class="cr2" data-ftype="WHALE"><span class="ic" style="color:var(--or)">&#11041;</span><span class="cl" data-i18n="sig_whale">Whale</span><b id="c-whale" style="color:var(--or)">0</b></div>
+          <div class="cr2" data-ftype="VOL_PCT"><span class="ic" style="color:var(--amber)">&#9670;</span><span class="cl" data-i18n="sig_volpct">Vol %</span><b id="c-volpct" style="color:var(--amber)">0</b></div>
+          <div class="cr2" data-ftype="SPIKE"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="sig_spike">Spike</span><b id="c-spike" style="color:var(--yw)">0</b></div>
+          <div class="cr2" data-ftype="NEW"><span class="ic" style="color:var(--gr)">&#9672;</span><span class="cl" data-i18n="sig_newmkt">New Mkt</span><b id="c-new" style="color:var(--gr)">0</b></div>
+          <div class="cr2" data-ftype="COORD"><span class="ic" style="color:var(--pu)">&#11041;</span><span class="cl" data-i18n="sig_coord">Coord</span><b id="c-coord" style="color:var(--pu)">0</b></div>
+          <div class="cr2" data-ftype="REVERSAL"><span class="ic" style="color:var(--pink)">&#8635;</span><span class="cl" data-i18n="sig_reversal">Reversal</span><b id="c-rev" style="color:var(--pink)">0</b></div>
+          <div class="cr2" data-ftype="MOMENTUM"><span class="ic" style="color:var(--cyan)">&#9654;</span><span class="cl" data-i18n="sig_momentum">Momentum</span><b id="c-mom" style="color:var(--cyan)">0</b></div>
+          <div class="cr2" data-ftype="VOL_SURGE"><span class="ic" style="color:var(--yw)">&#9650;</span><span class="cl" data-i18n="sig_vsurge">Vol Surge</span><b id="c-vsurge" style="color:var(--yw)">0</b></div>
+          <div class="cr2" data-ftype="LATE"><span class="ic" style="color:var(--red)">&#8987;</span><span class="cl" data-i18n="sig_late">Late $</span><b id="c-late" style="color:var(--red)">0</b></div>
+          <div class="cr2" data-ftype="CONTRA"><span class="ic" style="color:var(--pink)">&#9888;</span><span class="cl" data-i18n="sig_contra">Contra</span><b id="c-contra" style="color:var(--pink)">0</b></div>
+          <div class="cr2" data-ftype="THIN"><span class="ic" style="color:var(--violet)">&#9632;</span><span class="cl" data-i18n="sig_thin">Thin Mkt</span><b id="c-thin" style="color:var(--violet)">0</b></div>
+          <div class="cr2" data-ftype="WALLET"><span class="ic" style="color:var(--teal)">&#9673;</span><span class="cl" data-i18n="sig_wallet">Rpt Wallet</span><b id="c-wallet" style="color:var(--teal)">0</b></div>
+          <div class="cr2" data-ftier="HIGH" style="border-color:rgba(255,208,96,.1)"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="tier_high">HIGH tier</span><b id="c-high" style="color:var(--yw)">0</b></div>
+          <div class="cr2" data-ftier="EXTREME" style="border-color:rgba(255,59,107,.1)"><span class="ic" style="color:var(--red)">&#9651;</span><span class="cl" data-i18n="tier_extreme">EXTREME</span><b id="c-ext" style="color:var(--red)">0</b></div>
         </div>
       </div>
 
-      <div class="cs">
-        <div class="ct"><span data-i18n="cfg_price_mkt">PRICE &amp; MARKET</span><button class="rbtn" id="rb2" data-i18n="cfg_reset">RESET</button></div>
-        <div class="tg2">
-          <div class="tr">
-            <span class="trl" data-tip="Min price move in percentage points per poll (15s) to trigger PRICE SPIKE. Sharp moves in prediction markets almost always reflect new real-world information." data-i18n="cfg_spike_min">Price spike min</span>
-            <div class="tri"><input class="tin" id="t-spike" type="number" value="50" min="1" max="50" step="0.5"><span class="tru">%</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Markets created within this many hours trigger NEW MARKET alert. Early markets often have mispriced probabilities — a window to move before the crowd arrives." data-i18n="cfg_newmkt_age">New market age</span>
-            <div class="tri"><input class="tin" id="t-newmkt" type="number" value="2" min="1" max="48" step="1"><span class="tru">hrs</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Markets with total volume BELOW this $ are considered thin. Insiders often use thin markets where their bets go unnoticed by casual observers." data-i18n="cfg_thin_vol">Thin mkt max vol</span>
-            <div class="tri"><input class="tin" id="t-thinvol" type="number" value="100000" min="1000" step="5000"><span class="tru">$</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Min bet size to trigger THIN MARKET alert. Only fires on low-volume markets. If someone accepts the price impact, their conviction justifies it." data-i18n="cfg_thin_bet">Thin mkt min bet</span>
-            <div class="tri"><input class="tin" id="t-thinbet" type="number" value="5000" min="100" step="500"><span class="tru">$</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cs">
-        <div class="ct"><span data-i18n="cfg_smart_money">SMART MONEY</span><button class="rbtn" id="rb3" data-i18n="cfg_reset">RESET</button></div>
-        <div class="tg2">
-          <div class="tr">
-            <span class="trl" data-tip="Max YES % to flag as CONTRA-CONSENSUS. Betting YES below this % (or NO above 100% minus this) against the crowd is a powerful 'someone knows something' signal." data-i18n="cfg_contra_odds">Contra max odds</span>
-            <div class="tri"><input class="tin" id="t-contra" type="number" value="20" min="5" max="45" step="1"><span class="tru">%</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Minimum $ volume bet required to trigger a CONTRA alert. Filters noise — only fires when real money goes against the crowd. $500 catches early signals without flooding with tiny bets." data-i18n="cfg_contra_size">Contra min size</span>
-            <div class="tri"><input class="tin" id="t-contrasize" type="number" value="500" min="100" step="100"><span class="tru">$</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Bets within this many hours of resolution trigger LATE MONEY. Late bets are the highest conviction possible — only worth making if near-certain of outcome." data-i18n="cfg_late_hrs">Late money hrs</span>
-            <div class="tri"><input class="tin" id="t-late" type="number" value="48" min="1" max="168" step="1"><span class="tru">hrs</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Minimum consecutive polls moving same direction to trigger MOMENTUM. Sustained directional movement suggests multiple informed participants all reaching the same conclusion." data-i18n="cfg_mom_polls">Momentum polls</span>
-            <div class="tri"><input class="tin" id="t-mom" type="number" value="4" min="3" max="10" step="1"><span class="tru">polls</span></div>
-          </div>
-          <div class="tr">
-            <span class="trl" data-tip="Time window for tracking the same wallet across markets. A wallet hitting 2+ markets in this window triggers REPEAT WALLET — suggests broad insider knowledge or macro strategy." data-i18n="cfg_wallet_win">Wallet window</span>
-            <div class="tri"><input class="tin" id="t-walwin" type="number" value="5" min="1" max="60" step="1"><span class="tru">min</span></div>
-          </div>
-        </div>
-      </div>
+      <div class="cs"><div class="ct" data-i18n="right_activity">ACTIVITY</div><div id="act-list"></div></div>
 
       <div class="cs" id="usage-stats-section">
         <div class="ct" data-i18n="right_usage">YOUR USAGE</div>
@@ -864,31 +828,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
         </div>
       </div>
 
-      <!-- SESSION COUNTS — all clickable including HIGH/EXTREME -->
-      <div class="cs">
-        <div class="ct"><span data-i18n="right_session">SESSION ALERTS</span> <span style="color:var(--tx3);font-size:7px;letter-spacing:0;font-weight:400">· <span data-i18n="right_click_filter">click to filter</span></span></div>
-        <div class="cg" id="count-grid">
-          <div class="cr2" data-ftype="WHALE"><span class="ic" style="color:var(--or)">&#11041;</span><span class="cl" data-i18n="sig_whale">Whale</span><b id="c-whale" style="color:var(--or)">0</b></div>
-          <div class="cr2" data-ftype="VOL_PCT"><span class="ic" style="color:var(--amber)">&#9670;</span><span class="cl" data-i18n="sig_volpct">Vol %</span><b id="c-volpct" style="color:var(--amber)">0</b></div>
-          <div class="cr2" data-ftype="SPIKE"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="sig_spike">Spike</span><b id="c-spike" style="color:var(--yw)">0</b></div>
-          <div class="cr2" data-ftype="NEW"><span class="ic" style="color:var(--gr)">&#9672;</span><span class="cl" data-i18n="sig_newmkt">New Mkt</span><b id="c-new" style="color:var(--gr)">0</b></div>
-          <div class="cr2" data-ftype="COORD"><span class="ic" style="color:var(--pu)">&#11041;</span><span class="cl" data-i18n="sig_coord">Coord</span><b id="c-coord" style="color:var(--pu)">0</b></div>
-          <div class="cr2" data-ftype="REVERSAL"><span class="ic" style="color:var(--pink)">&#8635;</span><span class="cl" data-i18n="sig_reversal">Reversal</span><b id="c-rev" style="color:var(--pink)">0</b></div>
-          <div class="cr2" data-ftype="MOMENTUM"><span class="ic" style="color:var(--cyan)">&#9654;</span><span class="cl" data-i18n="sig_momentum">Momentum</span><b id="c-mom" style="color:var(--cyan)">0</b></div>
-          <div class="cr2" data-ftype="VOL_SURGE"><span class="ic" style="color:var(--yw)">&#9650;</span><span class="cl" data-i18n="sig_vsurge">Vol Surge</span><b id="c-vsurge" style="color:var(--yw)">0</b></div>
-          <div class="cr2" data-ftype="LATE"><span class="ic" style="color:var(--red)">&#8987;</span><span class="cl" data-i18n="sig_late">Late $</span><b id="c-late" style="color:var(--red)">0</b></div>
-          <div class="cr2" data-ftype="CONTRA"><span class="ic" style="color:var(--pink)">&#9888;</span><span class="cl" data-i18n="sig_contra">Contra</span><b id="c-contra" style="color:var(--pink)">0</b></div>
-          <div class="cr2" data-ftype="THIN"><span class="ic" style="color:var(--violet)">&#9632;</span><span class="cl" data-i18n="sig_thin">Thin Mkt</span><b id="c-thin" style="color:var(--violet)">0</b></div>
-          <div class="cr2" data-ftype="WALLET"><span class="ic" style="color:var(--teal)">&#9673;</span><span class="cl" data-i18n="sig_wallet">Rpt Wallet</span><b id="c-wallet" style="color:var(--teal)">0</b></div>
-          <!-- Tier rows — also clickable filters -->
-          <div class="cr2" data-ftier="HIGH" style="border-color:rgba(255,208,96,.1)"><span class="ic" style="color:var(--yw)">&#9651;</span><span class="cl" data-i18n="tier_high">HIGH tier</span><b id="c-high" style="color:var(--yw)">0</b></div>
-          <div class="cr2" data-ftier="EXTREME" style="border-color:rgba(255,59,107,.1)"><span class="ic" style="color:var(--red)">&#9651;</span><span class="cl" data-i18n="tier_extreme">EXTREME</span><b id="c-ext" style="color:var(--red)">0</b></div>
-        </div>
-      </div>
-
-      <div class="cs"><div class="ct" data-i18n="right_activity">ACTIVITY</div><div id="act-list"></div></div>
-
-      <!-- PRO UPGRADE CARD — desktop right panel -->
+      <!-- PRO UPGRADE CARD -->
       <div class="cs" id="rp-pro-card">
         <div style="background:linear-gradient(135deg,rgba(245,164,0,.08),rgba(232,93,74,.05));border:1px solid rgba(245,194,0,.3);padding:12px 14px;border-left:3px solid var(--gold)">
           <div style="color:var(--gold);font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px" data-i18n="rpc_title" data-i18n-prefix="&#9733; ">&#9733; POLYMIND PRO</div>
@@ -901,13 +841,75 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
         </div>
       </div>
 
-      <div class="cs">
-        <div class="ct" data-i18n="right_sources">DATA SOURCES</div>
-        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-gamma" style="background:var(--gold)"></div><span class="srl" data-i18n="src_polymarket">Polymarket API</span><span class="ss" id="st-gamma" style="color:var(--yw)" data-i18n="src_connecting">CONNECTING</span></div><div class="su" id="api-src-mode" data-i18n="src_detect">Detecting proxy mode...</div></div>
-        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-ks" style="background:var(--gold)"></div><span class="srl">Kalshi API</span><span class="ss" id="st-ks" style="color:var(--yw)">CONNECTING</span><label style="margin-left:auto;display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" id="kalshi-toggle" checked style="width:13px;height:13px;accent-color:var(--ac)"><span style="font-size:9px;color:var(--tx3);letter-spacing:.5px">ENABLED</span></label></div><div class="su" id="ks-count">Connecting...</div></div>
-        <div class="srcr"><div class="srch"><div class="sd pulse" id="dot-poll" style="background:var(--steel)"></div><span class="srl" data-i18n="src_poll">Poll interval</span><span class="ss" id="st-poll" style="color:var(--gr)">15s</span></div><div class="su" id="mkt-count" data-i18n="src_loading">Loading...</div></div>
-        <div class="srcr"><div class="srch"><div class="sd" id="dot-ai" style="background:var(--teal)"></div><span class="srl" id="ai-lbl" data-i18n="src_ai_default">Groq AI (default)</span><span class="ss" id="st-ai" style="color:var(--teal)" data-i18n="src_active">ACTIVE</span></div><div class="su" id="ai-url" data-i18n="src_ai_url">llama-3.3-70b-versatile · override with Claude or Gemini key</div></div>
-        <div style="margin-top:6px;color:var(--tx3);font-size:9px" id="last-fetch"></div>
+      <!-- ── CONFIG SLIDERS — hidden on desktop (rp-cfg class), shown in mobile sheet ── -->
+      <div class="cs rp-cfg">
+        <div class="ct"><span data-i18n="cfg_whale_vol">WHALE &amp; VOLUME</span><button class="rbtn" id="rb1" data-i18n="cfg_reset">RESET</button></div>
+        <div class="tg2">
+          <div class="tr">
+            <span class="trl" data-tip="Min $ for a single bet to trigger WHALE BET. Whales risk real capital — a signal of high conviction informed money." data-i18n="cfg_whale_min">Whale bet min</span>
+            <div class="tri"><input class="tin" id="t-whale" type="number" value="30000" min="100" step="500"><span class="tru">$</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Min % of THIS market's total volume a single bet must represent. A $5k bet on an $80k market (6%) is far more significant than on a $10M market (0.05%)." data-i18n="cfg_volpct_min">Vol % bet min</span>
+            <div class="tri"><input class="tin" id="t-volpct" type="number" value="5" min="0.5" max="50" step="0.5"><span class="tru">%</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Min % increase in total market volume per poll to trigger VOL SURGE. Aggregate volume spikes often precede price moves — many participants reacting at once." data-i18n="cfg_vsurge_min">Vol surge min</span>
+            <div class="tri"><input class="tin" id="t-vsurge" type="number" value="20" min="5" max="200" step="5"><span class="tru">%</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Min number of wallets betting same direction in one window to trigger COORD. Coordinated activity may indicate shared information or organised manipulation." data-i18n="cfg_coord_w">Coord wallets</span>
+            <div class="tri"><input class="tin" id="t-coord" type="number" value="3" min="2" max="20" step="1"><span class="tru">min</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs rp-cfg">
+        <div class="ct"><span data-i18n="cfg_price_mkt">PRICE &amp; MARKET</span><button class="rbtn" id="rb2" data-i18n="cfg_reset">RESET</button></div>
+        <div class="tg2">
+          <div class="tr">
+            <span class="trl" data-tip="Min price move in percentage points per poll (15s) to trigger PRICE SPIKE. Sharp moves in prediction markets almost always reflect new real-world information." data-i18n="cfg_spike_min">Price spike min</span>
+            <div class="tri"><input class="tin" id="t-spike" type="number" value="50" min="1" max="50" step="0.5"><span class="tru">%</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Markets created within this many hours trigger NEW MARKET alert. Early markets often have mispriced probabilities — a window to move before the crowd arrives." data-i18n="cfg_newmkt_age">New market age</span>
+            <div class="tri"><input class="tin" id="t-newmkt" type="number" value="2" min="1" max="48" step="1"><span class="tru">hrs</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Markets with total volume BELOW this $ are considered thin. Insiders often use thin markets where their bets go unnoticed by casual observers." data-i18n="cfg_thin_vol">Thin mkt max vol</span>
+            <div class="tri"><input class="tin" id="t-thinvol" type="number" value="100000" min="1000" step="5000"><span class="tru">$</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Min bet size to trigger THIN MARKET alert. Only fires on low-volume markets. If someone accepts the price impact, their conviction justifies it." data-i18n="cfg_thin_bet">Thin mkt min bet</span>
+            <div class="tri"><input class="tin" id="t-thinbet" type="number" value="5000" min="100" step="500"><span class="tru">$</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs rp-cfg">
+        <div class="ct"><span data-i18n="cfg_smart_money">SMART MONEY</span><button class="rbtn" id="rb3" data-i18n="cfg_reset">RESET</button></div>
+        <div class="tg2">
+          <div class="tr">
+            <span class="trl" data-tip="Max YES % to flag as CONTRA-CONSENSUS. Betting YES below this % (or NO above 100% minus this) against the crowd is a powerful 'someone knows something' signal." data-i18n="cfg_contra_odds">Contra max odds</span>
+            <div class="tri"><input class="tin" id="t-contra" type="number" value="20" min="5" max="45" step="1"><span class="tru">%</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Minimum $ volume bet required to trigger a CONTRA alert. Filters noise — only fires when real money goes against the crowd. $500 catches early signals without flooding with tiny bets." data-i18n="cfg_contra_size">Contra min size</span>
+            <div class="tri"><input class="tin" id="t-contrasize" type="number" value="500" min="100" step="100"><span class="tru">$</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Bets within this many hours of resolution trigger LATE MONEY. Late bets are the highest conviction possible — only worth making if near-certain of outcome." data-i18n="cfg_late_hrs">Late money hrs</span>
+            <div class="tri"><input class="tin" id="t-late" type="number" value="48" min="1" max="168" step="1"><span class="tru">hrs</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Minimum consecutive polls moving same direction to trigger MOMENTUM. Sustained directional movement suggests multiple informed participants all reaching the same conclusion." data-i18n="cfg_mom_polls">Momentum polls</span>
+            <div class="tri"><input class="tin" id="t-mom" type="number" value="4" min="3" max="10" step="1"><span class="tru">polls</span></div>
+          </div>
+          <div class="tr">
+            <span class="trl" data-tip="Time window for tracking the same wallet across markets. A wallet hitting 2+ markets in this window triggers REPEAT WALLET — suggests broad insider knowledge or macro strategy." data-i18n="cfg_wallet_win">Wallet window</span>
+            <div class="tri"><input class="tin" id="t-walwin" type="number" value="5" min="1" max="60" step="1"><span class="tru">min</span></div>
+          </div>
+        </div>
       </div>
 
     </div></div>
@@ -1265,7 +1267,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.29.1';  // Bump on each release
+var APP_VERSION = '1.30.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -2185,13 +2187,16 @@ function parseKalshiMarket(r){
 }
 
 async function fetchKalshiMarkets(){
-  var url = KALSHI_BASE + '/markets?status=open&limit=200';
+  // Use the dedicated serverless function — avoids CORS, adds proper UA header
+  var url = IS_NETLIFY ? '/api/kalshi-markets' : 'https://trading-api.kalshi.com/trade-api/v2/markets?limit=200';
   var r = await fetch(url, {headers:{Accept:'application/json'}});
-  if(!r.ok) throw new Error('HTTP '+r.status);
+  if(!r.ok){
+    var errBody = await r.json().catch(function(){ return {}; });
+    throw new Error(errBody.error || 'HTTP '+r.status);
+  }
   var data = await r.json();
-  var arr = data.markets || data || [];
-  if(!Array.isArray(arr)) return [];
-  return arr.filter(function(m){ return !isSports(m.title||'', m.category||''); });
+  var arr = data.markets || (Array.isArray(data) ? data : []);
+  return arr.filter(function(m){ return m && !isSports(m.title||'', m.category||''); });
 }
 
 function processKalshiMarkets(rawArr){

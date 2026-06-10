@@ -60,6 +60,13 @@
   status = 200
   force = true
 
+# Kalshi market data — serverless function (handles CORS, auth headers)
+[[redirects]]
+  from = "/api/kalshi-markets"
+  to = "/.netlify/functions/kalshi-markets"
+  status = 200
+  force = true
+
 # Proxy Kalshi REST API — for market data alongside Polymarket
 [[redirects]]
   from = "/api/kalshi/*"
