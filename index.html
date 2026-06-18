@@ -1204,7 +1204,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.31.0';  // Bump on each release
+var APP_VERSION = '1.32.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1617,6 +1617,11 @@ function showLangModal(){
 // 3. Paste the link URL below  e.g. 'https://buy.stripe.com/xxxxxxxxxxxx'
 var STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gA6ZNcFUeWZ03T2Ry01';
 
+// ─── FREE-FOR-ALL FLAG ────────────────────────────────────────────────────────
+// Set to true to give all users Pro access without a subscription.
+// Set to false to re-enable the paywall (Stripe + activation flow still works).
+var FREE_FOR_ALL = true;
+
 // ─── TIER SYSTEM ─────────────────────────────────────────────────────────────
 var TIER={
   FREE_LIVE_LIMIT: 5,       // live signals per day shown in real-time
@@ -1668,6 +1673,8 @@ function tierLoad(){
 }
 // Load saved state immediately
 tierLoad();
+// Override isPro when FREE_FOR_ALL is active
+if(FREE_FOR_ALL) TIER.isPro = true;
 
 function tierResetIfNewDay(){
   var today=new Date().toISOString().slice(0,10);
@@ -3736,6 +3743,12 @@ function activatePro(code, email){
 window.polymindUnlockPro=function(){TIER.isPro=true;tierSave();tierUpdateUI();return 'Pro unlocked on this device.';};
 
 document.addEventListener('DOMContentLoaded',function(){
+  // ── FREE-FOR-ALL: hide all paywall UI when enabled ────────────────────────
+  if(FREE_FOR_ALL){
+    var ffa_ids=['hdr-pro-btn','rp-pro-card','tier-delay-bar','land-pro-buy-btn'];
+    ffa_ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+    var mntPro=document.getElementById('mnt-pro'); if(mntPro) mntPro.style.display='none';
+  }
   // ── I18N: translate static strings on load ───────────────────────────────
   try{ applyI18n(); }catch(e){}
   // ── LANDING PAGE ──────────────────────────────────────────────────────────
