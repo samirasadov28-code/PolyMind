@@ -2498,7 +2498,7 @@ function _seedFromArchive(){
   var all = [];
   days.forEach(function(d){ d.alerts.forEach(function(a){ all.push(a); }); });
   return all
-    .filter(function(a){ return !isSports(a.mkt||'',''); })
+    .filter(function(a){ return !isSports(a.mkt||'','') && !(a.t==='WHALE' && (a.amt||0)<SEED_MIN_TRADE_USD); })
     .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })
     .slice(0, SEED_MAX)
     .map(function(slim){
