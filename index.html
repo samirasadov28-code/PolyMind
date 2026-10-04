@@ -2442,7 +2442,7 @@ try{ pruneAlertArchive(); }catch(e){}
 //  2. Polymarket trades API — supplements if archive is thin (first run only)
 var SEED_WINDOW_MS = 6 * 60 * 60 * 1000; // 6 h window for API fetch
 var SEED_MAX = 10;
-var SEED_MIN_TRADE_USD = 500;
+var SEED_MIN_TRADE_USD = DEFS.whale; // match the live whale threshold so history never labels small trades as whales
 var _seedBannerTimer = null;
 
 // Polymarket data-api base — proxied on Netlify to avoid CORS.
@@ -2481,6 +2481,9 @@ async function fetchRecentPolymarketAlerts(needed){
         };
       })
       .filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD && !isSports(a.mkt,''); })
+       
+.filter((function(){ var seen = {}; return function(a){ var k = a.mid + '|' + a.side + '|' + a.amt + '|' + a.ts; if(seen[k]) return false; seen[k] = 1; return true; }; })())
+
       .slice(0, needed);
   }catch(e){
     console.warn('[seed] Polymarket trade fetch failed:', e.message);
