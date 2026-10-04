@@ -2646,7 +2646,7 @@ function addA(a){
   }
   tierConsumeSlot();
   // ─── END TIER GATING ───
-  if(!TIER.isPro) TIER.totalCount++;
+  if(!TIER.isPro) {TIER.totalCount++;TIER.allTimeTotal++;tierSave();tierUpdateUI();}
   S.alerts.unshift(a);
   if(S.alerts.length>100)S.alerts.pop();
   archiveAlert(a);
