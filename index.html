@@ -1989,7 +1989,7 @@ function parseM(r){
   var y=Math.max(.01,Math.min(.99,parseFloat(p[0])||.5));
   var outcomes=[];
   try{outcomes=typeof r.outcomes==='string'?JSON.parse(r.outcomes):(r.outcomes||['Yes','No']);}catch(e){outcomes=['Yes','No'];}
-  return{id:r.id||r.conditionId||('m'+Math.random()),q:r.question||r.title||'?',yes:y,
+  return{id:r.id||r.conditionId||('m'+Math.random()),cid:r.conditionId||'',q:r.question||r.title||'?',yes:y,
     vol:parseFloat(r.volumeNum||r.volume||0),
     liquidity:parseFloat(r.liquidity||r.liquidityNum||0),
     cat:r.groupItemTitle||r.category||'Market',
@@ -2622,7 +2622,7 @@ function addA(a){
   // Auto-assign source if not set — Kalshi IDs are prefixed 'ks-'
   if(!a.source) a.source = (typeof a.mid==='string' && a.mid.startsWith('ks-')) ? 'kalshi' : 'polymarket';
   if(a.mid&&!a.mdata){
-    var _m=S.markets.find(function(x){return x.id===a.mid;});
+    var _m=S.markets.find(function(x){return x.id===a.mid||(x.cid&&x.cid===a.mid);});
     if(_m)a.mdata={q:_m.q,yes:_m.yes,vol:_m.vol,
       sessionVol:a.amt||0,
       cat:_m.cat,endDate:_m.endDate,description:_m.description||'',
