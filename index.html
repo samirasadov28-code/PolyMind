@@ -4477,10 +4477,10 @@ document.addEventListener('DOMContentLoaded',function(){
 
   // Start
   loadAll();
-  setInterval(function(){if(S.live&&!S.sim)loadAll();},POLL_MS);
+  setInterval(function(){if(!document.hidden&&S.live&&!S.sim)loadAll();},POLL_MS);document.addEventListener('visibilitychange',function(){if(!document.hidden&&S.live&&!S.sim)loadAll();});
   // Kalshi polls at 30s (half as often as Polymarket — less latency-sensitive)
   if(getKalshiEnabled()) pollKalshi();
-  setInterval(function(){if(S.live&&!S.sim&&getKalshiEnabled())pollKalshi();},POLL_MS*2);
+  setInterval(function(){if(!document.hidden&&S.live&&!S.sim&&getKalshiEnabled())pollKalshi();},POLL_MS*2);
 });
 </script>
 
