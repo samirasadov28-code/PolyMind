@@ -2932,7 +2932,7 @@ function renderMarketCard(a){
     +(desc?'<div class="mkt-desc" id="mkt-desc-body">'+esc(desc)+'<span class="mkt-desc-more" id="mkt-desc-toggle">▼ show more</span></div>':'')
     +'<div class="mkt-outcomes"><div class="mkt-out-hd">OUTCOMES</div>'+outHtml+'</div>'
     +'<div class="mkt-stats-row">'
-      +'<div class="mkt-stat"><div class="mkt-stat-lbl">Total Volume</div><div class="mkt-stat-val">'+fmt(vol)+'</div></div>'
+      +'<div class="mkt-stat"><div class="mkt-stat-lbl">Total Volume</div><div class="mkt-stat-val">'+(vol?fmt(vol):'n/a')+'</div></div>'
       +'<div class="mkt-stat"><div class="mkt-stat-lbl">This Alert</div><div class="mkt-stat-val" style="color:var(--amber)">'+( sessionVol?fmt(sessionVol):'—')+'</div></div>'
       +'<div class="mkt-stat"><div class="mkt-stat-lbl">Outcomes</div><div class="mkt-stat-val">'+outcomes.length+'</div></div>'
     +'</div>'
@@ -2959,7 +2959,7 @@ function selectAlert(id){
 }
 
 
-var SYS='You are a senior cross-asset trading strategist. You use prediction market signals to identify trading opportunities across equities, commodities, FX, crypto and fixed income. Respond ONLY with valid JSON, no markdown or code fences:\n{"signal_strength":"STRONG"|"MODERATE"|"WEAK","signal_direction":"BULLISH_YES"|"BEARISH_YES"|"NEUTRAL","summary":"2-3 sentences explaining what this alert means in plain English and why it matters right now","market_interpretation":"What do the current outcome probabilities combined with this alert signal imply about the expected real-world outcome","tradfi_impact":{"equities":{"thesis":"How and why equities are affected","tickers":["TICKER1","TICKER2","TICKER3"],"direction":"LONG"|"SHORT"|"NEUTRAL"},"commodities":{"thesis":"Commodity impact and mechanism","instruments":["e.g. WTI Crude Oil, Gold, Natural Gas, Wheat"],"direction":"LONG"|"SHORT"|"NEUTRAL"},"fx":{"thesis":"FX market impact","pairs":["e.g. USD/JPY, EUR/USD"],"direction":"string"},"crypto":{"thesis":"Crypto impact if relevant, else NONE","assets":["BTC"|"ETH"|"NONE"],"direction":"LONG"|"SHORT"|"NEUTRAL"},"bonds":{"thesis":"Fixed income impact","instruments":["e.g. US 10Y Treasury"|"NONE"],"direction":"LONG"|"SHORT"|"NEUTRAL"}},"polymarket_trade":{"action":"BUY YES"|"BUY NO"|"HOLD"|"FADE","entry_price":0.00,"target_price":0.00,"stop_loss":0.00,"position_size":"SMALL (1-3%)"|"MEDIUM (3-7%)"|"LARGE (7-15%)","rationale":"Why this specific action on the prediction market"},"risk_factors":["risk 1","risk 2","risk 3"]}';
+var SYS='You are a senior cross-asset trading strategist. You use prediction market signals to identify trading opportunities across equities, commodities, FX, crypto and fixed income. Only state a market impact when the link is direct and plausible; for markets with no real financial link (for example sports or entertainment) write "No direct market link" as the thesis, leave tickers, instruments, pairs and assets empty or NONE, and use NEUTRAL. If volume is given as unknown, treat it as unknown, never as zero. Respond ONLY with valid JSON, no markdown or code fences:\n{"signal_strength":"STRONG"|"MODERATE"|"WEAK","signal_direction":"BULLISH_YES"|"BEARISH_YES"|"NEUTRAL","summary":"2-3 sentences explaining what this alert means in plain English and why it matters right now","market_interpretation":"What do the current outcome probabilities combined with this alert signal imply about the expected real-world outcome","tradfi_impact":{"equities":{"thesis":"How and why equities are affected","tickers":["TICKER1","TICKER2","TICKER3"],"direction":"LONG"|"SHORT"|"NEUTRAL"},"commodities":{"thesis":"Commodity impact and mechanism","instruments":["e.g. WTI Crude Oil, Gold, Natural Gas, Wheat"],"direction":"LONG"|"SHORT"|"NEUTRAL"},"fx":{"thesis":"FX market impact","pairs":["e.g. USD/JPY, EUR/USD"],"direction":"string"},"crypto":{"thesis":"Crypto impact if relevant, else NONE","assets":["BTC"|"ETH"|"NONE"],"direction":"LONG"|"SHORT"|"NEUTRAL"},"bonds":{"thesis":"Fixed income impact","instruments":["e.g. US 10Y Treasury"|"NONE"],"direction":"LONG"|"SHORT"|"NEUTRAL"}},"polymarket_trade":{"action":"BUY YES"|"BUY NO"|"HOLD"|"FADE","entry_price":0.00,"target_price":0.00,"stop_loss":0.00,"position_size":"SMALL (1-3%)"|"MEDIUM (3-7%)"|"LARGE (7-15%)","rationale":"Why this specific action on the prediction market"},"risk_factors":["risk 1","risk 2","risk 3"]}';
 
 async function analyze(a,aiDiv){
   if(!aiDiv)aiDiv=document.getElementById('center-ai');
@@ -2979,7 +2979,7 @@ async function analyze(a,aiDiv){
   var ctx='Alert type: '+d.lb+(sv.tier!=='NORMAL'?' ['+sv.tier+' — '+sv.mult.toFixed(1)+'x threshold]':'')
     +'\nMarket question: "'+a.mkt+'"'
     +'\nCurrent outcomes: '+outcomeStr
-    +'\nVolume traded: '+fmt(md.vol||0)
+    +'\nVolume traded: '+(md.vol?fmt(md.vol):'unknown (not available, do not treat as zero)')
     +(md.liquidity?'\nLiquidity: '+fmt(md.liquidity):'')
     +(md.endDate?'\nCloses: '+new Date(md.endDate).toDateString():'')
     +'\nAlert detail: '+alertDetail(a).replace(/<[^>]+>/g,'')
