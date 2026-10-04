@@ -615,7 +615,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
         </div>
         <ul>
           <li><span class="ic">&#10003;</span><span data-i18n="land_free_sig">5 live signals / day</span></li>
-          <li><span class="ic">&#10003;</span><span data-i18n="land_free_delay">Delayed alerts after (up to 30 / day)</span></li>
+          <li><span class="ic">&#10003;</span><span data-i18n="land_free_delay">Then delayed alerts (up to 30 / day)</span></li>
           <li><span class="ic">&#10003;</span><span data-i18n="land_free_ai">AI analysis on every alert</span></li>
           <li><span class="ic">&#10003;</span><span data-i18n="land_free_chat">AI chat assistant</span></li>
         </ul>
@@ -1235,7 +1235,7 @@ function langFlagHtml(code,h){
 }
 var I18N={
   en:{land_sub:'AI-Powered Poly Alerts',land_providers:'GROQ · CLAUDE · GEMINI',land_free:'Free Tier',land_pro:'Pro Tier',land_enter:'Enter Free Dashboard',land_buypro:'Buy Pro — $3.99/month',land_redeem:'Redeem activation code',land_already:'Already paid?',land_force:'Force Update',
-      land_free_sig:'5 live signals / day',land_free_delay:'Delayed alerts after (up to 30 / day)',land_free_ai:'AI analysis on every alert',land_free_chat:'AI chat assistant',
+      land_free_sig:'5 live signals / day',land_free_delay:'Then delayed alerts (up to 30 / day)',land_free_ai:'AI analysis on every alert',land_free_chat:'AI chat assistant',
       land_pro_sig:'Unlimited live signals',land_pro_delay:'Zero delay · real-time',land_pro_all:'Everything in Free',
       land_stripe:'Secure by Stripe',land_feedback:'Send feedback',land_privacy:'Privacy Policy',
       tab_alerts:'ALERTS',tab_markets:'MARKETS',tab_config:'CONFIG',btn_history:'HISTORY',btn_watchlist:'WATCHLIST',btn_clear:'CLEAR ALL',btn_pause:'PAUSE',btn_live:'LIVE',btn_pro:'PRO',
@@ -2577,7 +2577,7 @@ function showSeedBannerLoading(){
   var b = _ensureSeedBanner();
   b.innerHTML =
     '<span style="color:var(--gold);font-size:12px">&#9201;</span>'
-    +'<span style="flex:1;line-height:1.4;color:var(--tx3)">Loading recent Polymarket trades from the last 30 minutes&hellip;</span>';
+    +'<span style="flex:1;line-height:1.4;color:var(--tx3)">Loading recent Polymarket trades recently&hellip;</span>';
 }
 function showSeedBanner(count, source){
   var b = _ensureSeedBanner();
@@ -2586,7 +2586,7 @@ function showSeedBanner(count, source){
                :                         'from history + Polymarket';
   b.innerHTML =
     '<span style="color:var(--gold);font-size:12px">&#9432;</span>'
-    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent trade'+(count===1?'':'s')+' '+srcLabel+' &middot; last 30 min &middot; <span style="color:var(--tx3)">live signals appear above</span></span>'
+    +'<span style="flex:1;line-height:1.4">Showing <strong style="color:var(--tx)">'+count+'</strong> recent trade'+(count===1?'':'s')+' '+srcLabel+' &middot; <span style="color:var(--tx3)">live signals appear above</span></span>'
     +'<button id="seed-banner-skip" style="background:transparent;border:1px solid rgba(245,194,0,.3);color:var(--gold);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Skip preview</button>'
     +'<button id="seed-banner-close" style="background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:Inter,sans-serif;font-size:9px;padding:3px 9px;cursor:pointer;letter-spacing:1px;text-transform:uppercase">Dismiss</button>';
   document.getElementById('seed-banner-close').addEventListener('click', hideSeedBanner);
