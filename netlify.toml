@@ -70,7 +70,7 @@
 # Proxy Kalshi REST API — for market data alongside Polymarket
 [[redirects]]
   from = "/api/kalshi/*"
-  to = "https://trading-api.kalshi.com/trade-api/v2/:splat"
+  to = "https://api.elections.kalshi.com/trade-api/v2/:splat"
   status = 200
   force = true
   headers = {Accept = "application/json"}
