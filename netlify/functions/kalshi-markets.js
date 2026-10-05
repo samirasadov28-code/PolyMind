@@ -12,7 +12,7 @@ exports.handler = async function(event) {
 
   try {
     const resp = await fetch(
-      'https://trading-api.kalshi.com/trade-api/v2/markets?limit=200',
+      'https://api.elections.kalshi.com/trade-api/v2/markets?limit=200',
       {
         headers: {
           'Accept': 'application/json',

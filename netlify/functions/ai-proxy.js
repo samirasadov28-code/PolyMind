@@ -65,8 +65,10 @@ exports.handler = async function(event) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + groqKey },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          max_tokens: maxTokens,
+          model: process.env.GROQ_MODEL || 'openai/gpt-oss-20b',
+          max_tokens: maxTokens + 800,
+          reasoning_effort: 'low',
+          include_reasoning: false,
           temperature: isChat ? 0.7 : 0,
           messages: groqMessages
         })
