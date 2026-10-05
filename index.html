@@ -61,8 +61,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .ph{padding:8px 12px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:7px;flex-shrink:0;background:var(--bg2)}
 .pt{color:var(--gold);font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif}
 .pb{flex:1;overflow-y:auto;min-height:0}
-.tabs{display:flex;border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--bg2)}
-.tab{padding:8px 13px;cursor:pointer;color:var(--tx3);font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .2s;user-select:none;font-family:'Inter',sans-serif}
+.tabs{display:flex;border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--bg2);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;white-space:nowrap;padding:8px 13px;cursor:pointer;color:var(--tx3);font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .2s;user-select:none;font-family:'Inter',sans-serif}
 .tab.on{color:var(--gold);border-bottom-color:var(--gold)}.tab:hover:not(.on){color:var(--tx)}
 /* ALERT ROWS */
 .arow{padding:8px 0 8px 12px;border-bottom:1px solid #08141e;border-left:3px solid transparent;transition:background .15s;animation:fs .3s ease-out;display:flex;align-items:stretch}
