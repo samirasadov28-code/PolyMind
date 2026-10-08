@@ -6,22 +6,22 @@
 <meta name="description" content="Track whale bets, price spikes, volume surges and 12 signal types on Polymarket in real time. Free AI-powered cross-asset analysis — equities, crypto, FX and more. No account needed.">
 <meta name="keywords" content="polymarket alerts, polymarket signals, prediction market alerts, polymarket whale bets, polymarket AI analysis, polymarket trading, prediction market signals, polymarket tracker">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://polymind.site/">
+<link rel="canonical" href="https://polyminds.netlify.app/">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://polymind.site/">
+<meta property="og:url" content="https://polyminds.netlify.app/">
 <meta property="og:site_name" content="PolyMind">
 <meta property="og:title" content="PolyMind — Real-Time Polymarket Alerts & AI Analysis">
 <meta property="og:description" content="Track whale bets, price spikes, volume surges and 12 signal types on Polymarket in real time. Free AI-powered cross-asset analysis. No account needed.">
-<meta property="og:image" content="https://polymind.site/icon-512.png">
+<meta property="og:image" content="https://polyminds.netlify.app/icon-512.png">
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PolyMind — Real-Time Polymarket Alerts & AI Analysis">
 <meta name="twitter:description" content="Track whale bets, price spikes, volume surges and 12 signal types on Polymarket. Free AI analysis — no account needed.">
-<meta name="twitter:image" content="https://polymind.site/icon-512.png">
+<meta name="twitter:image" content="https://polyminds.netlify.app/icon-512.png">
 <!-- Structured data -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PolyMind","url":"https://polymind.site/","description":"Real-time prediction market alerts and AI analysis for Polymarket. Tracks whale bets, price spikes, volume surges, coordinated wallets and 12 signal types. AI-powered cross-asset impact across equities, crypto, FX, commodities and bonds.","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free Plan"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","name":"Pro Plan","billingIncrement":"Monthly"}],"featureList":["Real-time Polymarket alerts","Whale bet detection","Price spike signals","Volume surge tracking","AI cross-asset analysis","7-day alert history","Watchlist filtering"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PolyMind","url":"https://polyminds.netlify.app/","description":"Real-time prediction market alerts and AI analysis for Polymarket. Tracks whale bets, price spikes, volume surges, coordinated wallets and 12 signal types. AI-powered cross-asset impact across equities, crypto, FX, commodities and bonds.","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free Plan"},{"@type":"Offer","price":"3.99","priceCurrency":"USD","name":"Pro Plan","billingIncrement":"Monthly"}],"featureList":["Real-time Polymarket alerts","Whale bet detection","Price spike signals","Volume surge tracking","AI cross-asset analysis","7-day alert history","Watchlist filtering"]}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2886,7 +2886,7 @@ function buildShareUrl(a, marketUrl){
   var sevTag = sev.tier && sev.tier !== 'NORMAL' ? ' · '+sev.tier : '';
   var mkt = (a.mkt || '').length > 140 ? a.mkt.slice(0, 137)+'…' : (a.mkt || '');
   var text = '['+lbl+sevTag+'] '+mkt+' — flagged by PolyMind';
-  var link = marketUrl || 'https://polymind.site';
+  var link = marketUrl || 'https://polyminds.netlify.app';
   return 'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(link);
 }
 function renderMarketCard(a){
