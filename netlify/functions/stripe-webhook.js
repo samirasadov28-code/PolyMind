@@ -59,6 +59,43 @@ function verifyStripeSignature(payload, sigHeader, secret) {
   }
 }
 
+
+// ── Purchase validation (added: paid + right product + right price) ──────────
+const PRICE_ID = process.env.POLYMIND_PRICE_ID || '';      // optional but recommended: price_...
+const PRODUCT_ID = process.env.POLYMIND_PRODUCT_ID || '';  // optional: prod_...
+
+async function stripeGet(path) {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error('STRIPE_SECRET_KEY missing');
+  const res = await fetch('https://api.stripe.com/v1' + path, { headers: { Authorization: 'Bearer ' + key } });
+  if (!res.ok) throw new Error('Stripe ' + res.status);
+  return res.json();
+}
+
+// Returns { ok:true } or { ok:false, reason }. Never trusts the webhook body alone:
+// re-reads the session from Stripe with its line items.
+async function validatePurchase(sessionId) {
+  const s = await stripeGet('/checkout/sessions/' + encodeURIComponent(sessionId) + '?expand[]=line_items.data.price');
+  if (s.mode !== 'payment') return { ok: false, reason: 'not a one-off payment' };
+  if (s.payment_status !== 'paid') return { ok: false, reason: 'unpaid' };
+  const items = (s.line_items && s.line_items.data) || [];
+  if (items.length !== 1) return { ok: false, reason: 'unexpected line items' };
+  const li = items[0];
+  const price = li.price || {};
+  if (PRICE_ID) {
+    if (price.id !== PRICE_ID) return { ok: false, reason: 'wrong price id' };
+  } else if (PRODUCT_ID) {
+    if (price.product !== PRODUCT_ID) return { ok: false, reason: 'wrong product' };
+  } else {
+    // Fallback until POLYMIND_PRICE_ID is set: exact amount + name match.
+    if (!/polymind/i.test(li.description || '')) return { ok: false, reason: 'wrong product name' };
+  }
+  if (s.currency !== 'usd' || s.amount_total !== 399 || price.unit_amount !== 399) {
+    return { ok: false, reason: 'wrong amount' };
+  }
+  return { ok: true, paymentIntent: s.payment_intent || null, session: s };
+}
+
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method not allowed' };
@@ -84,7 +121,7 @@ exports.handler = async function (event) {
 
   const store = getStore('pro-codes');
 
-  if (payload.type === 'checkout.session.completed') {
+  if (payload.type === 'checkout.session.completed' || payload.type === 'checkout.session.async_payment_succeeded') {
     const session = payload.data && payload.data.object;
     if (!session || !session.id) {
       return { statusCode: 400, body: 'Missing session' };
@@ -94,6 +131,14 @@ exports.handler = async function (event) {
     const existing = await store.get(`session:${session.id}`, { type: 'json' });
     if (existing && existing.code) {
       return { statusCode: 200, body: JSON.stringify({ code: existing.code, reused: true }) };
+    }
+
+    // Validate with Stripe: paid, one-off, right product/price/amount.
+    let check;
+    try { check = await validatePurchase(session.id); }
+    catch (e) { return { statusCode: 500, body: 'Validation unavailable, Stripe will retry' }; }
+    if (!check.ok) {
+      return { statusCode: 200, body: JSON.stringify({ ignored: true, reason: check.reason }) };
     }
 
     // Generate a collision-free code (retry on rare collision)
@@ -116,8 +161,10 @@ exports.handler = async function (event) {
       createdAt: new Date().toISOString(),
     };
 
+    entry.paymentIntent = check.paymentIntent;
     await store.setJSON(`code:${code}`, entry);
     await store.setJSON(`session:${session.id}`, { code });
+    if (check.paymentIntent) await store.setJSON(`pi:${check.paymentIntent}`, { code });
 
     // Reverse index: customer → codes (for future cancellation webhook)
     if (entry.customerId) {
@@ -132,6 +179,26 @@ exports.handler = async function (event) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, issued: true }),
     };
+  }
+
+  if (payload.type === 'charge.refunded' || payload.type === 'charge.dispute.created') {
+    const obj = payload.data && payload.data.object;
+    const pi = obj && obj.payment_intent;
+    if (!pi) return { statusCode: 200, body: 'No payment_intent' };
+    // Only fully refunded charges revoke; partial refunds keep access.
+    if (payload.type === 'charge.refunded' && !(obj.refunded === true || (obj.amount_refunded >= obj.amount))) {
+      return { statusCode: 200, body: 'Partial refund ignored' };
+    }
+    const link = await store.get(`pi:${pi}`, { type: 'json' });
+    if (!link || !link.code) return { statusCode: 200, body: 'No code for payment' };
+    const codeEntry = await store.get(`code:${link.code}`, { type: 'json' });
+    if (codeEntry && codeEntry.active) {
+      codeEntry.active = false;
+      codeEntry.deactivatedAt = new Date().toISOString();
+      codeEntry.deactivatedReason = payload.type;
+      await store.setJSON(`code:${link.code}`, codeEntry);
+    }
+    return { statusCode: 200, body: JSON.stringify({ revoked: link.code }) };
   }
 
   if (payload.type === 'customer.subscription.deleted') {
