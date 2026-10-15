@@ -356,6 +356,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   .disc{display:none}
 }
 
+/* Floating controls must not cover an open analysis sheet. */
+body:has(#mob-ai-modal.open) #chat-fab,body:has(#mob-ai-modal.open) #fb-fab{display:none!important}
 /* --- Notification permission banner --- */
   #notif-banner{
     display:none;position:fixed;top:0;left:0;right:0;z-index:500;
@@ -948,7 +950,7 @@ var SPORTS_KW=[
   'champions league','europa league','conference league','la liga','eredivisie',
   'mls','copa america','copa del rey','euro 20','uefa','world cup','fifa',
   'fa cup','carabao cup','fa trophy','scottish premiership','mls cup',
-  'relegation','promoted','relegated','football club',' fc ','afc ','cfc ',
+  'relegation','promoted','relegated','football club',' fc ',' cf ','afc ','cfc ',
   'bundesliga title','serie a title','ligue 1 title',
 
   // ── Generic match / game / set / round language ──
@@ -1207,7 +1209,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.32.0';  // Bump on each release
+var APP_VERSION = '1.33.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1962,7 +1964,8 @@ async function loadAll(){
     console.error('loadAll failed:',e.message);
     setSrc('gamma','or','ERROR');setPolySt(false,0,false);setBar(0);
     document.getElementById('last-fetch').textContent='Error: '+e.message;
-    if(!S.markets.length)startSim();
+    // Never replace failed real data with invented live signals.
+    if(!S.markets.length){S.sim=false;renderAll();}
   }
 }
 
@@ -1971,7 +1974,7 @@ function setPolySt(ok,n,loading){
   var el=document.getElementById('poly-st');
   if(loading){el.style.color='var(--yw)';el.innerHTML='&#9679; '+t('hdr_loading').replace('{n}',n);return;}
   el.style.color=ok?'var(--gr)':'var(--or)';
-  el.innerHTML=ok?'&#9679; '+t('hdr_live').replace('{n}',n):'&#9679; '+t('hdr_sim');
+  el.innerHTML=ok?'&#9679; '+t('hdr_live').replace('{n}',n):'&#9679; '+(S.sim?t('hdr_sim'):'Market data unavailable');
   // Trigger notif banner on first successful live load
   if(ok && !loading) maybeShowNotifBanner();
 }
@@ -2465,29 +2468,26 @@ async function fetchRecentPolymarketAlerts(needed){
     if(!r.ok) throw new Error('HTTP '+r.status);
     var trades = await r.json();
     if(!Array.isArray(trades)) return [];
-    return trades
-      .filter(function(tr){ return Number(tr.timestamp) >= cutoffSec; })
-      .sort(function(a,b){ return Number(b.timestamp)-Number(a.timestamp); })
-      .map(function(tr, i){
-        var size = Number(tr.size)||0;
-        var price = Number(tr.price)||0;
-        var amt = Math.round(size * price);
-        var side = tr.outcome || (tr.outcomeIndex===0?'Yes':'No');
-        var hash = (tr.transactionHash||'').slice(2,10) || Math.random().toString(36).slice(2,10);
-        return {
-          id: 'pm-'+hash+'-'+i,
-          t: 'WHALE',
-          ts: Number(tr.timestamp) * 1000,
-          mkt: tr.title || tr.eventSlug || tr.slug || 'Polymarket market',
-          mid: tr.conditionId || tr.market || null,
-          amt: amt, pr: price, side: side, seeded: true, source: 'polymarket'
-        };
-      })
-      .filter(function(a){ return a.amt >= SEED_MIN_TRADE_USD && !isSports(a.mkt,''); })
-       
-.filter((function(){ var seen = {}; return function(a){ var k = a.mid + '|' + a.side + '|' + a.amt + '|' + a.ts; if(seen[k]) return false; seen[k] = 1; return true; }; })())
-
-      .slice(0, needed);
+    // Admit only real open markets with the same sports/category rules as the main feed.
+    var candidates=trades.filter(function(tr){return Number(tr.timestamp)>=cutoffSec;})
+      .sort(function(a,b){return Number(b.timestamp)-Number(a.timestamp);});
+    var resolved={}, used={}, alerts=[];
+    for(var i=0;i<candidates.length && i<15 && alerts.length<needed;i++){
+      var tr=candidates[i],cid=tr.conditionId||tr.market;
+      if(!cid||used[cid])continue;
+      used[cid]=true;
+      var raw=await fetchJ('/markets?condition_ids='+encodeURIComponent(cid)+'&closed=false&limit=1');
+      var market=Array.isArray(raw)?raw[0]:null;
+      if(!market||market.conditionId!==cid||market.closed||market.active===false||isSports(market.question||market.title||'',market.category||market.groupItemTitle||'')||isSports(tr.title||'',''))continue;
+      var price=Number(tr.price),amt=Math.round(Number(tr.size)*price);
+      if(!Number.isFinite(price)||price<=0||price>=1||amt<SEED_MIN_TRADE_USD)continue;
+      var m=parseM(market);
+      alerts.push({id:'pm-'+(tr.transactionHash||cid).slice(0,18)+'-'+i,t:'WHALE',ts:Number(tr.timestamp)*1000,
+        mkt:m.q,mid:m.id,amt:amt,pr:price,side:tr.outcome||'Yes',seeded:true,source:'polymarket',
+        mdata:{q:m.q,yes:m.yes,vol:m.vol,liquidity:m.liquidity,description:m.description,
+          outcomes:m.outcomes,outcomePrices:m.outcomePrices,endDate:m.endDate,url:m.url}});
+    }
+    return alerts;
   }catch(e){
     console.warn('[seed] Polymarket trade fetch failed:', e.message);
     return [];
@@ -3155,6 +3155,10 @@ async function callAI(prov,key,msg){
   return data.text;
 }
 
+function tradePrice(value, action){
+  if(action==='HOLD'||value==null||value===''||!Number.isFinite(Number(value))||Number(value)<=0||Number(value)>=1)return '&mdash;';
+  return Math.round(Number(value)*100)+'&cent;';
+}
 function showAnalysis(d,a,sv,aiDiv){
   if(!aiDiv)aiDiv=document.getElementById('center-ai');
   if(!d){aiDiv.innerHTML='<div style="padding:14px"><div class="err">&#9888; Could not parse AI response</div></div>';return;}
@@ -3200,9 +3204,9 @@ function showAnalysis(d,a,sv,aiDiv){
     ptHtml='<div class="ib ibg"><div class="bl2">POLYMARKET TRADE</div>'
       +'<div class="tg3">'+[
         ['ACTION',pt.action||'—','var(--gr)'],
-        ['ENTRY',Math.round((pt.entry_price||0)*100)+'&cent;','var(--ac)'],
-        ['TARGET',Math.round((pt.target_price||0)*100)+'&cent;','var(--yw)'],
-        ['STOP',Math.round((pt.stop_loss||0)*100)+'&cent;','var(--or)'],
+        ['ENTRY',tradePrice(pt.entry_price,pt.action),'var(--ac)'],
+        ['TARGET',tradePrice(pt.target_price,pt.action),'var(--yw)'],
+        ['STOP',tradePrice(pt.stop_loss,pt.action),'var(--or)'],
         ['SIZE',pt.position_size||'—','var(--pu)']
       ].map(function(x){return'<div class="tc"><div class="tcl">'+x[0]+'</div><div class="tcv" style="color:'+x[2]+'">'+x[1]+'</div></div>';}).join('')+'</div>'
       +'<div class="rat">'+esc(pt.rationale||'')+'</div>'
@@ -3330,7 +3334,7 @@ function ensureStripeBanner(){
 function showStripeReturnBanner(){
   var b=ensureStripeBanner();
   b.innerHTML='<span style="font-size:16px;color:var(--gold)">&#9203;</span>'
-    +'<span style="color:var(--tx);font-size:12px;font-weight:600">Payment received — activating Pro<span id="srb-dots">...</span></span>';
+    +'<span style="color:var(--tx);font-size:12px;font-weight:600">Checking your payment and Pro access<span id="srb-dots">...</span></span>';
   var i=0, dots=['.','..','...'];
   var el=document.getElementById('srb-dots');
   b._iv=setInterval(function(){ if(!el||!el.isConnected){clearInterval(b._iv);return;} el.textContent=dots[i++%dots.length]; },400);
@@ -3354,7 +3358,7 @@ function showStripeReturnTimeout(){
   if(b._iv) clearInterval(b._iv);
   b.style.borderBottomColor='var(--or)';
   b.innerHTML='<span style="font-size:16px;color:var(--or)">&#9888;</span>'
-    +'<span style="color:var(--tx);font-size:12px">Payment confirmed but code not ready yet. Check email or try Redeem in a minute.</span>'
+    +'<span style="color:var(--tx);font-size:12px">We could not confirm Pro access yet. Keep your receipt and try again shortly. Do not pay again.</span>'
     +'<button onclick="this.parentElement.remove()" style="margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--bdr2);color:var(--tx2);padding:5px 12px;font-size:10px;font-family:Inter,sans-serif;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Dismiss</button>';
 }
 
@@ -3382,6 +3386,7 @@ function startOnboarding(){
   var tip=document.createElement('div');
   tip.id='onboard-tip';
   tip.style.cssText='position:fixed;z-index:10005;background:var(--bg2);border:1px solid var(--gold);padding:16px 18px;width:320px;font-family:Inter,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.6)';
+  box.style.visibility='hidden';tip.style.visibility='hidden';
   document.body.appendChild(box);
   document.body.appendChild(tip);
   track('onboarding_started');
@@ -3394,6 +3399,7 @@ function startOnboarding(){
       render();return;
     }
     var r=el.getBoundingClientRect();
+    box.style.visibility='visible';tip.style.visibility='visible';
     box.style.left=Math.max(0,r.left-4)+'px';
     box.style.top=Math.max(0,r.top-4)+'px';
     box.style.width=(r.width+8)+'px';
@@ -3773,7 +3779,7 @@ document.addEventListener('DOMContentLoaded',function(){
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({code: TIER.proCode})
       }).then(function(r){return r.json();}).then(function(res){
-        if(res && res.valid===false && /revoked/i.test(res.error||'')){
+        if(res && res.valid===false && /revoked|invalid|expired|eligible/i.test(res.error||'')){
           track('pro_revoked_on_load');
           TIER.isPro=false;
           TIER.proCode='';
@@ -4268,6 +4274,7 @@ document.addEventListener('DOMContentLoaded',function(){
         +'</div>';
     }
 
+    hideBanner(); // Do not let the opt-in banner obscure analysis or its close control.
     modal.classList.add('open');
 
     // Start analysis after sheet is visible
@@ -4311,44 +4318,8 @@ document.addEventListener('DOMContentLoaded',function(){
   }
 
   function showAnalysisMobile(d, a, sv, body){
-    var sc={STRONG:'var(--gr)',MODERATE:'var(--yw)',WEAK:'#7a9090'};
-    var dc={BULLISH_YES:'var(--gr)',BEARISH_YES:'var(--or)',NEUTRAL:'var(--tx2)'};
-    var ts = d.trade_suggestion; S.pTrade = ts; S.pMkt = a.mkt.slice(0,50);
-    var pc2={groq:'var(--gr)',claude:'var(--ac)',gemini:'var(--yw)'};
-    var pn={groq:'GROQ/Llama',claude:'CLAUDE',gemini:'GEMINI'};
-    var sevHtml='';
-    if(sv.tier!=='NORMAL'){
-      var sc2=sv.tier==='EXTREME'?'var(--red)':'var(--yw)';
-      sevHtml='<div class="sevbar" style="color:'+sc2+';border-color:'+sc2+'33;background:'+sc2+'08;margin-bottom:10px">&#9651; '+sv.tier+' &mdash; '+sv.mult.toFixed(1)+'&times; threshold</div>';
-    }
-    var tBlock='';
-    if(ts){
-      tBlock='<div class="ib ibg" style="margin-bottom:10px"><div class="bl2">TRADE SUGGESTION</div>'
-        +'<div class="tg3" style="grid-template-columns:1fr 1fr 1fr">'+[
-          ['ACTION',ts.action||'—','var(--gr)'],
-          ['ENTRY',Math.round((ts.entry_price||0)*100)+'¢','var(--ac)'],
-          ['TARGET',Math.round((ts.target_price||0)*100)+'¢','var(--yw)'],
-          ['STOP',Math.round((ts.stop_loss||0)*100)+'¢','var(--or)'],
-          ['SIZE',(ts.position_size||'—').replace(' (','<br>('),'var(--pu)'],
-          ['TRADFI',ts.related_tradfi||'—','#80aacc']
-        ].map(function(x){return '<div class="tc"><div class="tcl">'+x[0]+'</div><div class="tcv" style="color:'+x[2]+';font-size:10px">'+x[1]+'</div></div>';}).join('')+'</div>'
-        +'<div class="rat">'+esc(ts.rationale||'')+'</div>'
-        +(ts&&a&&a.mdata&&a.mdata.url?'<a class="btn xbtn" href="'+esc(a.mdata.url)+'" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">&#8599; OPEN ON POLYMARKET</a>':'')
-        +'</div>';
-    }
-    var rBlock='';
-    if(d.risk_factors&&d.risk_factors.length)
-      rBlock='<div class="risks" style="margin-bottom:10px"><div class="bl2">RISKS</div>'+d.risk_factors.map(function(r2){return '<div class="ri"><span class="ric">&#9651;</span><span class="rt">'+esc(r2)+'</span></div>';}).join('')+'</div>';
-    body.innerHTML='<div class="aw">'
-      +'<div class="aibadge" style="color:'+pc2[S.prov]+';border-color:'+pc2[S.prov]+'33;margin-bottom:10px">&#9672; '+pn[S.prov]+'</div>'
-      +sevHtml
-      +'<div class="sr2" style="margin-bottom:10px">'
-        +'<div class="sb2"><div class="sl2">Signal</div><div class="sv2" style="color:'+(sc[d.signal_strength]||'#aaa')+';font-size:16px">'+esc(d.signal_strength||'?')+'</div></div>'
-        +'<div class="sb2"><div class="sl2">Direction</div><div class="sv2" style="color:'+(dc[d.signal_direction]||'#aaa')+';font-size:12px">'+esc((d.signal_direction||'').replace(/_/g,' '))+'</div></div>'
-      +'</div>'
-      +'<div class="ib ibl" style="margin-bottom:10px"><div class="bl2">SUMMARY</div><div class="bt" style="font-size:12px">'+esc(d.summary||'')+'</div></div>'
-      +'<div class="ib iby" style="margin-bottom:10px"><div class="bl2">ASSET IMPACT</div><div class="bt" style="color:var(--yw);font-size:12px">'+esc(d.implied_asset_impact||'')+'</div></div>'
-      +tBlock+rBlock+'</div>';
+    // The server returns the same schema on desktop and mobile.
+    showAnalysis(d,a,sv,body);
   }
 
   // Override selectAlert for desktop-path consistency
