@@ -1,13 +1,15 @@
 const { getStore, connectLambda } = require('@netlify/blobs');
 exports.handler = async function (event) {
-  let blobsErr = null, blobsOk = false, wrote = null;
+  connectLambda(event);
+  const key = process.env.STRIPE_SECRET_KEY || '';
+  const price = process.env.POLYMIND_PRICE_ID || '';
+  let stripeStatus = null, stripeErr = null;
   try {
-    connectLambda(event);
-    const s = getStore('pro-codes');
-    await s.setJSON('__diag__', { ts: Date.now() });
-    const v = await s.get('__diag__', { type: 'json' });
-    wrote = v;
-    blobsOk = true;
-  } catch (e) { blobsErr = e.message; }
-  return { statusCode: 200, body: JSON.stringify({ blobsOk, blobsErr, wrote }, null, 2) };
+    const res = await fetch('https://api.stripe.com/v1/checkout/sessions/cs_test_a1b8f5wMYimpWDTovjWzh78sady0f4SJZ76Zo9DbK3BHsKfRiClumxwl4D', { headers: { Authorization: 'Bearer ' + key } });
+    stripeStatus = res.status;
+  } catch (e) { stripeErr = e.message; }
+  return { statusCode: 200, body: JSON.stringify({
+    keyPrefix: key.slice(0, 12), keyLen: key.length, keyTail: key.slice(-4),
+    price, stripeStatus, stripeErr
+  }, null, 2) };
 };
