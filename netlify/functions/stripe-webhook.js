@@ -22,7 +22,7 @@
 //   customer.subscription.deleted → flip active:false on all codes for that customer
 
 const crypto = require('crypto');
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 const ALPHA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no I, L, O, 0, 1
 
@@ -97,6 +97,7 @@ async function validatePurchase(sessionId) {
 }
 
 exports.handler = async function (event) {
+  connectLambda(event);
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method not allowed' };
   }
