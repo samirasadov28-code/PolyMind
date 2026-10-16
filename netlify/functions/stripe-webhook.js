@@ -87,10 +87,10 @@ async function validatePurchase(sessionId) {
   } else if (PRODUCT_ID) {
     if (price.product !== PRODUCT_ID) return { ok: false, reason: 'wrong product' };
   } else {
-    // Fallback until POLYMIND_PRICE_ID is set: exact amount + name match.
+    // Fallback until POLYMIND_PRICE_ID is set: exact amount + name match. (amount_subtotal, not amount_total: the payment link has automatic tax on, so total can exceed 3.99)
     if (!/polymind/i.test(li.description || '')) return { ok: false, reason: 'wrong product name' };
   }
-  if (s.currency !== 'usd' || s.amount_total !== 399 || price.unit_amount !== 399) {
+  if (s.currency !== 'usd' || s.amount_subtotal !== 399 || price.unit_amount !== 399) {
     return { ok: false, reason: 'wrong amount' };
   }
   return { ok: true, paymentIntent: s.payment_intent || null, session: s };
@@ -230,3 +230,4 @@ exports.handler = async function (event) {
 
   return { statusCode: 200, body: 'Ignored' };
 };
+
