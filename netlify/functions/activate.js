@@ -6,9 +6,10 @@
 //
 // Matching is case-insensitive and whitespace-trimmed.
 
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -37,7 +38,7 @@ exports.handler = async function (event) {
 
   // 1. Blob-issued code (Stripe webhook)
   try {
-    const store = getStore('pro-codes');
+    const store = getStore({ name: 'pro-codes', consistency: 'strong' });
     const entry = await store.get(`code:${code}`, { type: 'json' });
     if (entry && entry.active) {
       // Persist a recovery email if the caller supplied one and none is stored.

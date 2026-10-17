@@ -11,9 +11,10 @@
 //   period end. Disable refunds there if you want the "no refund" policy
 //   enforced by Stripe.
 
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -43,7 +44,7 @@ exports.handler = async function (event) {
 
   let customerId;
   try {
-    const store = getStore('pro-codes');
+    const store = getStore({ name: 'pro-codes', consistency: 'strong' });
     const entry = await store.get(`code:${code}`, { type: 'json' });
     if (!entry) {
       return { statusCode: 404, headers, body: JSON.stringify({ error: 'Code not found' }) };

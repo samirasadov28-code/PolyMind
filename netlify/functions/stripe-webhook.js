@@ -22,9 +22,21 @@
 //   customer.subscription.deleted → flip active:false on all codes for that customer
 
 const crypto = require('crypto');
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 const ALPHA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no I, L, O, 0, 1
+
+// Deterministic per session: a duplicate delivery of the same event always derives
+// the same code, so a stale read can never produce a second, different code.
+function codeForSession(sessionId, secret) {
+  const bytes = crypto.createHmac('sha256', secret).update('polymind-code:' + sessionId).digest();
+  const group = (i) => {
+    let out = '';
+    for (let j = 0; j < 4; j++) out += ALPHA[bytes[i * 4 + j] % ALPHA.length];
+    return out;
+  };
+  return `PM-${group(0)}-${group(1)}-${group(2)}`;
+}
 
 function generateCode() {
   const bytes = crypto.randomBytes(12);
@@ -97,6 +109,7 @@ async function validatePurchase(sessionId) {
 }
 
 exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method not allowed' };
   }
@@ -119,7 +132,7 @@ exports.handler = async function (event) {
   try { payload = JSON.parse(raw); }
   catch (e) { return { statusCode: 400, body: 'Invalid JSON' }; }
 
-  const store = getStore('pro-codes');
+  const store = getStore({ name: 'pro-codes', consistency: 'strong' });
 
   if (payload.type === 'checkout.session.completed' || payload.type === 'checkout.session.async_payment_succeeded') {
     const session = payload.data && payload.data.object;
@@ -141,16 +154,11 @@ exports.handler = async function (event) {
       return { statusCode: 200, body: JSON.stringify({ ignored: true, reason: check.reason }) };
     }
 
-    // Generate a collision-free code (retry on rare collision)
-    let code;
-    for (let i = 0; i < 5; i++) {
-      code = generateCode();
-      const clash = await store.get(`code:${code}`, { type: 'json' });
-      if (!clash) break;
-      code = null;
-    }
-    if (!code) {
-      return { statusCode: 500, body: 'Code generation failed' };
+    // Same session always yields the same code (see codeForSession).
+    const code = codeForSession(session.id, secret);
+    const clash = await store.get(`code:${code}`, { type: 'json' });
+    if (clash && clash.sessionId && clash.sessionId !== session.id) {
+      return { statusCode: 500, body: 'Code collision' };
     }
 
     const entry = {
@@ -164,7 +172,13 @@ exports.handler = async function (event) {
     entry.paymentIntent = check.paymentIntent;
     await store.setJSON(`code:${code}`, entry);
     await store.setJSON(`session:${session.id}`, { code });
-    if (check.paymentIntent) await store.setJSON(`pi:${check.paymentIntent}`, { code });
+    if (check.paymentIntent) {
+      const piKey = `pi:${check.paymentIntent}`;
+      const piEntry = (await store.get(piKey, { type: 'json' })) || {};
+      const codes = Array.isArray(piEntry.codes) ? piEntry.codes.slice() : (piEntry.code ? [piEntry.code] : []);
+      if (!codes.includes(code)) codes.push(code);
+      await store.setJSON(piKey, { code: codes[0], codes });
+    }
 
     // Reverse index: customer → codes (for future cancellation webhook)
     if (entry.customerId) {
@@ -190,15 +204,19 @@ exports.handler = async function (event) {
       return { statusCode: 200, body: 'Partial refund ignored' };
     }
     const link = await store.get(`pi:${pi}`, { type: 'json' });
-    if (!link || !link.code) return { statusCode: 200, body: 'No code for payment' };
-    const codeEntry = await store.get(`code:${link.code}`, { type: 'json' });
-    if (codeEntry && codeEntry.active) {
-      codeEntry.active = false;
-      codeEntry.deactivatedAt = new Date().toISOString();
-      codeEntry.deactivatedReason = payload.type;
-      await store.setJSON(`code:${link.code}`, codeEntry);
+    const linked = link ? (Array.isArray(link.codes) && link.codes.length ? link.codes : (link.code ? [link.code] : [])) : [];
+    if (!linked.length) return { statusCode: 200, body: 'No code for payment' };
+    // Revoke every code tied to this payment, not just the first.
+    for (const c of linked) {
+      const codeEntry = await store.get(`code:${c}`, { type: 'json' });
+      if (codeEntry && codeEntry.active) {
+        codeEntry.active = false;
+        codeEntry.deactivatedAt = new Date().toISOString();
+        codeEntry.deactivatedReason = payload.type;
+        await store.setJSON(`code:${c}`, codeEntry);
+      }
     }
-    return { statusCode: 200, body: JSON.stringify({ revoked: link.code }) };
+    return { statusCode: 200, body: JSON.stringify({ revoked: linked[0], revokedAll: linked }) };
   }
 
   if (payload.type === 'customer.subscription.deleted') {
