@@ -44,7 +44,7 @@ exports.handler = async function (event) {
 
   let customerId;
   try {
-    const store = getStore({ name: 'pro-codes', consistency: 'strong' });
+    const store = getStore('pro-codes');
     const entry = await store.get(`code:${code}`, { type: 'json' });
     if (!entry) {
       return { statusCode: 404, headers, body: JSON.stringify({ error: 'Code not found' }) };

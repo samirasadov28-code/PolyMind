@@ -132,7 +132,7 @@ exports.handler = async function (event) {
   try { payload = JSON.parse(raw); }
   catch (e) { return { statusCode: 400, body: 'Invalid JSON' }; }
 
-  const store = getStore({ name: 'pro-codes', consistency: 'strong' });
+  const store = getStore('pro-codes');
 
   if (payload.type === 'checkout.session.completed' || payload.type === 'checkout.session.async_payment_succeeded') {
     const session = payload.data && payload.data.object;
@@ -170,7 +170,8 @@ exports.handler = async function (event) {
     };
 
     entry.paymentIntent = check.paymentIntent;
-    await store.setJSON(`code:${code}`, entry);
+    // Never overwrite an existing entry for this session (it may already be revoked or carry an email).
+    if (!clash) await store.setJSON(`code:${code}`, entry);
     await store.setJSON(`session:${session.id}`, { code });
     if (check.paymentIntent) {
       const piKey = `pi:${check.paymentIntent}`;

@@ -38,7 +38,7 @@ exports.handler = async function (event) {
 
   // 1. Blob-issued code (Stripe webhook)
   try {
-    const store = getStore({ name: 'pro-codes', consistency: 'strong' });
+    const store = getStore('pro-codes');
     const entry = await store.get(`code:${code}`, { type: 'json' });
     if (entry && entry.active) {
       // Persist a recovery email if the caller supplied one and none is stored.

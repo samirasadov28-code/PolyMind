@@ -23,7 +23,7 @@ exports.handler = async function (event) {
   }
 
   try {
-    const store = getStore({ name: 'pro-codes', consistency: 'strong' });
+    const store = getStore('pro-codes');
     const entry = await store.get(`session:${sessionId}`, { type: 'json' });
     if (entry && entry.code) {
       return { statusCode: 200, headers, body: JSON.stringify({ code: entry.code }) };
