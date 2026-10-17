@@ -11,9 +11,10 @@
 //   period end. Disable refunds there if you want the "no refund" policy
 //   enforced by Stripe.
 
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',

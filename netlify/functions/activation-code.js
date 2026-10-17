@@ -2,9 +2,10 @@
 // Called by the success-page redirect: /?session_id=cs_xxx → app posts
 // to /api/activation-code which returns { code }.
 
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
