@@ -2,24 +2,32 @@
 //
 // Env vars required on Netlify:
 //   STRIPE_WEBHOOK_SECRET  →  whsec_... from Stripe Dashboard → Webhooks
+//   STRIPE_SECRET_KEY      →  sk_live_... (needed for purchase re-validation)
+//   POLYMIND_PRICE_ID      →  price_... of the $3.99 product (recommended)
 //
 // Stripe setup:
 //   1. Dashboard → Developers → Webhooks → Add endpoint
-//      URL:   https://<your-site>.netlify.app/api/stripe-webhook
-//      Event: checkout.session.completed
+//      URL:    https://polyminds.netlify.app/api/stripe-webhook
+//      Events: checkout.session.completed
+//              checkout.session.async_payment_succeeded
+//              charge.refunded
+//              charge.dispute.created
 //   2. Copy the signing secret (whsec_...) into STRIPE_WEBHOOK_SECRET on Netlify.
 //   3. On your Payment Link, set the confirmation page URL to:
-//      https://<your-site>.netlify.app/?session_id={CHECKOUT_SESSION_ID}
+//      https://polyminds.netlify.app/?session_id={CHECKOUT_SESSION_ID}
 //
 // Storage: Netlify Blobs, store "pro-codes"
-//   code:{CODE}          → { active, sessionId, email, customerId, createdAt, ... }
-//   session:{SESSION}    → { code }
-//   customer:{CUSTOMER}  → { codes: [ ... ] }   (reverse index for cancellation)
+//   code:{CODE}             → { active, sessionId, email, customerId, createdAt, paymentIntent }
+//   session:{SESSION_ID}    → { code }
+//   pi:{PAYMENT_INTENT_ID}  → { code, codes[] }  (reverse index for refund/dispute revocation)
+//   customer:{CUSTOMER_ID}  → { codes[] }         (reverse index — kept for future use)
 // Idempotent: a second webhook for the same session returns the existing code.
 //
 // Handled events:
-//   checkout.session.completed   → issue a new code for the customer
-//   customer.subscription.deleted → flip active:false on all codes for that customer
+//   checkout.session.completed               → issue a Pro code (one-off payment only)
+//   checkout.session.async_payment_succeeded → same (bank transfers, delayed methods)
+//   charge.refunded (full only)              → revoke all codes for that payment
+//   charge.dispute.created                   → revoke all codes for that payment
 
 const crypto = require('crypto');
 const { getStore, connectLambda } = require('@netlify/blobs');
@@ -218,33 +226,6 @@ exports.handler = async function (event) {
       }
     }
     return { statusCode: 200, body: JSON.stringify({ revoked: linked[0], revokedAll: linked }) };
-  }
-
-  if (payload.type === 'customer.subscription.deleted') {
-    const sub = payload.data && payload.data.object;
-    const customerId = sub && sub.customer;
-    if (!customerId) {
-      return { statusCode: 400, body: 'Missing customer' };
-    }
-    const custKey = `customer:${customerId}`;
-    const custEntry = await store.get(custKey, { type: 'json' });
-    if (!custEntry || !custEntry.codes || !custEntry.codes.length) {
-      return { statusCode: 200, body: 'No codes for customer' };
-    }
-    const now = new Date().toISOString();
-    for (const c of custEntry.codes) {
-      const codeEntry = await store.get(`code:${c}`, { type: 'json' });
-      if (codeEntry && codeEntry.active) {
-        codeEntry.active = false;
-        codeEntry.deactivatedAt = now;
-        await store.setJSON(`code:${c}`, codeEntry);
-      }
-    }
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ deactivated: custEntry.codes.length }),
-    };
   }
 
   return { statusCode: 200, body: 'Ignored' };
