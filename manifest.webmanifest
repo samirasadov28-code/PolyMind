@@ -1,7 +1,7 @@
 {
-  "name": "PolyMind — Real-Time Polymarket Alerts & AI Analysis",
+  "name": "PolyMind — Polymarket & Kalshi Alerts with AI Analysis",
   "short_name": "PolyMind",
-  "description": "AI-powered alerts on Polymarket trades — track whale bets, price spikes, volume surges and smart-money activity in real time.",
+  "description": "Polymarket and Kalshi alerts, checked periodically: whale bets, price spikes, volume surges and AI cross-asset analysis. Free, no account needed.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
