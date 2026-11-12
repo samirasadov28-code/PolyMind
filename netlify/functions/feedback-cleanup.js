@@ -13,6 +13,7 @@ exports.handler = async function () {
   const cutoff = Date.now() - CUTOFF_MS;
 
   let scanned = 0, deleted = 0, kept = 0, unknownAge = 0, errors = 0;
+  const unknownKeys = []; // surfaced for safe manual review, never auto-deleted
   let cursor;
 
   do {
@@ -26,7 +27,11 @@ exports.handler = async function () {
       } catch (e) { errors++; }
 
       // Never delete an entry whose age cannot be determined.
-      if (Number.isNaN(createdMs)) { unknownAge++; continue; }
+      if (Number.isNaN(createdMs)) {
+        unknownAge++;
+        if (unknownKeys.length < 50) unknownKeys.push(blob.key);
+        continue;
+      }
 
       if (createdMs < cutoff) {
         try { await store.delete(blob.key); deleted++; }
@@ -40,5 +45,8 @@ exports.handler = async function () {
 
   const summary = { ok: true, retentionDays: RETENTION_DAYS, scanned, deleted, kept, unknownAge, errors };
   console.log('feedback-cleanup', JSON.stringify(summary));
+  if (unknownKeys.length) {
+    console.log('feedback-cleanup REVIEW-NEEDED unknown-age keys (not deleted):', unknownKeys.join(', '));
+  }
   return { statusCode: 200, body: JSON.stringify(summary) };
 };
