@@ -765,6 +765,8 @@ body:has(#mob-ai-modal.open) #chat-fab,body:has(#mob-ai-modal.open) #fb-fab{disp
       <a href="/privacy" target="_blank" rel="noopener" data-i18n="land_privacy">Privacy Policy</a>
       <span class="sep">&middot;</span>
       <a href="/terms" target="_blank" rel="noopener">Terms</a>
+      <span class="sep">&middot;</span>
+      <a href="#" id="land-cookie-link">Cookie settings</a>
     </div>
     <div style="text-align:center"><button class="land-force-link" id="land-force-btn" data-i18n="land_force" data-i18n-prefix="⟲ ">⟲ Force Update</button></div>
   </div>
@@ -1315,7 +1317,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.37.0';  // Bump on each release
+var APP_VERSION = '1.37.1';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -4673,16 +4675,24 @@ document.addEventListener('DOMContentLoaded',function(){
       try { return localStorage.getItem(GA_CONSENT_KEY); } catch(e){ return null; }
     }
     function save(v){ try { localStorage.setItem(GA_CONSENT_KEY, v); } catch(e){} }
-    var c = savedChoice();
-    if (c === 'accepted'){ loadGA(); return; }
-    if (c === 'declined'){ return; }
-    banner.hidden = false;
+    var cookieLink = document.getElementById('land-cookie-link');
+    if (cookieLink) cookieLink.addEventListener('click', function(e){
+      e.preventDefault();
+      try { localStorage.removeItem(GA_CONSENT_KEY); } catch(err){}
+      banner.hidden = false;
+    });
     document.getElementById('ga-consent-accept').addEventListener('click', function(){
       save('accepted'); banner.hidden = true; loadGA();
     });
     document.getElementById('ga-consent-decline').addEventListener('click', function(){
       save('declined'); banner.hidden = true;
+      // Withdrawing after accepting: reload so no further tracking happens on this device
+      if (window.gaLoaded) location.reload();
     });
+    var c = savedChoice();
+    if (c === 'accepted'){ loadGA(); return; }
+    if (c === 'declined'){ return; }
+    banner.hidden = false;
   })();
 </script>
 
