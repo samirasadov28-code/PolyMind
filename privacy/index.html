@@ -31,6 +31,7 @@ a:hover{text-decoration:underline}
 .page-title{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--tx);margin-bottom:6px}
 .effective{color:var(--tx3);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--bdr)}
 h2{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bdr)}
+h3{color:var(--tx);font-size:13px;font-weight:600;margin:16px 0 6px}
 p{color:var(--tx2);font-size:13px;line-height:1.7;margin-bottom:12px}
 ul{color:var(--tx2);font-size:13px;line-height:1.7;margin-bottom:12px;padding-left:20px}
 ul li{margin-bottom:6px}
@@ -59,66 +60,83 @@ ul li{margin-bottom:6px}
 
 <main class="wrap">
   <h1 class="page-title">Privacy Policy</h1>
-  <p class="effective">Effective date: June 2, 2026</p>
+  <p class="effective">Effective date: November 12, 2026</p>
 
-  <p>This Privacy Policy explains how PolyMind ("PolyMind," "we," "us," or "our") collects, uses, and protects your information when you use the PolyMind application and website at <a href="https://polyminds.netlify.app/">polyminds.netlify.app</a> (the "Service"). By using the Service, you agree to the practices described here.</p>
+  <p>This Privacy Policy explains how PolyMind (the "Service"), operated by Samir Asadov, trading as ModeLoop ("we," "us"), collects, uses, and protects your information when you use the PolyMind application and website at <a href="https://polyminds.netlify.app/">polyminds.netlify.app</a>.</p>
 
   <h2>Information we collect</h2>
-  <p><strong>Usage data.</strong> We automatically collect limited technical information such as device type, browser, general usage activity, and log data to operate, secure, and improve the Service.</p>
-  <p><strong>Analytics data.</strong> We use Google Analytics to understand aggregate usage patterns and improve the Service. Google Analytics collects information such as pages visited, time spent, and general geographic region. You can opt out via <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google's opt-out browser add-on</a>.</p>
-  <p><strong>Optional contact information.</strong> If you redeem a Pro activation code, you may optionally provide your email address for code recovery purposes. If you submit feedback, you may optionally provide your email so we can reply. Providing an email is never required to use the Service.</p>
-  <p><strong>Payment information.</strong> If you subscribe to a Pro plan, payments are processed by Stripe. We do not collect or store your full payment card details on our servers; that information is handled directly by Stripe under its own terms and privacy policy.</p>
-  <p><strong>Communication preferences.</strong> If you opt in to browser push notifications, we use your device's push subscription to deliver real-time market alerts you have requested. You can revoke notification permission at any time in your browser settings.</p>
+  <h3>Analytics data — only after you accept.</h3>
+  <p>Google Analytics loads only if you accept analytics cookies in the consent banner. It then collects pages visited, time spent, and general geographic region. If you decline, Google Analytics never loads. You can change or withdraw your choice at any time via "Cookie settings" in the landing page footer or in the app's configuration panel.</p>
+  <h3>Feedback submissions — when you send feedback.</h3>
+  <p>If you submit feedback, we store your message, your email address if you choose to provide one, and technical details sent with the request (browser user agent and IP address). Feedback is stored in Netlify Blobs.</p>
+  <h3>Pro activation records — when you buy Pro.</h3>
+  <p>Pro access is a one-off payment processed by Stripe. When you buy it, we store the email address you gave Stripe at checkout, Stripe customer, session and payment identifiers, and your activation code. If you add an optional recovery email, we store that too. We never see or store your full payment card details; Stripe handles those under its own terms and privacy policy.</p>
+  <h3>AI requests — when you use AI features.</h3>
+  <p>When you request an AI analysis or use chat, the relevant alert context or conversation is sent through our server-side proxy to the AI provider so it can produce a response.</p>
+  <h3>Alert history and settings — stored on your device only.</h3>
+  <p>Your alert history, watchlist, thresholds and usage counters are stored locally in your browser and are never transmitted to our servers. Alert history is kept on your device for up to 7 days.</p>
+  <h3>Notifications — browser permission only.</h3>
+  <p>The app may ask for your browser's notification permission to show alerts. No push subscription or notification data is sent to or stored by us.</p>
+  <h3>Technical logs — automatic.</h3>
+  <p>Our hosting provider, Netlify, keeps standard server and function logs, which can include IP addresses. The retention of these logs is controlled by Netlify.</p>
 
   <h2>How we use your information</h2>
-  <p>We use the information we collect to:</p>
   <ul>
     <li>Provide, maintain, and improve the Service</li>
-    <li>Process Pro plan subscriptions and activate purchased features</li>
-    <li>Deliver real-time market alerts you have opted in to receive</li>
+    <li>Activate purchased Pro access and recover activation codes</li>
     <li>Respond to feedback or support requests when you provide contact information</li>
-    <li>Analyze aggregate usage to improve features, performance, and security</li>
+    <li>Analyze aggregate usage to improve features, performance, and security (only with analytics consent)</li>
   </ul>
 
   <h2>AI-generated content</h2>
-  <p>PolyMind uses third-party artificial-intelligence services to generate market analysis for you. When you request an AI analysis of an alert, the alert's market context (question text, outcome prices, volume, and alert details) is transmitted to the relevant AI provider solely to produce results for you. The providers we use include:</p>
+  <p>PolyMind uses third-party artificial-intelligence services to generate market analysis. When you request an AI analysis of an alert, the alert's market context (question text, outcome prices, volume, and alert details) is transmitted to the relevant AI provider solely to produce results for you. The providers are:</p>
   <ul>
-    <li><strong>Groq</strong> (default) — Llama 3.3 70B model via <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">groq.com</a></li>
+    <li><strong>Groq</strong> (default) — openai/gpt-oss-20b model via <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">groq.com</a></li>
     <li><strong>Anthropic Claude</strong> — when you supply your own Claude API key</li>
     <li><strong>Google Gemini</strong> — when you supply your own Gemini API key</li>
   </ul>
-  <p>User-supplied API keys are forwarded through our server-side proxy solely to fulfill your request and are never logged or stored.</p>
+  <p>How long a provider keeps request data is governed by that provider's own terms. API keys you supply are forwarded through our server-side proxy solely to fulfill your request and are not logged or stored by us. AI output can be wrong; treat it as a prompt for your own research, not advice.</p>
 
   <h2>How we share information</h2>
-  <p>We do not sell your personal information. We share information only with service providers who help us operate the Service:</p>
+  <p>We do not sell your personal information. We share information only with the service providers who help us operate the Service:</p>
   <ul>
-    <li><strong>Netlify</strong> — hosting, serverless functions, and feedback storage</li>
-    <li><strong>Stripe</strong> — payment processing for Pro subscriptions</li>
-    <li><strong>Groq / Anthropic / Google</strong> — AI analysis (see above)</li>
-    <li><strong>Google Analytics</strong> — aggregate usage analytics</li>
+    <li><strong>Netlify</strong> — hosting, serverless functions, and feedback and activation storage</li>
+    <li><strong>Stripe</strong> — payment processing for Pro access</li>
+    <li><strong>Groq, Anthropic, Google</strong> — AI analysis (see above)</li>
+    <li><strong>Google Analytics</strong> — aggregate usage analytics, only after consent</li>
   </ul>
   <p>We may also disclose information where required by law.</p>
 
-  <h2>Data retention</h2>
-  <p>Alert history is stored locally on your device for up to 7 days and is never transmitted to our servers. We retain feedback submissions and optional contact emails for as long as needed to respond to your inquiry, after which they are deleted. Stripe retains billing records under its own retention policy.</p>
+  <h2>How long we keep information</h2>
+  <ul>
+    <li>Feedback: submissions are deleted by an automated daily cleanup once they are more than 30 days old, so they are kept no longer than about 31 days. A record whose stored date cannot be read is not deleted automatically; it is flagged in our function logs as needing review and is kept until it is reviewed and removed manually.</li>
+    <li>Pro activation records are kept while your access is active. They are not automatically deleted when access ends; you can ask us to delete them at any time.</li>
+    <li>Stripe keeps billing records under its own retention policy.</li>
+    <li>Alert history is stored only on your device for up to 7 days and can be removed at any time by clearing your browser storage.</li>
+  </ul>
 
-  <h2>Your rights</h2>
-  <p>Depending on your location, you may have the right to access, correct, export, or delete your personal information, and to object to or restrict certain processing. To exercise these rights, contact us at <span class="contact-email">support@polymind.app</span>.</p>
+  <h2>Your choices and rights</h2>
+  <ul>
+    <li>Accept, decline or withdraw analytics cookies at any time via "Cookie settings" in the landing page footer or the app's configuration panel</li>
+    <li>Ask us to access, correct, export or delete your personal information — for example feedback you sent or your activation record — by emailing <a href="mailto:finmodeloop@gmail.com" class="contact-email">finmodeloop@gmail.com</a></li>
+    <li>Control notifications and locally stored data through your browser settings</li>
+  </ul>
+  <p>Depending on your location, you may also have additional rights under data-protection law. To exercise any of them, contact us at <a href="mailto:finmodeloop@gmail.com" class="contact-email">finmodeloop@gmail.com</a>.</p>
 
   <h2>Security</h2>
-  <p>We use reasonable technical and organizational measures to protect your information. API keys supplied by users are never logged or persisted on our servers. No method of transmission or storage is completely secure, and we cannot guarantee absolute security.</p>
+  <p>We use reasonable technical and organizational measures to protect your information. No method of transmission or storage is completely secure, and we cannot guarantee absolute security.</p>
 
   <h2>Children's privacy</h2>
   <p>PolyMind is not directed to children under 13 (or the minimum age required in your jurisdiction), and we do not knowingly collect personal information from them. If you believe a child has provided us personal information, contact us and we will delete it.</p>
 
   <h2>International users</h2>
-  <p>Your information may be processed and stored in countries other than your own, which may have different data-protection laws. By using the Service you consent to such processing.</p>
+  <p>Your information may be processed and stored in countries other than your own, which may have different data-protection laws.</p>
 
   <h2>Changes to this policy</h2>
   <p>We may update this Privacy Policy from time to time. Material changes will be posted on this page with a revised effective date.</p>
 
   <h2>Contact us</h2>
-  <p>If you have questions about this Privacy Policy, contact us at <a href="mailto:support@polymind.app" class="contact-email">support@polymind.app</a>.</p>
+  <p>Questions about this policy, and requests to access, correct or delete your information: <a href="mailto:finmodeloop@gmail.com" class="contact-email">finmodeloop@gmail.com</a>.</p>
 </main>
 
 <footer class="footer">
