@@ -962,6 +962,10 @@ body:has(#mob-ai-modal.open) #chat-fab,body:has(#mob-ai-modal.open) #fb-fab{disp
         </div>
       </div>
 
+      <div class="cs" style="text-align:center;padding:4px 0 2px">
+        <a href="#" class="js-cookie-settings" style="color:var(--tx3);font-size:9px;letter-spacing:.8px;text-decoration:none">Cookie settings</a>
+      </div>
+
     </div></div>
   </div>
 </div>
@@ -1317,7 +1321,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.37.1';  // Bump on each release
+var APP_VERSION = '1.37.2';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -4675,8 +4679,11 @@ document.addEventListener('DOMContentLoaded',function(){
       try { return localStorage.getItem(GA_CONSENT_KEY); } catch(e){ return null; }
     }
     function save(v){ try { localStorage.setItem(GA_CONSENT_KEY, v); } catch(e){} }
-    var cookieLink = document.getElementById('land-cookie-link');
-    if (cookieLink) cookieLink.addEventListener('click', function(e){
+    // Delegated: covers the landing footer link and the dashboard config links,
+    // including the mobile config sheet's runtime-cloned copies
+    document.addEventListener('click', function(e){
+      var t = e.target && e.target.closest ? e.target.closest('.js-cookie-settings, #land-cookie-link') : null;
+      if (!t) return;
       e.preventDefault();
       try { localStorage.removeItem(GA_CONSENT_KEY); } catch(err){}
       banner.hidden = false;
