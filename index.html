@@ -591,19 +591,37 @@ body:has(#mob-ai-modal.open) #chat-fab,body:has(#mob-ai-modal.open) #fb-fab{disp
   #hdr-pro-btn{padding:6px 10px;font-size:9px}
 }
 
+/* ─── Analytics consent banner ───────────────────────────────────────────── */
+#ga-consent{position:fixed;left:12px;right:12px;bottom:12px;z-index:10001;max-width:520px;margin:0 auto;background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+#ga-consent[hidden]{display:none}
+#ga-consent p{margin:0;font-size:12px;line-height:1.5;color:var(--tx2)}
+.ga-consent-btns{display:flex;gap:8px}
+#ga-consent-accept{flex:1;padding:10px;background:linear-gradient(135deg,var(--gold),#d4a800);color:#0a1220;border:none;border-radius:7px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+#ga-consent-accept:hover{filter:brightness(1.15)}
+#ga-consent-decline{flex:1;padding:10px;background:transparent;color:var(--tx2);border:1px solid var(--bdr);border-radius:7px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+#ga-consent-decline:hover{border-color:var(--tx3);color:var(--tx)}
+
 </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4L7DZGEDZW"></script>
+<!-- Google Analytics — consent-gated: gtag.js is only injected after the visitor accepts analytics cookies -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-4L7DZGEDZW', {
-    page_title: 'PolyMind Alerts',
-    send_page_view: true
-  });
-  // Safe wrapper — events never crash the app if GA blocks or fails to load
+  var GA_ID = 'G-4L7DZGEDZW';
+  var GA_CONSENT_KEY = 'pm_analytics_consent';
+  var gaLoaded = false;
+  function loadGA(){
+    if (gaLoaded) return;
+    gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', GA_ID, { page_title: 'PolyMind Alerts', send_page_view: true });
+  }
+  // Safe wrapper — events are dropped unless the visitor has consented to analytics
   function track(eventName, params){
+    if (!gaLoaded) return;
     try{ gtag('event', eventName, Object.assign({app_version: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '?'}, params||{})); }catch(e){}
   }
 </script>
@@ -1297,7 +1315,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.36.0';  // Bump on each release
+var APP_VERSION = '1.37.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -4639,6 +4657,34 @@ document.addEventListener('DOMContentLoaded',function(){
     <button id="chat-send" class="chat-send-btn" type="button" data-i18n="chat_send">SEND</button>
   </div>
 </div>
+
+<!-- ─── ANALYTICS CONSENT BANNER ────────────────────────────────────────── -->
+<div id="ga-consent" role="dialog" aria-live="polite" aria-label="Analytics consent" hidden>
+  <p>PolyMind uses Google Analytics cookies to understand how the app is used. Accept analytics cookies?</p>
+  <div class="ga-consent-btns">
+    <button id="ga-consent-accept" type="button">Accept</button>
+    <button id="ga-consent-decline" type="button">Decline</button>
+  </div>
+</div>
+<script>
+  (function(){
+    var banner = document.getElementById('ga-consent');
+    function savedChoice(){
+      try { return localStorage.getItem(GA_CONSENT_KEY); } catch(e){ return null; }
+    }
+    function save(v){ try { localStorage.setItem(GA_CONSENT_KEY, v); } catch(e){} }
+    var c = savedChoice();
+    if (c === 'accepted'){ loadGA(); return; }
+    if (c === 'declined'){ return; }
+    banner.hidden = false;
+    document.getElementById('ga-consent-accept').addEventListener('click', function(){
+      save('accepted'); banner.hidden = true; loadGA();
+    });
+    document.getElementById('ga-consent-decline').addEventListener('click', function(){
+      save('declined'); banner.hidden = true;
+    });
+  })();
+</script>
 
 </body>
 </html>

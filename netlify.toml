@@ -2,6 +2,10 @@
   publish = "."
   functions = "netlify/functions"
 
+# Daily deletion of feedback entries older than 30 days (retention policy)
+[functions."feedback-cleanup"]
+  schedule = "@daily"
+
 # Proxy Polymarket Gamma API to avoid CORS issues
 [[redirects]]
   from = "/api/polymarket/*"
