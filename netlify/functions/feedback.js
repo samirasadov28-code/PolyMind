@@ -6,7 +6,7 @@
 //   FEEDBACK_WEBHOOK_URL  →  Discord / Slack / generic webhook
 //   FEEDBACK_WEBHOOK_KIND →  'discord' | 'slack' | 'generic' (default: autodetect)
 
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 const crypto       = require('crypto');
 
 const MAX_LEN = 4000;
@@ -40,6 +40,7 @@ function formatForSlack(entry) {
 }
 
 exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
