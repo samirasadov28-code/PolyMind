@@ -3,12 +3,13 @@
 // is not retained longer than the stated retention window.
 // Runs daily via the schedule declared in netlify.toml.
 
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 const RETENTION_DAYS = 30;
 const CUTOFF_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
-exports.handler = async function () {
+exports.handler = async function (event) {
+  connectLambda(event); // required by @netlify/blobs v8 in Lambda-compat handlers
   const store = getStore('feedback');
   const cutoff = Date.now() - CUTOFF_MS;
 
