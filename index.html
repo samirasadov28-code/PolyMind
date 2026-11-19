@@ -84,6 +84,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
 .arow-share{display:flex;align-items:center;justify-content:center;width:24px;flex-shrink:0;cursor:pointer;color:var(--tx3);font-size:11px;border-left:1px solid #0d1e2e;transition:all .2s;user-select:none;opacity:0;font-weight:700;font-family:Inter,sans-serif}
 .arow:hover .arow-share{opacity:1}
 .arow-share:hover{color:var(--gold);background:rgba(245,194,0,.1)}
+.arow-link{display:flex;align-items:center;justify-content:center;width:24px;flex-shrink:0;cursor:pointer;color:var(--tx3);font-size:12px;border-left:1px solid #0d1e2e;transition:all .2s;user-select:none;opacity:0}
+.arow:hover .arow-link{opacity:1}
+.arow-link:hover{color:var(--ac);background:rgba(96,165,250,.1)}
 .clr-all{margin-right:8px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);font-family:'Inter',sans-serif;font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:3px 8px;cursor:pointer;transition:all .2s;white-space:nowrap;display:none}
 .clr-all.has-alerts{display:block}
 .clr-all:hover{border-color:var(--red);color:var(--red);background:rgba(232,93,74,.08)}
@@ -227,6 +230,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter','Space Grotesk',sy
   .arow-info{width:44px;font-size:20px}
   .arow-del{opacity:1!important;width:36px;font-size:15px}
   .arow-share{opacity:1!important;width:36px;font-size:14px}
+  .arow-link{opacity:1!important;width:36px;font-size:15px}
   .ahd{margin-bottom:5px;gap:6px}
   .aty{font-size:11px;letter-spacing:.5px}
   .atm{font-size:10px}
@@ -992,6 +996,22 @@ body:has(#mob-ai-modal.open) #chat-fab,body:has(#mob-ai-modal.open) #fb-fab{disp
   </div>
 </div>
 
+<!-- SHARED SIGNAL MODAL -->
+<div class="ov" id="shared-modal" style="display:none;z-index:10002" role="dialog">
+  <div class="imod">
+    <div class="imod-hdr">
+      <span class="imod-ic" id="shared-icon"></span>
+      <span class="imod-title" id="shared-title">Shared signal</span>
+      <button class="imod-x" id="shared-close">&#10005;</button>
+    </div>
+    <div class="imod-body" id="shared-body"></div>
+    <div class="imod-foot">
+      <button class="btn" id="shared-open" style="flex:2">OPEN LIVE DASHBOARD</button>
+      <button class="ghost" id="shared-close2" style="flex:1">CLOSE</button>
+    </div>
+  </div>
+</div>
+
 <!-- ORDER MODAL -->
 <div class="ov" id="order-modal" style="display:none" role="dialog">
   <div class="omod">
@@ -1324,7 +1344,7 @@ var walletLog={};
 var coordLog={};  // {pollCycleKey: [{mid,side,amt}]}
 
 // ─── VERSION ─────────────────────────────────────────────────────────────────
-var APP_VERSION = '1.37.5';  // Bump on each release
+var APP_VERSION = '1.38.0';  // Bump on each release
 
 // ─── I18N ────────────────────────────────────────────────────────────────────
 // Supported languages (Russian intentionally shown without a flag).
@@ -1643,6 +1663,15 @@ var I18N={
       det_whale:'{amt} → {side}',det_volpct:'{amt} = {pct} dari vol {mktVol}',det_spike:'{pb} → {pr} {move}',det_coord:'{amt} → {side}',det_reversal:'Berbalik → {side} ({pb}→{pr})',det_momentum:'{polls} polling {side} berturutan → {pr}',det_volsurge:'Volume {move}',det_late:'{hrs} ke resolusi — aliran terlambat',det_contra:'Bertaruh {side} di {odds}{amt} — vs konsensus',det_thin:'{amt} ke pasar tipis {mktVol} → {side}',det_wallet:'{wallet} → {count} pasar dalam jendela',det_new:'Pasar baru → {pr} YES',ad_lb_whale:"Perubahan volume besar",ad_lb_vol_pct:"Perubahan volume %",ad_lb_spike:'LONJAKAN HARGA',ad_lb_new:'PASAR BARU',ad_lb_coord:'DOMPET TERKOORD.',ad_lb_reversal:'PEMBALIKAN',ad_lb_momentum:'MOMENTUM',ad_lb_vol_surge:'LONJAKAN VOLUME',ad_lb_late:'UANG TERLAMBAT',ad_lb_contra:'KONTRA-KONSENSUS',ad_lb_thin:'PASAR TIPIS',ad_lb_wallet:'WALLET BERULANG',badge_delayed:'30m TERTUNDA',badge_past:'LAMPAU',empty_filter_watch:'Belum ada peringatan dari pasar yang Anda pantau',empty_filter_type:'Tidak ada peringatan {lb}',empty_filter_tier:'Tidak ada peringatan tingkat {tier}',
       chat_title:'Asisten PolyMind',chat_sub:'DIDUKUNG OLEH GROQ',chat_placeholder:'Tanyakan apa saja tentang peringatan, sinyal, pasar…',chat_send:'KIRIM',chat_typing:'Berpikir',chat_welcome:'Halo! Tanyakan apa saja tentang peringatan, jenis sinyal, atau cara membaca dasbor. Saya berjalan di Groq + GPT-OSS.',chat_err_auth:'Masalah kunci AI — periksa pengaturan penyedia Anda.',chat_err_proxy:'Proxy AI tidak ditemukan. Pastikan fungsi Netlify sudah di-deploy dan GROQ_API_KEY sudah diatur.',chat_err_generic:'Tidak dapat menghubungi asisten. Silakan coba lagi.',ob_step6_t:'Semua pasar',ob_step6_b:'Telusuri semua prediksi Polymarket. Beri bintang pasar untuk menambahkannya ke watchlist.',ob_step7_t:'Asisten chat AI',ob_step7_b:'Tanyakan tentang sinyal, konteks pasar, atau strategi. Ketuk tombol ★ untuk membuka chat.',pro_title:'ANDA KINI PRO',pro_sub:'INI YANG BARU SAJA TERBUKA',pro_b1:'Sinyal langsung tanpa batas — tanpa batasan harian',pro_b2:'Tanpa penundaan tambahan — pembaruan langsung',pro_b3:'Analisis AI di setiap sinyal',pro_cta:'Mulai Trading',src_connecting:'MENGHUBUNGKAN',src_active:'AKTIF',ph_alerts:'◈ INTELIJEN PASAR',ph_cfg:'◈ KONFIGURASI & STATUS',empty_sub:'12 jenis sinyal · klik ℹ pada peringatan mana pun',cfg_reset:'RESET',cfg_whale_vol:"Perubahan volume",cfg_price_mkt:'HARGA & PASAR',cfg_smart_money:'UANG CERDAS',cfg_whale_min:"Kenaikan volume minimum",cfg_volpct_min:"Kenaikan volume minimum %",cfg_vsurge_min:'Min. lonjakan vol.',cfg_coord_w:'Wallet terkoord.',cfg_spike_min:'Min. lonjakan harga',cfg_newmkt_age:'Usia pasar baru',cfg_thin_vol:'Vol. maks. pasar tipis',cfg_thin_bet:'Taruhan min. pasar tipis',cfg_contra_odds:'Odds maks. kontra',cfg_contra_size:'Ukuran min. kontra',cfg_late_hrs:'Jam uang terlambat',cfg_mom_polls:'Polling momentum',cfg_wallet_win:'Jendela wallet'}
 };
+Object.assign(I18N.en,{
+  sh_title:'SHARED SIGNAL',sh_fired:'Signal fired',
+  sh_snap:'Snapshot from when it was shared \u00b7 live prices may differ.',
+  sh_disc:'Alerts are research prompts, not trading advice.',
+  sh_unver:'Shared by another user. Snapshots are not verified \u2014 anyone can create or edit a share link.',
+  sh_invalid:'This shared-signal link is invalid or damaged. It may have been edited or truncated. You can still open the live dashboard.',
+  sh_open:'OPEN LIVE DASHBOARD',sh_market:'View the underlying market',
+  sh_copy_manual:'Copy this link:'
+});
 var LANG_KEY='polymind_lang_v1';
 var LANG=(function(){
   try{
@@ -2529,6 +2558,129 @@ function shareAlertOnX(a){
   }catch(e){}
 }
 
+// ─── SHAREABLE SIGNAL LINKS ────────────────────────────────────────────────
+// A shared link carries a point-in-time snapshot of the alert in the URL hash.
+// The hash never reaches the server: no account, no storage, no tracking of who opens it.
+function encodeSignalShare(a){
+  try{
+    var dt=alertDetail(a).replace(/<[^>]+>/g,'')
+      .replace(/&amp;/g,'&').replace(/&hellip;/g,'...').replace(/&#9650;/g,'\u25b2')
+      .replace(/&#9660;/g,'\u25bc').replace(/&middot;/g,'\u00b7').replace(/&nbsp;/g,' ');
+    var p={v:1,src:a.source==='kalshi'?'k':'p',t:a.t,ts:a.ts||Date.now(),
+      mkt:String(a.mkt||'').slice(0,300),dt:dt.slice(0,300),
+      sev:(getSev(a)||{}).tier||'NORMAL',
+      u:(a.mdata&&a.mdata.url)?String(a.mdata.url):''};
+    return btoa(unescape(encodeURIComponent(JSON.stringify(p)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }catch(e){return null;}
+}
+function decodeSignalShare(s){
+  try{
+    if(!s||typeof s!=='string'||s.length>4096)return null;
+    var b=s.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+    var p=JSON.parse(decodeURIComponent(escape(atob(b))));
+    if(!p||p.v!==1||typeof p.t!=='string'||!AD[p.t])return null;
+    if(typeof p.ts!=='number'||!isFinite(p.ts)||p.ts<1560000000000||p.ts>Date.now()+86400000)return null;
+    p.mkt=String(p.mkt||'').slice(0,300);
+    if(!p.mkt)return null;
+    p.dt=String(p.dt||'').slice(0,300);
+    if(p.sev!=='HIGH'&&p.sev!=='EXTREME')p.sev='NORMAL';
+    p.src=p.src==='k'?'k':'p';
+    p.u=validMarketUrl(p.u);
+    return p;
+  }catch(e){return null;}
+}
+function validMarketUrl(u){
+  try{
+    if(typeof u!=='string'||!u||u.length>500)return '';
+    var x=new URL(u);
+    if(x.protocol!=='https:')return '';
+    var h=x.hostname.toLowerCase();
+    if(h!=='polymarket.com'&&h!=='www.polymarket.com'&&h!=='kalshi.com'&&h!=='www.kalshi.com')return '';
+    return x.href;
+  }catch(e){return '';}
+}
+function signalShareUrl(a){
+  var enc=encodeSignalShare(a);
+  return enc?window.location.origin+window.location.pathname+'#a='+enc:null;
+}
+function copySignalLink(a,el){
+  var url=signalShareUrl(a);
+  if(!url)return;
+  var done=function(){
+    try{
+      var old=el.innerHTML;el.innerHTML='&#10003;';
+      setTimeout(function(){el.innerHTML=old;},1200);
+    }catch(e){}
+    track('alert_link_copied',{type:a.t});
+  };
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done,function(){legacyCopy(url)?done():window.prompt(t('sh_copy_manual'),url);});
+    }else{
+      legacyCopy(url)?done():window.prompt(t('sh_copy_manual'),url);
+    }
+  }catch(e){window.prompt(t('sh_copy_manual'),url);}
+}
+function legacyCopy(text){
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    var ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){return false;}
+}
+var CURRENT_SHARED=null;
+function showSharedSignal(p){
+  CURRENT_SHARED=p;
+  var d=AD[p.t]||AD.SPIKE;
+  document.getElementById('shared-icon').innerHTML='<span style="color:'+d.c+'">'+d.ic+'</span>';
+  var ttl=document.getElementById('shared-title');
+  ttl.textContent=t('sh_title');ttl.style.color=d.c;
+  var sevBadge=p.sev!=='NORMAL'?'<span class="mbd '+(p.sev==='EXTREME'?'me':'mh')+'">'+p.sev+'</span>':'';
+  var when=new Date(p.ts).toUTCString();
+  var srcName=p.src==='k'?'Kalshi':'Polymarket';
+  var mktLink=p.u?'<p class="dst" style="margin-top:8px"><a href="'+esc(p.u)+'" target="_blank" rel="noopener" style="color:var(--ac)">'+esc(t('sh_market'))+' &rarr;</a></p>':'';
+  document.getElementById('shared-body').innerHTML=
+    '<div style="margin-bottom:10px"><span style="color:'+d.c+';font-weight:700">'+esc(adLb(p.t))+'</span> '+sevBadge+' <span style="color:var(--tx3);font-size:9px">'+srcName+'</span></div>'
+    +'<div class="dsec"><div class="dbox" style="border-left-color:'+d.c+'"><p class="dst">'+esc(p.mkt)+'</p></div></div>'
+    +(p.dt?'<div class="dsec"><p class="dst">'+esc(p.dt)+'</p></div>':'')
+    +'<div class="dsec"><p class="dst" style="color:var(--tx);font-size:11px">'+esc(t('sh_fired'))+': '+when+'</p>'
+    +'<p class="dst" style="color:var(--tx2);font-size:10px">'+esc(t('sh_snap'))+'</p>'
+    +'<p class="dst" style="color:var(--tx2);font-size:10px">'+esc(t('sh_unver'))+'</p>'
+    +'<p class="dst" style="color:var(--tx2);font-size:10px">'+esc(t('sh_disc'))+'</p>'+mktLink+'</div>';
+  document.getElementById('shared-open').textContent=t('sh_open');
+  document.getElementById('shared-close2').textContent=t('info_close');
+  document.getElementById('shared-modal').style.display='flex';
+  track('shared_signal_viewed',{type:p.t,severity:p.sev});
+}
+function showSharedInvalid(){
+  CURRENT_SHARED=null;
+  document.getElementById('shared-icon').innerHTML='';
+  var ttl=document.getElementById('shared-title');
+  ttl.textContent=t('sh_title');ttl.style.color='var(--tx)';
+  document.getElementById('shared-body').innerHTML='<div class="dsec"><p class="dst" style="color:var(--tx2);font-size:11px">'+esc(t('sh_invalid'))+'</p></div>';
+  document.getElementById('shared-open').textContent=t('sh_open');
+  document.getElementById('shared-close2').textContent=t('info_close');
+  document.getElementById('shared-modal').style.display='flex';
+  track('shared_signal_invalid',{});
+}
+function hideSharedSignal(){
+  CURRENT_SHARED=null;
+  var m=document.getElementById('shared-modal');
+  if(m)m.style.display='none';
+}
+function maybeShowSharedSignal(){
+  var m=/#a=([A-Za-z0-9_-]+)/.exec(window.location.hash||'');
+  if(!m){hideSharedSignal();return;}
+  // Remove the fragment from the address bar right after reading it, so later
+  // analytics page views (loaded only after cookie consent) never see it.
+  try{history.replaceState(null,document.title,window.location.pathname+window.location.search);}catch(e){}
+  var p=decodeSignalShare(m[1]);
+  if(p)showSharedSignal(p);else showSharedInvalid();
+}
+
 // ─── ALERT ARCHIVE (7-day rolling history) ─────────────────────────────────
 var ALERT_ARCHIVE_PREFIX='polymind_alerts_';
 var ALERT_ARCHIVE_MAX_DAYS=7;
@@ -2969,6 +3121,7 @@ function renderAlerts(){
       +'</div>'
       +'<div class="arow-info" title="Explain this alert" data-info="'+a.t+'" data-aid="'+a.id+'">&#9432;</div>'
       +'<div class="arow-share" title="Share on X" data-share="'+a.id+'">&#120143;</div>'
+      +'<div class="arow-link" title="Copy link to this signal" data-link="'+a.id+'">&#128279;</div>'
       +'<div class="arow-del" title="Dismiss alert" data-del="'+a.id+'">&#10005;</div>'
       +'</div>';
   }).join('');
@@ -3929,6 +4082,23 @@ document.addEventListener('DOMContentLoaded',function(){
   var landVerNum=document.getElementById('land-ver-num');
   if(landVerNum) landVerNum.textContent=APP_VERSION;
   track('landing_viewed');
+  // Shared-signal links: show snapshot modal when opened via #a= link
+  try{
+    document.getElementById('shared-close').addEventListener('click',hideSharedSignal);
+    document.getElementById('shared-close2').addEventListener('click',hideSharedSignal);
+    document.getElementById('shared-open').addEventListener('click',function(){
+      var p=CURRENT_SHARED;
+      hideSharedSignal();
+      track('shared_signal_dashboard_opened',{type:p?p.t:'unknown'});
+      var lo=document.getElementById('landing-overlay');
+      if(lo&&getComputedStyle(lo).display!=='none'){
+        var btn=document.getElementById('land-enter-btn');
+        if(btn)btn.click();
+      }
+    });
+    maybeShowSharedSignal();
+    window.addEventListener('hashchange',function(){try{maybeShowSharedSignal();}catch(e){}});
+  }catch(e){}
 
   // Pro re-validation — if we hold an activation code, ping the server once
   // per load. If the code is revoked (e.g. subscription cancelled and past
@@ -4201,6 +4371,14 @@ document.addEventListener('DOMContentLoaded',function(){
       var sid=shareBtn.getAttribute('data-share');
       var sa=S.alerts.find(function(x){return x.id===sid;});
       if(sa) shareAlertOnX(sa);
+      return;
+    }
+    var linkBtn=e.target.closest('[data-link]');
+    if(linkBtn){
+      e.stopPropagation();
+      var lid=linkBtn.getAttribute('data-link');
+      var la=S.alerts.find(function(x){return x.id===lid;});
+      if(la) copySignalLink(la,linkBtn);
       return;
     }
     var infoBtn=e.target.closest('[data-info]');
@@ -4715,4 +4893,3 @@ document.addEventListener('DOMContentLoaded',function(){
 
 </body>
 </html>
-
