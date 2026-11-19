@@ -1,7 +1,7 @@
 {
   "name": "PolyMind — Polymarket & Kalshi Alerts with AI Analysis",
   "short_name": "PolyMind",
-  "description": "Polymarket and Kalshi alerts, checked periodically: whale bets, price spikes, volume surges and AI cross-asset analysis. Free, no account needed.",
+  "description": "Monitor market volume changes and price moves on Polymarket and Kalshi. Explore AI explanations in a free browser dashboard. Periodic checks, not trading advice.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#05101f",
