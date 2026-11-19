@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Using Polymarket and Kalshi alerts in a browser dashboard - PolyMind guide</title>
+<meta name="description" content="A practical guide to PolyMind's browser dashboard: check source status, set thresholds you can explain, understand polling limits, and verify every alert independently.">
+<link rel="canonical" href="https://polyminds.netlify.app/guide-polymarket-kalshi-alerts">
+<style>
+  :root{--bg:#04070f;--panel:#0a1220;--text:#e8e6e3;--muted:#9aa7b8;--gold:#f2b50f;--line:#1c2a3f}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:40px 20px 64px}
+  header{border-bottom:1px solid var(--line);padding:16px 20px}
+  header .wrap{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:baseline}
+  a{color:var(--gold);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .brand{font-weight:700;font-size:18px}
+  .tag{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+  h1{font-size:30px;line-height:1.25;margin:28px 0 16px}
+  h2{font-size:19px;margin:32px 0 8px;color:var(--gold)}
+  p{margin:12px 0}
+  .lead{font-size:18px;color:var(--text)}
+  .note{border-left:3px solid var(--gold);background:var(--panel);padding:12px 16px;margin:24px 0;color:var(--muted);font-size:14px}
+  footer{border-top:1px solid var(--line);margin-top:48px;padding:20px;color:var(--muted);font-size:14px;display:flex;gap:18px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="https://polyminds.netlify.app/">PolyMind</a><span class="tag">Guide</span></div></header>
+<main>
+<h1>Using Polymarket and Kalshi alerts in a browser dashboard</h1>
+<p class="lead">Use PolyMind to organise market changes you want to investigate, then return to the source market to check what they mean. The dashboard is a research aid, not an order-execution service or a promise of profitable signals.</p>
+
+<h2>Check the source status first</h2>
+<p>Confirm that the source you want is enabled and reporting current data. A visible dashboard is not proof that every feed is healthy. Do not confuse sample or simulation data with a live observation.</p>
+
+<h2>Set thresholds you can explain</h2>
+<p>Use the configuration controls to choose which changes deserve attention. A lower threshold can produce more alerts; it does not improve their quality by itself. Note your settings alongside any example so another reader can understand why it appeared.</p>
+
+<h2>Keep the polling limits in view</h2>
+<p>The current client schedules Polymarket checks about every 15 seconds and Kalshi checks about every 30 seconds while the page is visible, live mode is active and simulation is off. These are scheduled intervals, not guaranteed delivery times. Browser pauses, network failures and source delays can make observations older.</p>
+
+<h2>Review, verify and record</h2>
+<p>Select an alert, inspect its explanation and source market, and check any AI claims independently. The product offers on-device alert history; do not describe that as a public, permanent signal archive. Avoid publishing personal wallet interpretations or performance claims without the underlying evidence.</p>
+
+
+<footer>
+  <a href="https://polyminds.netlify.app/">Open the PolyMind dashboard</a>
+  <a href="https://polyminds.netlify.app/privacy">Privacy</a>
+  <span>Free tier, no account needed.</span>
+</footer>
+</main>
+</body>
+</html>
