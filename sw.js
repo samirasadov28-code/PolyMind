@@ -1,5 +1,5 @@
 // PolyMind Service Worker — offline cache + push notifications
-const CACHE_VERSION = 'polymind-v10';
+const CACHE_VERSION = 'polymind-v11';
 const PRECACHE = ['/', '/index.html', '/icon-192.png', '/icon-512.png', '/manifest.webmanifest'];
 
 // ── Install: pre-cache shell ──────────────────────────────────────────────────
